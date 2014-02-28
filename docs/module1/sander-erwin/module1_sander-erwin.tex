@@ -1,4 +1,5 @@
-\documentclass[final]{scrartcl} %scrreprt of scrartcl
+%!TEX program=xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../library/bibliography.bib}
@@ -6,8 +7,7 @@
 \author{Sander {van Dijk} \and Erwin {de Haan}}
 \begin{document}
 \maketitle
-\section{Assignment 0}
-\import{}{assignment1.tex}
+\subimport{}{assignment1.tex}
 \subimport{}{assignment2.tex}
 \subimport{}{assignment3.tex}
 \subimport{}{assignment4.tex}
