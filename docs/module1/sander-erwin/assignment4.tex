@@ -1,11 +1,38 @@
-\documentclass[final]{scrartcl} %scrreprt of scrartcl
+%!TEX program=xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../library/bibliography.bib}
 \title{Module 1 - Report}
 \author{Sander {van Dijk} \and Erwin {de Haan}}
 \begin{document}
-\maketitle
-
-\section{Assignment 4}
+\chapter{Assignment 4}
+\section{Task 1: Nissan Leaf}
+The manufactuer's claim is valid, the vehicle reaches 96.5 km/h in about 8 seconds.
+The motor torque is the limiting factor.
+The small error is the result of the non-infinite gain of the driver in the simulation.
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/resistance-forces-reduced.tikz}
+    	\label{fig:resistance-forces}
+    	\caption{The resistance forces working on the car.}
+\end{figure}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/motor-torque-power-reduced.tikz}
+    	\label{fig:motor-torque-power}
+    	\caption{The torque and power output of the motor.}
+\end{figure}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/wheel-torque-reduced.tikz}
+    	\label{fig:wheel-torque}
+    	\caption{The torque on the wheels.}
+\end{figure}
 \end{document}
