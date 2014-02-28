@@ -12,26 +12,57 @@
 Underneath you can find the subcircuits we designed for the DC-DC converter, splitted in the DC-AC and AC-DC part.
 
 \begin{figure}[h]
-	\label{fig:DC-AC}
 	\includegraphics[width=\linewidth]{resources/DC-AC-rc.pdf}
 	\caption{DC-AC subcircuit}
+	\label{fig:DC-AC}
 \end{figure}
 
 \begin{figure}[h]
-	\label{fig:AC-DC}
 	\includegraphics[width=\linewidth]{resources/AC-DC-rc.pdf}
 	\caption{AC-DC subcircuit}
+	\label{fig:AC-DC}
 \end{figure}
 
-As described in Figure \ref{fig:DC-AC}, we used the IPP028N08N3G (OptiMOS 3) transistor instead of the IPP50CN10N (OptiMOS 2).
+For the NMOS transistor used in Figure \ref{fig:DC-AC} we used the IPP028N08N3G (OptiMOS 3) transistor instead of the IPP50CN10N (OptiMOS 2).
 We had two reasons for this descision.
 First, the drain-source on-state resistance was approximally ten times lower on the OptiMOS 3, causing the transistor to generate less heat and gain better efficiency.
 Secondly, by looking at the current-voltage characteristics per frequency (\cite{OptiMOS2} \emph{:3 Safe operating area} and \cite{OptiMOS3} \emph{:3 Safe operating area}) we found out that the OptiMOS 3 performs better at higher frequencies than the OptiMOS 2.
 \\ \\
 We also had to choose the diodes used on the secondary side of the tranformer. The diodes will form a full bridge rectifier, which in combination with a capacitor, will form a AC-DC converter.
-The candidates are the SB540 (datasheet: \ref{SB540}) and the SF61 (datasheet: \ref{SF61}).
+The candidates are the SB540 (datasheet: \cite{SB540}) and the SF61 (datasheet: \cite{SF61}).
 The forward voltage of the two diodes differ, the SB540's is lower. This is favorable since there will be more voltage left on the output terminals.
+On the other hand, the SF61 has a much lower reverse current. Lower reverse current makes the diode more ideal, since it sould only conduct when the current is in forward direction.
+We chose the SF61 since we thought the reverse current would be more important.
+\\ \\
+After soldering the inverter and rectifier we tested the two parts.
+Figure \ref{fig:AandB} displays the voltage on the output-A and output-B of the UC3525a, which are the oscillating opposites of each other.
+This oscillating pair drives the transistor H-bridge, powering the primary coil.
+The secondary coil will generate a voltage from this primary coil's voltage, which is displayed in Figure \ref{fig:AC_sec}.
+This voltage is rectified using the full bridge rectifier and a small capacitor, it is turned into a DC-voltage as shown in Figure \ref{fig:DC_out}.
 
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=\linewidth/2]{resources/AandB-rc.jpg}
+	\end{center}
+	\caption{Voltages of nodes A and B on the inverter (UC3525a's outputs)}
+	\label{fig:AandB}
+\end{figure}
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=\linewidth/2]{resources/AC_sec-rc.jpg}
+	\end{center}
+	\caption{Transformed voltage on secondary coils}
+	\label{fig:AC_sec}
+\end{figure}
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=\linewidth/2]{resources/DC_out-rc.jpg}
+	\end{center}
+	\caption{Output DC voltage}
+	\label{fig:DC_out}
+\end{figure}
 
 AUTO:
 500g - 13 cm per band

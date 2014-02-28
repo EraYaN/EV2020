@@ -1,11 +1,23 @@
-\documentclass[final]{scrartcl} %scrreprt of scrartcl
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../library/bibliography.bib}
 \title{Module 1 - Report}
 \author{Sander {van Dijk} \and Erwin {de Haan}}
 \begin{document}
-\maketitle
 
-\section{Assignment 3}
+\chapter*{Assignment 3}
+You can test how the air core transformer will react by connecting a 100 kHz sinusoidal voltage because the voltage will be sinusoidal in resonance too.
+\\ \\ 
+By adding capacitors in series with the coil, the inductance of the coil will be compensated when the capacitance is chosen correctly. Less impedance means a higher current and more power to be transformed. The capacitance can be found from Equation \ref{eq:cap}.
+
+\begin{equation}
+	0 = j \omega L + \frac{1}{j \omega C}
+	\label{eq:cap}
+\end{equation}
+
+When compensated, the coil has only very little resistance left, short circuiting the power source. This high current might damage the circuit, so this should be avoided. This is done with an overcurrent protection.
+\\ \\
+The overcurrent protection works by measuring the current and turning down the circuit when it becomes too high. The current is measured by placing a low resistant shunt-resistor in series with the coil. The voltage over that resistor is used in a comparator with a fixed compare voltage. When the voltage exceeds the compare voltage, a memory cell is set. Until it is reset, the oscillator is turned down, preventing current flow in the coil.
+
 \end{document}

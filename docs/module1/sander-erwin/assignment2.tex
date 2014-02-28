@@ -8,4 +8,49 @@
 \maketitle
 
 \section{Assignment 2}
+The mutual inductance of the two coils can be found by measuring both the opposing and aiding configuration of the coils. The results are given in Table \ref{tab:inductances}.
+
+\begin{table} [h]
+\begin{center}
+	\begin{tabular}{ l | l | l | l | l }
+	Distance & Aiding inductance ($\mu$H) & Opposing inductance ($\mu$H) & Mutual inductance ($\mu$H) & k \\ \hline
+  	0 cm & 312.5 & 145.8 & 41.7 & 0.599 \\
+	2 cm & 276.0 & 186.4 & 22.4 & 0.322 \\
+	4 cm & 258.0 & 199.3 & 14.7 & 0.211 \\
+	6 cm & 248.0 & 204.0 & 11.0 & 0.158 \\
+	\end{tabular}
+	\caption{Inductance in aiding and opposing configuration plus conclusion}
+	\label{tab:inductances}
+\end{center}
+\end{table}
+
+We also measured the resistances of the two coils. The primary coil has a resistance of 0.3 $\Omega$ and the secondary coil has a resistance of 0.1 $\Omega$.
+\\ \\
+From Equation 1.14 of \cite{epo4-manual} we can extract Equation \ref{eq:currentPrimary}.
+
+\begin{equation}
+	I_2 = \frac{(j \omega L - R_1 + R_2)}{j \omega M} I_1
+	\label{eq:currentPrimary}
+\end{equation}
+
+\begin{equation}
+	\eta = \frac{P_{out}}{P_{in}} = \frac{{I_2}^2 R_L}{V_1 I_1} = 3.0\%
+	\label{eq:efficiency}
+\end{equation}
+
+Besides calculating the theoretical efficiency (Equation \ref{eq:efficiency}) we also measured it. Figure \ref{fig:DC_out} displays the result on the oscilloscope, which is approximally 224 mV. Equation \ref{eq:efficiencyMeasured} calculates the efficiency of the DC-DC transformer using this 224 mV. The input of the circuit is measured by the voltage source at 20 V and 0.70 A.
+
+\begin{equation}
+	\eta = \frac{P_{out}}{P_{in}} = \frac{{I_2}^2 R_L}{V_1 I_1} = 3.7\%
+	\label{eq:efficiencyMeasured}
+\end{equation}
+
+We used a different approach from e.g. the iron core transformer for the air core transformer because the mutual inductance is much lower here. Therefore, the short and open circuit test are not accurate for air core transformers.
+\\ \\
+The mutual inductance is instead determined by using the aiding and opposing inductance. In aiding configuration the two coils add up their own inductance but also the mutual inductance adds up to the total. In opposing configuration the two coils also add up, but the mutual inductance is substracted from the total. This way you can find the mutual inductance by substracting the opposing from the aiding inductance.
+\\ \\
+When the two coils are moving from each other, the leakage and magnitising current both increase, making the transformer less efficient.
+\\ \\
+When the transformer is not compensated the primary impedance is very high, making the efficiency and throughput lower. The secondary coil has a higher impedance when not compensated too, also resulting in a lower efficiency.
+
 \end{document}
