@@ -1,11 +1,42 @@
-\documentclass[final]{scrartcl} %scrreprt of scrartcl
+%!TEX program = xelatex+makeindex+bibtex
+
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../library/bibliography.bib}
 \title{Module 1 - Report}
 \author{Sander {van Dijk} \and Erwin {de Haan}}
 \begin{document}
-\maketitle
 
-\section{Assignment 1}
+\chapter{Assignment 1}
+Underneath you can find the subcircuits we designed for the DC-DC converter, splitted in the DC-AC and AC-DC part.
+
+\begin{figure}[h]
+	\label{fig:DC-AC}
+	\includegraphics[width=\linewidth]{resources/DC-AC-rc.pdf}
+	\caption{DC-AC subcircuit}
+\end{figure}
+
+\begin{figure}[h]
+	\label{fig:AC-DC}
+	\includegraphics[width=\linewidth]{resources/AC-DC-rc.pdf}
+	\caption{AC-DC subcircuit}
+\end{figure}
+
+As described in Figure \ref{fig:DC-AC}, we used the IPP028N08N3G (OptiMOS 3) transistor instead of the IPP50CN10N (OptiMOS 2).
+We had two reasons for this descision.
+First, the drain-source on-state resistance was approximally ten times lower on the OptiMOS 3, causing the transistor to generate less heat and gain better efficiency.
+Secondly, by looking at the current-voltage characteristics per frequency (\cite{OptiMOS2} \emph{:3 Safe operating area} and \cite{OptiMOS3} \emph{:3 Safe operating area}) we found out that the OptiMOS 3 performs better at higher frequencies than the OptiMOS 2.
+\\ \\
+We also had to choose the diodes used on the secondary side of the tranformer. The diodes will form a full bridge rectifier, which in combination with a capacitor, will form a AC-DC converter.
+The candidates are the SB540 (datasheet: \ref{SB540}) and the SF61 (datasheet: \ref{SF61}).
+The forward voltage of the two diodes differ, the SB540's is lower. This is favorable since there will be more voltage left on the output terminals.
+
+
+AUTO:
+500g - 13 cm per band
+auto: 6kg
+
+opladen supercap 4:30 min
+
 \end{document}
