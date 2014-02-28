@@ -238,3 +238,6 @@ pip-log.txt
 
 #sublime text shit
 *.sublime-workspace
+
+#Simulink shit
+slprj
