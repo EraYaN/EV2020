@@ -1,0 +1,73 @@
+% This file was created by matlab2tikz v0.4.6 running on MATLAB 8.2.
+% Copyright (c) 2008--2014, Nico Schlömer <nico.schloemer@gmail.com>
+% All rights reserved.
+% Minimal pgfplots version: 1.3
+% 
+% The latest updates can be retrieved from
+%   http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz
+% where you can also make suggestions and rate matlab2tikz.
+% 
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+xmin=0,
+xmax=20,
+ymin=0,
+ymax=18,
+legend style={draw=black,fill=white,legend cell align=left}
+]
+\addplot [color=blue,solid]
+  table[row sep=crcr]{
+1	0.181839864585693	\\
+2	0.365504864669522	\\
+3	0.552597770581089	\\
+4	0.744833210143544	\\
+5	0.943925791243437	\\
+6	1.15159010183833	\\
+7	1.36954070995317	\\
+8	1.59949216368296	\\
+9	1.84315899118354	\\
+10	2.10225570068106	\\
+11	2.37849678048231	\\
+12	2.67359669894959	\\
+13	2.98926990452443	\\
+14	3.32723082570601	\\
+15	3.68919387110318	\\
+16	4.07687342931291	\\
+17	4.49198386907652	\\
+18	4.93623953917843	\\
+19	5.41135476849056	\\
+20	5.91904386593954	\\
+};
+\addlegendentry{Power at 0\% incl.};
+
+\addplot [color=black!50!green,solid]
+  table[row sep=crcr]{
+1	0.72483443081856	\\
+2	1.45316632763926	\\
+3	2.18492190904448	\\
+4	2.92181580289977	\\
+5	3.66556261713661	\\
+6	4.41787693975303	\\
+7	5.18047333881782	\\
+8	5.95506636246706	\\
+9	6.74337053890514	\\
+10	7.54710037639786	\\
+11	8.36797036328974	\\
+12	9.20769496799592	\\
+13	10.06798863899	\\
+14	10.9505658048259	\\
+15	11.8571408741355	\\
+16	12.7894282355861	\\
+17	13.7491422579408	\\
+18	14.7379972900424	\\
+19	15.7577076608072	\\
+20	16.8099876791685	\\
+};
+\addlegendentry{Power at 3\% incl.};
+
+\end{axis}
+\end{tikzpicture}%

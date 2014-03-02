@@ -17,7 +17,7 @@ The small error is the result of the non-infinite gain of the driver in the simu
     	\setlength\figurewidth{0.8\linewidth}
     	\input{resources/resistance-forces-reduced.tikz}
     	\label{fig:resistance-forces}
-    	\caption{The resistance forces working on the car.}
+    	\caption{The resistance forces working on the car in \newton.}
 \end{figure}
 \begin{figure}[H]
 	\centering
@@ -25,7 +25,7 @@ The small error is the result of the non-infinite gain of the driver in the simu
     	\setlength\figurewidth{0.8\linewidth}
     	\input{resources/motor-torque-power-reduced.tikz}
     	\label{fig:motor-torque-power}
-    	\caption{The torque and power output of the motor.}
+    	\caption{The torque and power output of the motor in \newton\meter and \watt}
 \end{figure}
 \begin{figure}[H]
 	\centering
@@ -33,6 +33,91 @@ The small error is the result of the non-infinite gain of the driver in the simu
     	\setlength\figurewidth{0.8\linewidth}
     	\input{resources/wheel-torque-reduced.tikz}
     	\label{fig:wheel-torque}
-    	\caption{The torque on the wheels.}
+    	\caption{The torque on the wheels in \newton\meter.}
 \end{figure}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/wheel-torque-reduced.tikz}
+    	\label{fig:wheel-torque}
+    	\caption{The battery output in \watt.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/power-req.tikz}
+    	\label{fig:power-req}
+    	\caption{The required power to maintain a constant speed at 0\% and 3\% inclination in \watt.}
+\end{figure}
+The longest range can be obtained with a constant and low speed.
+\section{Task 2: Laboratory electric car}
+\begin{table}[H]
+\centering
+\label{tab:power-const}
+\caption{KITT estimated parameters}
+\begin{tabular}{p{5cm} c p{6cm}}
+\hline\hline
+ Parameter & Estimated value & Comment \\
+\hline
+Mass & 6 \kilo\gram & given\\
+Moment of inertia of wheels & 1.264 g*m\^2 & 4 cyllinders of about 150 grams with a diameter 13 cm \\
+Moment of inertia of the motor shaft & 0.02 g*m\^2 & 2 cyllinders of about 50 grams with a diameter of 2 cm (two motors both with extra material attached to the shaft \\
+Wheels' radius & 6.5 cm & measured\\
+Gear ratio & 49.7 & Traxxas E-Maxx gear ratio is 2.77*1.72*2.85*3.66\\
+Aerodynamic coefficient & 0.4 kg/m & arbitrary guess, just a bit higher that the nissan \\
+Frontal area & 0.05 m\^2 & 25cm*20\\
+Rolling resistantance coefficient & 0.01 & unknown so same as nissan\\
+Total efficiency & 0.9 & given\\
+Capacitance of Cap. bank & 35 F & 10 350F caps in series \\
+Cap. bank voltage at t=0 & 20 & is max charging voltage.\\
+\hline\hline
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/resistance-forces-reduced-labcar.tikz}
+    	\label{fig:resistance-forces}
+    	\caption{The resistance forces working on the car in \newton.}
+\end{figure}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/motor-torque-power-reduced-labcar.tikz}
+    	\label{fig:motor-torque-power}
+    	\caption{The torque and power output of the motor in \newton\meter and \watt}
+\end{figure}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/wheel-torque-reduced-labcar.tikz}
+    	\label{fig:wheel-torque}
+    	\caption{The torque on the wheels in \newton\meter.}
+\end{figure}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/wheel-torque-reduced-labcar.tikz}
+    	\label{fig:wheel-torque}
+    	\caption{The battery output in \watt.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/power-req-labcar.tikz}
+    	\label{fig:power-req}
+    	\caption{The required power to maintain a constant speed at 0\% and 3\% inclination in \watt.}
+\end{figure}
+You could configure the control board to simulator control signals for the NEDC, then measure the speed of the vehicle and at the end the remaining voltage in the capacitor bank.
+You could mount a current and voltage sensor between the capacitor bank and the ESC.
+When you have the data you can compare with the simulation and alter the model if needed.
 \end{document}
