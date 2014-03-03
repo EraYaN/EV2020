@@ -1,15 +1,13 @@
 %!TEX program = xelatex+makeindex+bibtex
-
 \documentclass[final]{scrreprt} %scrreprt of scrartcl
-\usepackage{amsmath}
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
-\addbibresource{../library/bibliography.bib}
+\addbibresource{../../library/bibliography.bib}
 \title{Module 1 - Report}
 \author{Sander {van Dijk} \and Erwin {de Haan}}
 \begin{document}
 
-\chapter*{Assignment 3}
+\chapter{Assignment 3}
 
 To simulate the circuit in resonance, the model as in Figure 1.9 of \cite{epo4-manual} has been altered. $L_1$ and $L_2$ were considered to be 0 H, as they were compensated by the capacitors in series. However, the mutual inductance is kept unchanged. As in Assignment 2, a matrix was made by applying Kirchhoff's Voltage Law on both loops. Equation \ref{eq:matrixCompensated} is the result of those equations.
 

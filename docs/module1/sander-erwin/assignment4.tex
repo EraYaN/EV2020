@@ -2,13 +2,14 @@
 \documentclass[final]{scrreprt} %scrreprt of scrartcl
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
-\addbibresource{../library/bibliography.bib}
+\addbibresource{../../library/bibliography.bib}
 \title{Module 1 - Report}
 \author{Sander {van Dijk} \and Erwin {de Haan}}
 \begin{document}
 \chapter{Assignment 4}
 \section{Task 1: Nissan Leaf}
 The manufactuer's claim is valid, the vehicle reaches 96.5 km/h in about 8 seconds.
+It is a little faster because the model can not incorporate all resistance forcesa dn is thus an approximation.
 The motor torque is the limiting factor.
 The small error is the result of the non-infinite gain of the driver in the simulation.
 \begin{figure}[H]
@@ -39,8 +40,8 @@ The small error is the result of the non-infinite gain of the driver in the simu
 	\centering
     	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
-    	\input{resources/wheel-torque-reduced.tikz}
-    	\label{fig:wheel-torque}
+    	\input{resources/battery-output-reduced.tikz}
+    	\label{fig:battery-output}
     	\caption{The battery output in \watt.}
 \end{figure}
 
@@ -66,7 +67,7 @@ Mass & 6 \kilo\gram & given\\
 Moment of inertia of wheels & 1.264 g*m\^2 & 4 cyllinders of about 150 grams with a diameter 13 cm \\
 Moment of inertia of the motor shaft & 0.02 g*m\^2 & 2 cyllinders of about 50 grams with a diameter of 2 cm (two motors both with extra material attached to the shaft \\
 Wheels' radius & 6.5 cm & measured\\
-Gear ratio & 49.7 & Traxxas E-Maxx gear ratio is 2.77*1.72*2.85*3.66\\
+Overall drive ratio & 18.67 & Specs \cite{emaxx-specs}\\
 Aerodynamic coefficient & 0.4 kg/m & arbitrary guess, just a bit higher that the nissan \\
 Frontal area & 0.05 m\^2 & 25cm*20\\
 Rolling resistantance coefficient & 0.01 & unknown so same as nissan\\
@@ -81,7 +82,7 @@ Cap. bank voltage at t=0 & 20 & is max charging voltage.\\
     	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
     	\input{resources/resistance-forces-reduced-labcar.tikz}
-    	\label{fig:resistance-forces}
+    	\label{fig:resistance-forces-labcar}
     	\caption{The resistance forces working on the car in \newton.}
 \end{figure}
 \begin{figure}[H]
@@ -89,7 +90,7 @@ Cap. bank voltage at t=0 & 20 & is max charging voltage.\\
     	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
     	\input{resources/motor-torque-power-reduced-labcar.tikz}
-    	\label{fig:motor-torque-power}
+    	\label{fig:motor-torque-power-labcar}
     	\caption{The torque and power output of the motor in \newton\meter and \watt}
 \end{figure}
 \begin{figure}[H]
@@ -97,15 +98,15 @@ Cap. bank voltage at t=0 & 20 & is max charging voltage.\\
     	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
     	\input{resources/wheel-torque-reduced-labcar.tikz}
-    	\label{fig:wheel-torque}
+    	\label{fig:wheel-torque-labcar}
     	\caption{The torque on the wheels in \newton\meter.}
 \end{figure}
 \begin{figure}[H]
 	\centering
     	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
-    	\input{resources/wheel-torque-reduced-labcar.tikz}
-    	\label{fig:wheel-torque}
+    	\input{resources/battery-output-reduced-labcar.tikz}
+    	\label{fig:battery-output-labcar}
     	\caption{The battery output in \watt.}
 \end{figure}
 
@@ -114,7 +115,7 @@ Cap. bank voltage at t=0 & 20 & is max charging voltage.\\
     	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
     	\input{resources/power-req-labcar.tikz}
-    	\label{fig:power-req}
+    	\label{fig:power-req-labcar}
     	\caption{The required power to maintain a constant speed at 0\% and 3\% inclination in \watt.}
 \end{figure}
 You could configure the control board to simulator control signals for the NEDC, then measure the speed of the vehicle and at the end the remaining voltage in the capacitor bank.
