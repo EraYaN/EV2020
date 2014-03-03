@@ -3,10 +3,130 @@
 \input{../../library/style.tex}
 \addbibresource{../library/bibliography.bib}
 \title{Module 1 - Report}
-\author{Alex {Misdorp} \and Xenia {Wesdijk}}
+\author{Xenia {Wesdijk}}
 \begin{document}
 
 \chapter{Assignment 2}
+
+In assignment 2 we firstly had to design and wind the primary and secondary coil of the air coupled transformer. To find out how many windings we needed to have for the coils we used the site that was giving to us in our manual: http://www.pronine.ca/spiralcoil.htm. For this calculation we needed to know:
+\begin{itemize}
+\item Coil inner diameter:   \unit{5}{\centi\meter}
+\item Coil outer diameter:   unknown
+\item Wire diameter:  \unit{1.8}{\milli\meter}
+\end{itemize}
+We knew we needed one coil with an inductance of roughly \unit{20}{\micro}H and one with \unit{100}{\micro}H. By constantly changing the 'coil outer diameter' in the calculator we found how many windings we needed per coil. \\
+For our primary coil we found that we needed 30.83 windings and for our secondary coil we found we needed 14.44 windings. When we were done with the coils we measured them to see what the real values of the inductance of the coils had become. For the primary coil we measured a value of \unit{110.8}{\micro}H and for the secondary coil: \unit{19.8}{\micro}H.\\
+
+Next we needed to find the mutual inductance of the two coils. These could be found by measuring the aiding and the opposing configuration of the coils. The results from this measurement are given in table \ref{tab:mutualinductance}. After measuing the aiding and opposing configuration we used the following two formulas to respectively calculate the mutual inductance and the coupling ratio, k.\\
+Equation for the mutual inductance:
+\begin{equation}\
+\begin{array}{l}
+ M = \frac{{L_{a}} - {L_{o}}}{4}
+\end{array}\
+\end{equation}
+Equation for the coupling constant k:
+\begin{equation}\
+\begin{array}{l}
+ k = \frac{M}{\sqrt{{{L_{1}} \cdot {L_{2}}}}}
+\end{array}\
+\end{equation}
+
+\begin{table} [h]
+\begin{center}
+	\begin{tabular}{ l | l | l | l | l }
+	Distance & Aiding inductance ($\mu$H) & Opposing inductance ($\mu$H) & Mutual inductance ($\mu$H) & k \\ \hline
+  	2 cm & 154.6 & 94.8 & 14.95 & 0.32 \\
+	4 cm & 144.4 & 107.8 & 9.15 & 0.198 \\
+	6 cm & 137.8 & 114.5 & 5.83 & 0.126 \\
+	\end{tabular}
+	\caption{Inductance in aiding and opposing configuration plus the mutual inductance and k.}
+	\label{tab:mutualinductance}
+\end{center}
+\end{table}
+
+Lastely we also measured the resistance of the coils. For the primary coil we found 0.4 $\Omega$ and for the secondary coil we found a resistance of 0.2 $\Omega$. \\
+
+Next we had to calculate the power supplied to a load of 10 $\Omega$. The voltage of our source was 20$V$ with a frequency of 100$\mathrm{kHz}$\\
+The equations of the coupled inductors are written as follows: 
+
+\[\left[ {\begin{array}{*{20}{c}}
+{{{\boldsymbol{\mathrm{V_1}}}}}\\
+{{\boldsymbol{\mathrm{V_2}}}}
+\end{array}} \right] = \left[ {\begin{array}{*{20}{c}}
+{j\omega {L_{1}} + {R_{1}}}&{ - j\omega M}\\
+{j\omega M}&{ - \left( {j\omega {L_{2}} + {R_{2}} + R} \right)}
+\end{array}} \right]\left[ {\begin{array}{*{20}{c}}
+{{\boldsymbol{\mathrm{I_1}}}}\\
+{{\boldsymbol{\mathrm{I_2}}}}
+\end{array}} \right]\]
+
+Using this expression we can write the Kirchhoff voltage loop law equations for the system:
+\begin{equation} 
+\label{eq3}
+\boldsymbol{\mathrm{V_{in}}} = (j\omega {L_{1}} + {R_{1}} )\boldsymbol{\mathrm{I_{1}}} - j\omega M \boldsymbol{\mathrm{I_{2}}}
+\end{equation}
+
+\begin{equation}
+\label{eq4}
+0 = j\omega M \boldsymbol{\mathrm{I_{1}}} -(j\omega {L_{2}} + {R_{2}} + R)\boldsymbol{\mathrm{I_{2}}}
+\end{equation}
+\\
+
+We can now use equations \ref{eq3} and \ref{eq4} to find the two unknown values: $I_{1}$, $I_{2}$. \\
+We also need to find the efficiency and the power factor of the circuit.\\
+
+The efficiency can be calculated using the equation \ref{eq5}.
+
+\begin{equation}\
+\begin{array}{l}
+\label{eq5}
+$$ \mathrm{effici\ddot{e}ntie} = \frac{P_{load}}{P_{source}} $$
+\end{array}\
+\end{equation}
+\\
+To find the power factor of the circuit we use equation \ref{eq6}.
+\begin{equation}\
+\begin{array}{l}
+\label{eq6}
+$$ \mathrm{pf} = \frac{P_{source}}{|S|}$$
+\end{array}\
+\end{equation}
+\\
+The results of our calculations can be found in table \ref{table2}.
+\\
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ l | l | l | l | l }
+    
+    \textbf{\textit{d} (cm)}            & \textbf{pf}              & \textbf{effici\"{e}ntie}  &  \textbf{P load (W)}\\	\hline
+    6                           & 0.0218                       & 0.5582                   &  0.0218  \\
+    4                           & 0.0250                     & 0.7501                      &  0.0552\\
+    2                           & 0.0592                       & 0.8793                     &  0.1590 \\
+\end{tabular}
+\caption{Power factor and efficiency for the different distances.}
+\label{table2}
+\end{center}
+\end{table}
+
+The last thing we had to do for this assignment was that we had to place the air coupled transformer into de DC-DC converter with \unit{2}{\centi\meter} distance between the coils. We had to measure the operational waveforms of the converter, the primary current, secondary voltage, output current. And lastely we had to find how much power there can be delivered to a 10 $\Omega$ load.
+The measured values can be found in table \ref{measure}.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ | c | c | c | c |}
+    \multicolumn{2}{| l |}{\textbf{Primary side}}           & \multicolumn{2}{ l |}{\textbf{Secundairy side}}              \\\hline
+               &            & $V_{load}$    &       \\\hline
+               &       & $R_{load}$    & 10 $\ohm$     \\\hline
+    $I_{1}$                             &                         & $I_2$         &      \\\hline
+    $V_{L1}$ RMS                    &                          & $V_{L2}$ RMS      &        \\\hline
+    $V_{L1}$ P-P                        &                        & $V_{L2}$ P-P  &         \\\hline
+    \multicolumn{2}{ c| }{}                           & $P_{out}$     &       \\\cline{3-4}
+\end{tabular}
+\caption{Measurements on the air coupled transformer.}
+\label{measure}
+\end{center}
+\end{table}
 
 
 
