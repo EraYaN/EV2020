@@ -1,0 +1,182 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../library/bibliography.bib}
+\title{Module 1 - Report}
+\author{Xenia {Wesdijk}}
+\begin{document}
+%\maketitle
+
+\chapter{Tutorial 1}
+\section{Exercise 1a} 
+The documentary 'Who killed the electric car' showed us that there are a lot of factors involved in the 'downfall' of the electric cars in the previous century. The main reason, as stated in the documentary, is that the oil companies had the most to lose when the electric cars would become the norm. They would probably suffer gigantic financial losses is the EV's would become popular. History teaches us that people usually don't care about what's best for the community (the state or even the planet) as long as they can make a profit. In this documentary they show us that the oil companies made deals with the government to suppress further research in to the EVs. They also tried to boycot the EVs by telling people that the electric vehicles do more damage to the environment than the gasoline cars. 
+The video makes clear that not only the government and the oil companies are to blame. The car companies also share in the blame, because they never really advertised their cars and they claimed there weren't enough people who wanted to buy an EV. \\
+Lastly, the consumers are to blame. 
+I largely agree with the opinions expressed in the movie. I also think we should blame the government, oil companies and car companies. I, however, disagree with blaming the consumers. I think that, when advertised rightly, you can make a lot of people buy anything.
+
+\section{Exercise 1b}
+In the dynamic model of the vehicle the following forces have to be considered: 
+\begin{itemize}
+\item $F_{\mathrm{traction}}$: tractive force \\
+This is the force that provides linear acceleration of the vehicle and is transmitted to the ground through the drive wheels. 
+\item $F_{\mathrm{ad}}$: aerodynamic drag force\\
+There are two kinds of earodynamis drag: pressure drag and skin friction drag.
+\begin{itemize}
+\item Pressure drag is caused by the discrepancy in air pressure between the fron tand back surfaces of the vehicle.
+\item Skin friction drag is caused by viscous friction (skin friction) between the air and the surface of the vehicle.
+\end{itemize}
+\item $F_\mathrm{g}$: gravitation force\\
+This is the force the vehicle experiences due to its own total mass. 
+\item $F_{\mathrm{fr}}$: rolling resistance (friction) force\\
+The rolling resistance force is caused by the deformation of the tire on the ground.  
+\end{itemize}
+
+\section{Exercise 2a}
+{\bf Calculate the power required for the compensation of rolling friction and aerodynamis drag for an Electric Vehicle (EV) in order to maintain a constant velocity of 10m/s. The car is driving on a tar road through the Netherlands. The road inclination is zero so there is no gravitation force present. Some data is found in table \ref{tab:table}, if there is any missing data try to find them yourself.} \\
+
+To calculate this power we can use the parameters listed in the table below.
+\begin{table}[h]
+\begin{center}
+\caption{Data for the EV simulations}
+\label{tab:table}
+\begin{tabular}{ | l | l |}
+    \hline
+    Mass of vehicle & 1400 kg \\ \hline
+    Mass of passengers & 150 kg \\\hline
+    Frontal area of car    & 2.1 $m^2$ \\\hline
+    Tires	         & 69.09 cm (27.2 inch) \\\hline
+    Aerodynamic drag coefficient & 0.24 \\\hline
+    Rolling friction coefficient (tar road) & 0.03 \\\hline
+    Gear ratio at 10 m/s  & 10 \\\hline
+    Efficiency of the power transmission & 0.85 \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The $F_{\mathrm{ad}}$ and $F_{\mathrm{tr}}$ can be calculated as follows:
+\begin{equation}\
+\begin{array}{l}
+{F_{ad}} = \frac{1}{2}\cdot \rho  \cdot A \cdot {v^2} \cdot {C_w}\\
+ \Leftrightarrow {F_{ad}} = \frac{1}{2} \cdot 1.293 \cdot 2.1 \cdot {10^2} \cdot 0.24 = 32.6N
+\end{array}\
+\end{equation}
+
+\begin{equation}\
+\begin{array}{l}
+{F_{fr}} = {C_{fr}} \cdot {m_{tot}} \cdot g \cdot \cos (\alpha )\\
+ \Leftrightarrow {F_{fr}} = 0.03 \cdot 1550 \cdot 9.81 = 456.17 \, \mathrm{N}
+\end{array}\
+\end{equation}
+
+The total power required for the compensation of these forces is: 
+\begin{equation}\
+\begin{array}{l}
+{P_{mot}} = \frac{{F_{tot}} \cdot v}{\eta}  \\
+ \Leftrightarrow {P_{mot}} = \frac{488.73 \cdot 10}{0.85}  = 5.75 \, \mathrm{kW}
+\end{array}\
+\end{equation}
+
+\section{Exercise 2b}
+\label{tab:mr}
+{\bf Calculate the power required to compensate all the forces for the same vehicle, if its veocity is 10m/s and its acceleration is 5m/s².}\\
+
+For this calculation we can again use the parameters listed in table \ref{tab:table} and we can use our previously calculated values for  $F_{\mathrm{ad}}$, $F_{\mathrm{tr}}$.\\
+The calculations are as follows:
+
+\begin{equation}\
+\begin{array}{l}
+{m_r} = \frac{{{J_{wheels}} + {N^2} \cdot {J_{mot}}}}{{{r^2}}} = \frac{{5 + {{10}^2} \cdot 0.0005}}{{{{0.345}^2}}} = 42.428\, {\rm{kg}} \cdot {{\rm{m}}^{\rm{2}}}\
+\end{array}\
+\end{equation}
+
+\begin{equation}\
+\begin{array}{l}
+a = \frac{{{F_{tr}} - {F_{fr}} - {F_{ad}}}}{{{m_v} + {m_r}}} \Leftrightarrow {F_{tr}} = a \cdot ({m_v} + {m_r}) + ({F_{tr}} + {F_{ad}}) = 8451\,{\rm{N}}\
+\end{array}\
+\end{equation}
+
+\begin{equation}\
+\begin{array}{l}
+{{\rm{P}}_{mot}} = \frac{{F_{tr}} \cdot v}{\eta}= 99.4\, {\rm{kW}}\
+\end{array}\
+\end{equation}
+
+\section{Exercise 2c}
+{\bf Calculate the torque produced by the motor for case b.} \\
+
+The torque produced by the motor for case b is calculated as follows:
+
+\begin{equation}\
+\begin{array}{l}
+{{\rm{F}}_{tr}} = \frac{{\eta \cdot N \cdot {T_{mot}}}}{r} \Leftrightarrow {T_{mot}} = \frac{{{F_{tr}} \cdot r_{wheel}}}{\eta \cdot N} = 343.01\,{\rm{Nm}}\
+\end{array}\
+\end{equation}
+
+\section{Exercise 3a}
+{\bf Calculate the necessary power to compensate for all forces, if the vehicle velocity is 10m/s and its acceleration is 5m/s². The power consumption for the revolution of the vehicle's rotating parts should be considered.} \\
+
+For this calculations we can use table \ref{tab:table1}. This is practicly the same as table \ref{tab:table} except that it has a few more parameters. 
+
+\begin{table}[h]
+\begin{center}
+\caption{Data for the simulations}
+\label{tab:table1}
+\begin{tabular}{ | l | l |}
+    \hline
+    Mass of vehicle & 1400 kg \\ \hline
+    Mass of passengers & 150 kg \\\hline
+    Frontal area of car    & 2.1 $m^2$ \\\hline
+    Tires	         & 69.09 cm (27.2 inch) \\\hline
+    Aerodynamic drag coefficient & 0.24 \\\hline
+    Rolling friction coefficient (tires on concrete) & 0.01 \\\hline
+    Gear ratio at 10 m/s  & 10 \\\hline
+    Efficiency of the power transmission & 0.85 \\\hline
+    Efficiency of the power transmission for regenerative braking & 0.6 \\\hline
+    Moment of inertia of wheels               & 5 $kg \cdot m^2$ \\\hline
+    Moment of inertia of the motor shaft                 & 0.0005 $kg \cdot m^2$ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The calculations for all forces are as follows:
+
+\begin{equation}
+F_{fr} = C_{fr} \cdot F_{n} = 0.01 \cdot 9.81 \cdot 1550 = 152.1\, \mathrm{N}
+\end {equation}
+
+\begin{equation}
+F_{ad} = \frac{1}{2} \cdot \rho \cdot A \cdot C_{w} \cdot v^2 = \frac{1}{2} \cdot 1.293 \cdot 2.1  \cdot 0.24 \cdot 10^2 = 32.6\, \mathrm{N}
+\end{equation}
+
+For $m_r$ see \ref{tab:mr}
+\begin{equation}
+F_{tr} = a\cdot(m_{r} + m_{v}) + (F_{fr} + F{ad}) = 5\cdot(42.428 + 1550) + 152.1 + 130.3 = 8.1\, \mathrm{kN}
+\end{equation}
+
+So the power necessary to compendat for all forces is:
+\begin{equation}
+P_{mot} = \frac{F_{tr} \cdot v \cdot}{ \eta_{drive}} = 95.8 \, \mathrm{kW}
+\end{equation}
+
+\section{Exercise 3b}
+{\bf Calculate the maximum power which can be recuperated from the regenerative braking, if the vehicle velocity is 30m/s and its (de)acceleration is -2m/s². The power consumption for the revolution of the vehicle's rotating parts can be neglected. For calculation consider that the efficiency of the power transmission for regenerative braking is lower than the efficiency of the power transmission for driving.}\\
+
+First we calculate the values for  $F_{\mathrm{ad}}$, $F_{\mathrm{tr}}$.\\
+\begin{equation}
+F_{ad} = \frac{1}{2} \cdot \rho \cdot A \cdot C_{w} \cdot v^2 = \frac{1}{2} \cdot 1.293 \cdot 2.1  \cdot 0.24 \cdot 30^2 = 293.1 \, \mathrm{N}
+\end{equation}
+
+\begin{equation}
+F_{tr} = a\cdot(m_{r} + m_{v}) + (F_{fr} + F{ad}) = -2\cdot(42.428 + 1550) + 152.1 + 293.1 = -2.7 \, \mathrm{kN}
+\end{equation}
+
+And then we find the power: 
+\begin{equation}
+P_{mot} = F_{tr} \cdot v \cdot \eta_{regen} = -4.9 \mathrm{kW}
+\end{equation}\\
+
+The maximum power which can be recuperated from the regenerative braking is 4.9kW.
+
+
+\end{document}
+

@@ -1,4 +1,5 @@
 \documentclass[final]{scrreprt} %scrreprt of scrartcl
+\usepackage{amsmath}
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../library/bibliography.bib}
@@ -97,7 +98,7 @@ The results of our calculations can be found in table \ref{table2}.
 
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{ l | l | l | l | l }
+\begin{tabular}{ l | l | l | l }
     
     \textbf{\textit{d} (cm)}            & \textbf{pf}              & \textbf{effici\"{e}ntie}  &  \textbf{P load (W)}\\	\hline
     6                           & 0.0218                       & 0.5582                   &  0.0218  \\
@@ -110,23 +111,23 @@ The results of our calculations can be found in table \ref{table2}.
 \end{table}
 
 The last thing we had to do for this assignment was that we had to place the air coupled transformer into de DC-DC converter with \unit{2}{\centi\meter} distance between the coils. We had to measure the operational waveforms of the converter, the primary current, secondary voltage, output current. And lastely we had to find how much power there can be delivered to a 10 $\Omega$ load.
-The measured values can be found in table \ref{measure}.
+The measured values can be found in table \ref{measure}. \\
 
-\begin{table}[h]
+
+\begin{table} [h]
 \begin{center}
-\begin{tabular}{ | c | c | c | c |}
-    \multicolumn{2}{| l |}{\textbf{Primary side}}           & \multicolumn{2}{ l |}{\textbf{Secundairy side}}              \\\hline
-               &            & $V_{load}$    &       \\\hline
-               &       & $R_{load}$    & 10 $\ohm$     \\\hline
-    $I_{1}$                             &                         & $I_2$         &      \\\hline
-    $V_{L1}$ RMS                    &                          & $V_{L2}$ RMS      &        \\\hline
-    $V_{L1}$ P-P                        &                        & $V_{L2}$ P-P  &         \\\hline
-    \multicolumn{2}{ c| }{}                           & $P_{out}$     &       \\\cline{3-4}
-\end{tabular}
-\caption{Measurements on the air coupled transformer.}
-\label{measure}
+	\begin{tabular}{ l | l | l | l | l }
+	Primary current (A) & Secondary voltage (V) & Output current & Power delivered to 10 $\Omega$ load \\ \hline
+  	0.12 & 0.152 & 0.0152 & 0.0023 \\
+	
+	\end{tabular}
+	\caption{Measurements on the air coupled transformer}
+	\label{measure}
 \end{center}
 \end{table}
+\\
+
+Using the results from table \ref{measure} and comparing it with the results calculated in table \ref{table2} we can see that there is a huge difference in the power calculated over a 10 $\Omega$  resistance and the power measured. This is mostly because in the calculated values we used 20V for the voltage and when measuring we only used 15V. An other reason is because, when calculating, we assume ideal conditions and we know most components are nog ideal. 
 
 
 

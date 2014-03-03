@@ -1,0 +1,120 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../library/bibliography.bib}
+\title{Module 1 - Report}
+\author{Alex {Misdorp} \and Xenia {Wesdijk}}
+\begin{document}
+
+
+\chapter{Assignment 4: Simulation of Electric Vehicle Driving Range}
+\subsection{Task 1: Nissan Leaf}
+As can be seen in fig \ref{fig:acceleration}, the Nissan Leaf will reach 96.6 km/h (60 mph) in just about nine seconds. Therefore the manufacturer's statement is true.
+\\The limit on the motor's torque causes the vehicle to not accelerate any faster.
+\\The small steady state error in the vehicle's velocity is caused by the driver's non-infinite gain in the simulation. Therefore, not enough motor torque is provided to reach the desired velocity.
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.27]{resources/Accelerationzoom.png}
+\caption{The aerodynamic drag force.}
+\label{fig:acceleration}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.27]{resources/Aerodynamic.png}
+\caption{The aerodynamic drag force.}
+\label{fig:Aerodynamic}
+\end{figure}
+As can be observed from \ref{fig:Aerodynamic}, a higher velocity will cause a higher aerodynamic drag force.
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.27]{resources/Rolling.png}
+\caption{The rolling resistance force.}
+\label{fig:Rolling}
+\end{figure}
+The rolling resistance force is constant as the velocity has no influence.
+\begin{figure}[H]
+\centering
+\includegraphics[trim = 0mm 35mm 60mm 0mm, clip, scale = 0.5]{resources/Wheeltorque.pdf}
+\caption{Torque on the wheels.}
+\label{fig:Wheeltorque}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[trim = 0mm 35mm 60mm 0mm, clip, scale = 0.5]{resources/Mot_torque.pdf}
+\caption{Motor torque.}
+\label{fig:Motortorque}
+\end{figure}
+During acceleration both the wheel torque, as well as the motor torque increase.
+\begin{figure}[H]
+\centering
+\includegraphics[trim = 0mm 35mm 60mm 0mm, clip, scale = 0.5]{resources/Motorpower.pdf}
+\caption{The motor output power.}
+\label{fig:Motorpower}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[trim = 0mm 35mm 60mm 0mm, clip, scale = 0.5]{resources/Batterypower.pdf}
+\caption{The battery output power.}
+\label{fig:Batterypower}
+\end{figure}
+When torque is requested, the battery and motor output power increase.
+
+\begin{figure}[H]
+	\centering
+	\newlength\figureheight 
+	\newlength\figurewidth 
+	\setlength\figureheight{4cm} 
+	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/required_power.tikz}
+	\caption{Required power to main constant velocity.}
+	\label{fig:req_power}
+\end{figure}
+At higher velocity's more average power is required. Driving on an incline will require more average power.
+
+The longest driving range can be probably be expected if the car is driven at a low and constant velocity. No heavy luggage will also benefit the driving range.
+\section{Assignment 4: Simulation of Electric Vehicle Driving Range}
+\subsection{Task 2: Labotory electric car}
+
+The lab car is about 6 kg and the frontal area = $25cm*20cm = 0.05 m^2$. Furthermore the wheels are modeled as four cylinders with a mass of 150g and a radius of 6.5 cm, therefore the moment of inertia is $1.264g*m^2$. The moment of inertia of the motor shaft is about $0.02g*m^2$, this is calculated using the model of two cylinders of about 50g with a radius of 1 cm. The rolling resistance coefficient is estimated to be 0.01 and the total efficiency is given to be 0.9. The total capacitance is 35F.
+
+\begin{figure}[H]
+	\centering
+		\newlength\figureheight 
+	\newlength\figurewidth 
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/labcar/aero_and_rolling.tikz}
+    	\label{fig:aero_and_rolling}
+    	\caption{The aerodynamic drag force and the rolling resistance force.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/labcar/wheeltorque.tikz}
+    	\label{fig:wheeltorque}
+    	\caption{Torque on the wheels.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/labcar/mot_torque.tikz}
+    	\label{fig:motortorque}
+    	\caption{Motor torque and motor power.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/labcar/required_power.tikz}
+    	\label{fig:reqpower}
+    	\caption{The required power at a certain velocity.}
+\end{figure}
+
+As can be observed from the graph. The general waveform is largely matches the Nissan Leaf's graphs and so the same statements can be made. The major difference is the magnitude of the graphs.
+
+\end{document}

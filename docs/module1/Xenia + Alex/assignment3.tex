@@ -1,0 +1,104 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\usepackage{amsmath}
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../library/bibliography.bib}
+\title{Module 1 - Report}
+\author{Xenia {Wesdijk}}
+\begin{document}
+
+\chapter{Assignment 3}
+For assignment 3 we had to design a circuit of capacitors to compensate the leakage inductances.
+
+To minimize the effect of the leakage inductances we had to find the values of $C_1$ and $C_2$. We used equations \ref{equation1} and \ref{equation2} to find these values.\\
+\begin{equation}\
+\label{equation1}
+\begin{array}{l}
+$$ 0 = j\omega L_{1} + \frac{1}{j\omega C_{1}}$$
+$$\Leftrightarrow C_{1} =  \frac{1}{\omega^2 L_{1}}$$
+\end{array}\
+\end{equation}
+\begin{equation}\
+\label{equation2}
+\begin{array}{l}
+$$ 0 = j\omega L_{2} + \frac{1}{j\omega C_{2}}$$
+$$\Leftrightarrow C_{2} =  \frac{1}{\omega^2 L_{2}}$$
+\end{array}\
+\end{equation}
+\\
+Using these equations we found the following values for $C_1$ and $C_2$:
+\begin{equation}\
+\begin{array}{l}
+$$C_{1} =  \frac{1}{(\pi \cdot (100\cdot 10^3)) ^2 110.8 \cdot 10^-6} = 23\nano F$$
+\end{array}\
+\end{equation}
+\begin{equation}\
+\begin{array}{l}
+$$C_{1} =  \frac{1}{(\pi \cdot (100\cdot 10^3)) ^2 19.8 \cdot 10^-6} = 128\nano F$$
+\end{array}\
+\end{equation}
+\\
+
+Since our calculated values for $C_1$ (23\nano F) and $C_2$ (128\nano F) weren't available. We had to choose between the following values. On the primary side we only needed 23 \nano F, so we used the 22 \nano F that was available. For $C_2$ however, we needed 128\nano F. On the PCB that was given to us we could place a total of 4 capacitors. The problem was that there were 2 sets of 2 capacitors who could be placed in parallel, but those 2 sets were in serie. So we had to place 2 capacitors in parallel and we got an value of 136 \nano F instead of 128 \nano F. This was the best solution for us and we thought we could always later change our coils if needed.
+\begin{itemize}
+\item 68 nF
+\item 47 nF
+\item 33 nF
+\item 22 nF
+\item 15 nF
+\end{itemize}
+\\
+
+
+When using capacitors in our circuit the matrix equation (as described in assignment 2) will change. The new matrix equations will be as follows: \\
+\[\left[ {\begin{array}{*{20}{c}}
+{{{\boldsymbol{\mathrm{V_1}}}}}\\
+{{\boldsymbol{\mathrm{V_2}}}}
+
+\end{array}} \right] = \left[ {\begin{array}{*{20}{c}}
+{j\omega {L_{1}} + {\frac{1}{j\omega C_{1}}} + R_{1}}&{ - j\omega M}\\
+{j\omega M}&{ - \left( {j\omega {L_{2}} + {\frac{1}{j\omega C_{2}}} + R_{2} + R} \right)}
+\end{array}} \right]\left[ {\begin{array}{*{20}{c}}
+
+{{\boldsymbol{\mathrm{I_1}}}}\\
+{{\boldsymbol{\mathrm{I_2}}}}
+\end{array}} \right]\]
+\\
+
+Since we have now compensated our circuit our values for the efficiency and power factor will change. The new values can be found in table \ref{table3}. \\
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ l | l | l | l }
+    
+    \textbf{\textit{d} (cm)}            & \textbf{pf}              & \textbf{effici\"{e}ntie}  &  \textbf{P load (W)}\\	\hline
+    6                           & 0.5182                     & 0.7509                & 23.6001  \\
+    4                           &0.7746                  & 0.8722                     & 28.8824\\
+    2                           & 0.9373                     & 0.9368                    &  18.2794 \\
+\end{tabular}
+\caption{Power factor and efficiency for the different distances when the circuit is compensated.}
+\label{table3}
+\end{center}
+\end{table}
+\\
+
+The last thing we had to do for this assignment was test our circuit and charge the capacitor bank to 20V. \\ 
+The results of the testing can be found in table \ref{measure1}.\\
+
+It took our circuit, with a distance of 2cm between the coils, 6 minutes and 40 seconds to charge the bank to 20V 
+
+\begin{table} [h]
+\begin{center}
+	\begin{tabular}{ l | l | l | l | l }
+	Primary current (A) & Secondary voltage (V) & Output current & Power delivered to 10 $\Omega$ load \\ \hline
+  	0.1537 & 12.34 & 1.234 &15.23 \\
+	
+	\end{tabular}
+	\caption{Measurements on the air coupled transformer when compensated.}
+	\label{measure1}
+\end{center}
+\end{table}
+
+
+
+\end{document}
