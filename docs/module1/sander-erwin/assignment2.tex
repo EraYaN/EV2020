@@ -1,13 +1,15 @@
-\documentclass[final]{scrartcl} %scrreprt of scrartcl
+%!TEX program = xelatex+makeindex+bibtex
+
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\usepackage{amsmath}
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../library/bibliography.bib}
 \title{Module 1 - Report}
 \author{Sander {van Dijk} \and Erwin {de Haan}}
 \begin{document}
-\maketitle
 
-\section{Assignment 2}
+\chapter*{Assignment 2}
 The mutual inductance of the two coils can be found by measuring both the opposing and aiding configuration of the coils. The results are given in Table \ref{tab:inductances}.
 
 \begin{table} [h]
@@ -26,19 +28,32 @@ The mutual inductance of the two coils can be found by measuring both the opposi
 
 We also measured the resistances of the two coils. The primary coil has a resistance of 0.3 $\Omega$ and the secondary coil has a resistance of 0.1 $\Omega$.
 \\ \\
-From Equation 1.14 of \cite{epo4-manual} we can extract Equation \ref{eq:currentPrimary}.
+We used the circuit shown in Figure 1.9 of \cite{epo4-manual} to model our circuit. Equation \ref{eq:matrix} was created by applying Kirchhoff's Voltage Law on both current loops.
 
 \begin{equation}
-	I_2 = \frac{(j \omega L - R_1 + R_2)}{j \omega M} I_1
-	\label{eq:currentPrimary}
+	\begin{bmatrix}
+		V_1 \\
+		0
+	\end{bmatrix} =
+	\begin{bmatrix}
+		j \omega L_1 + r_1 & -j \omega M \\
+		-j \omega M & j \omega L_2 + r_2 + R
+	\end{bmatrix}
+	\begin{bmatrix}
+		I_1 \\
+		I_2
+	\end{bmatrix}
+	\label{eq:matrix}
 \end{equation}
 
 \begin{equation}
-	\eta = \frac{P_{out}}{P_{in}} = \frac{{I_2}^2 R_L}{V_1 I_1} = 3.0\%
+	\eta = \frac{P_{out}}{P_{in}} = \frac{{I_2}^2 R}{V_1 I_1}
 	\label{eq:efficiency}
 \end{equation}
 
-Besides calculating the theoretical efficiency (Equation \ref{eq:efficiency}) we also measured it. Figure \ref{fig:DC_out} displays the result on the oscilloscope, which is approximally 224 mV. Equation \ref{eq:efficiencyMeasured} calculates the efficiency of the DC-DC transformer using this 224 mV. The input of the circuit is measured by the voltage source at 20 V and 0.70 A.
+Solving Equation \ref{eq:matrix} for $I_1$ and $I_2$ and using them in Equation \ref{eq:efficiency} yields an efficiency of 5.14\% at 2 cm and 1.17\% at 6 cm.
+\\ \\
+Besides calculating the theoretical efficiency (Equation \ref{eq:efficiency}) we also measured it. Figure \ref{fig:DC_out} displays the result on the oscilloscope, which is approximally 224 mV. Equation \ref{eq:efficiencyMeasured} calculates the efficiency of the DC-DC transformer using this 224 mV. The input of the circuit is measured by the voltage source at 20 V and 0.70 A. The measurement was done with a distance of 2 cm between the coils.
 
 \begin{equation}
 	\eta = \frac{P_{out}}{P_{in}} = \frac{{I_2}^2 R_L}{V_1 I_1} = 3.7\%

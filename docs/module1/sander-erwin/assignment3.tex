@@ -1,4 +1,7 @@
+%!TEX program = xelatex+makeindex+bibtex
+
 \documentclass[final]{scrreprt} %scrreprt of scrartcl
+\usepackage{amsmath}
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../library/bibliography.bib}
@@ -7,6 +10,32 @@
 \begin{document}
 
 \chapter*{Assignment 3}
+
+To simulate the circuit in resonance, the model as in Figure 1.9 of \cite{epo4-manual} has been altered. $L_1$ and $L_2$ were considered to be 0 H, as they were compensated by the capacitors in series. However, the mutual inductance is kept unchanged. As in Assignment 2, a matrix was made by applying Kirchhoff's Voltage Law on both loops. Equation \ref{eq:matrixCompensated} is the result of those equations.
+
+\begin{equation}
+	\begin{bmatrix}
+		V_1 \\
+		0
+	\end{bmatrix} =
+	\begin{bmatrix}
+		 r_1 & -j \omega M \\
+		-j \omega M & r_2 + R
+	\end{bmatrix}
+	\begin{bmatrix}
+		I_1 \\
+		I_2
+	\end{bmatrix}
+	\label{eq:matrixCompensated}
+\end{equation}
+
+As in Assignment 2, the efficiency of the circuit is calculated from $I_1$ and $I_2$, yielding 93.1\% with the coils 6 cm apart.
+\\ \\
+The actual efficiency at 6 cm is measured at 71.6\%.
+The difference between the calculation and the measurement can be explained by looking at the compensation.
+The capacitors we picked were not the exact values as calculated, on both primary and secondary side of the transformer.
+Finetuning the frequency can not fix the problem primary and secondary at the same time since the required frequencies differ.
+\\ \\
 You can test how the air core transformer will react by connecting a 100 kHz sinusoidal voltage because the voltage will be sinusoidal in resonance too.
 \\ \\ 
 By adding capacitors in series with the coil, the inductance of the coil will be compensated when the capacitance is chosen correctly. Less impedance means a higher current and more power to be transformed. The capacitance can be found from Equation \ref{eq:cap}.

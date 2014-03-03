@@ -8,8 +8,8 @@
 \author{Sander {van Dijk} \and Erwin {de Haan}}
 \begin{document}
 
-\chapter{Assignment 1}
-Underneath you can find the subcircuits we designed for the DC-DC converter, splitted in the DC-AC and AC-DC part.
+\chapter*{Assignment 1}
+The designed DC-DC converter is displayed in Figure \ref{fig:DC-AC} and \ref{fig:AC-DC}, splitted in the DC-AC and AC-DC part, respectively.
 
 \begin{figure}[h]
 	\includegraphics[width=\linewidth]{resources/DC-AC-rc.pdf}
@@ -24,7 +24,7 @@ Underneath you can find the subcircuits we designed for the DC-DC converter, spl
 \end{figure}
 
 For the NMOS transistor used in Figure \ref{fig:DC-AC} we used the IPP028N08N3G (OptiMOS 3) transistor instead of the IPP50CN10N (OptiMOS 2).
-We had two reasons for this descision.
+We had two reasons for this decision.
 First, the drain-source on-state resistance was approximally ten times lower on the OptiMOS 3, causing the transistor to generate less heat and gain better efficiency.
 Secondly, by looking at the current-voltage characteristics per frequency (\cite{OptiMOS2} \emph{:3 Safe operating area} and \cite{OptiMOS3} \emph{:3 Safe operating area}) we found out that the OptiMOS 3 performs better at higher frequencies than the OptiMOS 2.
 \\ \\
@@ -63,11 +63,5 @@ This voltage is rectified using the full bridge rectifier and a small capacitor,
 	\caption{Output DC voltage}
 	\label{fig:DC_out}
 \end{figure}
-
-AUTO:
-500g - 13 cm per band
-auto: 6kg
-
-opladen supercap 4:30 min
 
 \end{document}
