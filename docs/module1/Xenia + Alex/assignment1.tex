@@ -10,14 +10,14 @@
 First in the design of a wireless charging system is a DC to AC inverter. We've realized this by using an H-bridge controlled by a pulse width modulator. Because high power transistors are used, gate drivers are implemented in the circuit. For these transistors we made a choice between the OptiMos 2 (IPP50CN10N)  and the OptiMos 3 (IPP028N08N3). Judging from the voltage-current relationship graph, we came to the conclusion that the OptiMos 3 is better suited for high frequencies. Because we can adjust the frequency of the signal, this is is the transistor we chose for.
 \begin{figure}[h!]
 \centering
-\includegraphics[width=\linewidth, trim = 22mm 47mm 29mm 16mm, clip, scale = 0.9]{DC-AC.pdf}
+\includegraphics[width=\linewidth, trim = 22mm 47mm 29mm 16mm, clip, scale = 0.9]{resources/DC-AC.pdf}
 \caption{Circuit of the DC-AC inverter.}
 \label{fig:DC-AC}
 \end{figure}\\
 At the other side of the transformer a full bridge rectifier is used. We had the choice between two diodes: the SB540 and the SF61. The advantage of the SB540 is that it has a lower forward voltage, thus allowing for a higher voltage at the output terminal. However the SF61 has it's own advantage, namely a higher maximum DC blocking voltage. This means that a higher voltage is necessary for the diode to conduct a current in reverse bias. This reverse current is also a lot lower in the SF61. Therefore we decided to use the SF61 diodes.
 \begin{figure}[h!]
 \centering
-\includegraphics[width=\linewidth, trim = 22mm 121mm 29mm 16mm, clip, scale = 0.9]{AC-DC.pdf}
+\includegraphics[width=\linewidth, trim = 22mm 121mm 29mm 16mm, clip, scale = 0.9]{resources/AC-DC.pdf}
 \caption{Circuit of the full bridge rectifier.}
 \label{fig:AC-DC}
 \end{figure}
