@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,19 +11,32 @@ namespace EV2020.Director
 	public class Controller
 	{
 		const int BatteryThreshold = 15000;
-		
-		private bool _done = false;
-		private bool _continue = false;
+		const int DrivingMin = -15;
+		const int DrivingMax = 15;
+		const int SteeringMin = -50;
+		const int SteeringMax = 50;
+
 		private bool _isWaitingForReply = false;
 		private bool _isReceivingLine = false;
 		private int _linesReceived = 0;
 		private StringBuilder _receivingBuffer;
+		private Stopwatch _replyStopwatch;
+		private long _lastPing = -1;
 
 		Timer sendInstructions;
 
-		private int driving = 150;
-		private int steering = 150;
+		private int driving = 0;
+		private int steering = 0;
 		private int audioState = 0;
+
+		public int Driving
+		{
+			get { return driving; }
+		}
+		public int Steering
+		{
+			get { return steering; }
+		}
 
 		private int currentDriving = 0;
 		private int currentSteering = 0;
@@ -31,57 +45,69 @@ namespace EV2020.Director
 		private int currentBatteryVoltage = 0;
 		private int currentAudioState = 0;
 
+		public long LastPing
+		{
+			get { return _lastPing; }
+		}
+
 		public Controller()
 		{
 			Data.com.SerialDataEvent += com_SerialDataEvent;
-			sendInstructions = new Timer();
+			sendInstructions = new Timer(1000);
 			sendInstructions.Elapsed+=sendInstructions_Elapsed;
+			sendInstructions.Start();
 		}
 
 		void sendInstructions_Elapsed(object sender, ElapsedEventArgs e)
 		{
 			//TODO send current drive and steering values.
-			//TODO figure out audio.
+			//TODO figure out audio.			
+			sendDriveSteering();
+			sendStatusRequest();
 		}
 
 		void com_SerialDataEvent(object sender, Communication.SerialDataEventArgs e)
 		{
 			if (!_isWaitingForReply)
 				return;
-			if (!_isReceivingLine)
+			foreach (char c in e.Data)
 			{
-				_receivingBuffer = new StringBuilder();
-				char c = (char)e.DataByte;
-				if (c == 4)
+				if (!_isReceivingLine)
 				{
-					//Block done (= EOT).
-					processReply(_receivingBuffer.ToString());
-					_isWaitingForReply = false;
-				}
-				else if (c != '\n')
-				{
-					_isReceivingLine = true;
-					_receivingBuffer.Append(c);
+					_receivingBuffer = new StringBuilder();
+					if (c == 4)
+					{
+						//Block done (= EOT).
+						_replyStopwatch.Stop();
+						_lastPing = _replyStopwatch.ElapsedMilliseconds;
+						Data.db.UpdateProperty("LastPing");
+						processReply(_receivingBuffer.ToString());
+						_isWaitingForReply = false;
+					}
+					else if (c != '\n')
+					{
+						_isReceivingLine = true;
+						_receivingBuffer.Append(c);
+					}
+					else
+					{
+						//TODO handle this (received just \n)
+					}
 				}
 				else
 				{
-					//TODO handle this (received just \n)
-				}
-			}
-			else
-			{
-				char c = (char)e.DataByte;
-				if (c != '\n')
-				{
-					_isReceivingLine = true;
-					_receivingBuffer.Append(c);
-				}
-				else
-				{
-					_isReceivingLine = false;
-					processReply(_receivingBuffer.ToString());
-					_receivingBuffer = null;
-					_linesReceived++;					
+					if (c != '\n')
+					{
+						_isReceivingLine = true;
+						_receivingBuffer.Append(c);
+					}
+					else
+					{
+						_isReceivingLine = false;
+						processReply(_receivingBuffer.ToString());
+						_receivingBuffer = null;
+						_linesReceived++;
+					}
 				}
 			}
 		}
@@ -89,6 +115,9 @@ namespace EV2020.Director
 		void processReply(String line)
 		{
 			//TODO
+			System.Diagnostics.Debug.WriteLine("Line received: {0}", line);
+			if (line == String.Empty)
+				return;
 			if (line.Substring(0, 1) == "D")
 			{
 				//Steering/Driving info (135 to 165 and 150 is neutral)
@@ -120,9 +149,23 @@ namespace EV2020.Director
 				{
 					//TODO handle (too far)
 				}
+				else
+				{
+					//TODO handle (proper data)
+					
+				}
 				if (currentRightDist == 999)
 				{
-					//TODO handle (too far)
+					//TODO handle (proper data)
+				}
+				else
+				{
+					//TODO handle (proper data)
+				}
+				if (currentRightDist < 150 || currentLeftDist < 150)
+				{
+					Stop();
+					Center();
 				}
 			}
 			else if (line.Substring(0, 2) == "Au")
@@ -152,13 +195,16 @@ namespace EV2020.Director
 		}
 
 		#region Private command methods
-		private void sendCommand(String line)
+		private void sendCommand(String line, bool waitForReply = false)
 		{
-			foreach (char c in line)
+			if (Data.com == null)
+				return;
+			Data.com.WriteLine(line);
+			if (waitForReply)
 			{
-				Data.com.SendByte((byte)c);
+				_isWaitingForReply = true;
+				_replyStopwatch = Stopwatch.StartNew();				
 			}
-			Data.com.SendByte((byte)'\n');
 		}
 		private void enableAudio()
 		{
@@ -172,11 +218,60 @@ namespace EV2020.Director
 		}
 		private void sendDriveSteering()
 		{
-			sendCommand(String.Format("D{0:3} {0:3}", steering.Clamp(135, 165), driving.Clamp(135, 165)));
+			sendCommand(String.Format("D{0} {1}", steering+150, driving+150));
 		}
 		private void sendStatusRequest()
 		{
-			sendCommand("S");
+			sendCommand("S", true);
+		}
+		#endregion
+
+		#region Public command methods
+		public void SetDrivingSteering(int d, int s){
+			driving = d.Clamp(DrivingMin, DrivingMax);
+			steering = s.Clamp(SteeringMin,SteeringMax);
+			sendDriveSteering();
+		}
+		public void SetDriving(int d){
+			driving = d;
+			sendDriveSteering();
+		}
+		public void SetSteering(int s){
+			steering = s;
+			sendDriveSteering();
+		}
+		public void Stop()
+		{
+			driving = 0;
+			sendDriveSteering();
+		}
+		public void Faster(int amount = 1)
+		{
+			driving+=amount;
+			driving=driving.Clamp(DrivingMin, DrivingMax);
+		}
+		public void Slower(int amount = 1)
+		{
+			driving -= amount; 
+			driving=driving.Clamp(DrivingMin, DrivingMax);
+		}
+		public void Left(int amount = 1)
+		{
+			steering += amount; 
+			steering=steering.Clamp(SteeringMin, SteeringMax);
+		}
+		public void Right(int amount = 1)
+		{
+			steering -= amount; 
+			steering=steering.Clamp(SteeringMin, SteeringMax);
+		}
+		public void Center()
+		{
+			steering = 0;
+		}
+		public void GetStatus()
+		{
+			sendStatusRequest();
 		}
 		#endregion
 	}

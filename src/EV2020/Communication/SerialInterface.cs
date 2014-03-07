@@ -45,13 +45,12 @@ namespace EV2020.Communication
             serialPort.DataBits = 8;
             serialPort.StopBits = StopBits.One;
             serialPort.Handshake = Handshake.RequestToSend;
-            serialPort.ReceivedBytesThreshold = 1;
-            serialPort.ReadTimeout = 500;
-            serialPort.WriteTimeout = 500;
+			serialPort.ReadBufferSize = 32000;
+			serialPort.WriteBufferSize = 32000;
+            serialPort.ReadTimeout = 1000;
+            serialPort.WriteTimeout = 1000;
             serialPort.DataReceived += serialPort_DataReceived;
             serialPort.ErrorReceived += serialPort_ErrorReceived;
-            serialPort.PinChanged += serialPort_PinChanged;
-            
         }
         public void Dispose()
         {
@@ -110,17 +109,22 @@ namespace EV2020.Communication
                 return 1;
             }
         }
-        public void SendByte(Byte data)
+        public void Write(Byte data)
         {
-            byte[] buf = {data};
+			if (!serialPort.IsOpen)
+				return;
+			byte[] buf = {data};
             serialPort.Write(buf,0,1);
-			System.Diagnostics.Debug.WriteLine("Serial byte sent: {0:X}", data);
+			//System.Diagnostics.Debug.WriteLine("Serial byte sent: {0:X}", data);
         }
-        void serialPort_PinChanged(object sender, SerialPinChangedEventArgs e)
-        {
-            serialPort.Close();
-            serialPort.Open();
-        }
+		public void WriteLine(String data)
+		{
+			if (!serialPort.IsOpen)
+				return;
+			
+			serialPort.Write(data+'\n');
+			//System.Diagnostics.Debug.WriteLine("Serial bytes sent: {0}", data+'\n');
+		}        
 
         void serialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {            
@@ -130,15 +134,15 @@ namespace EV2020.Communication
 
         void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            int input = serialPort.ReadByte();
-			System.Diagnostics.Debug.WriteLine("Serial byte received: {0:X}", input);
-            DataSerial((byte)input, e);           
+			string indata = serialPort.ReadExisting();
+			System.Diagnostics.Debug.WriteLine("Serial bytes received: {0}", indata);
+			DataSerial(indata, e);           
         }
     
-        void DataSerial(Byte b, SerialDataReceivedEventArgs e)
+        void DataSerial(String s, SerialDataReceivedEventArgs e)
         {
             // Do something before the event…
-            OnSerialDataChanged(new SerialDataEventArgs(b,e));
+            OnSerialDataChanged(new SerialDataEventArgs(s,e));
             // or do something after the event. 
         }
 

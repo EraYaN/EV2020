@@ -5,11 +5,11 @@ namespace EV2020.Communication
 {
     public class SerialDataEventArgs : EventArgs
     {
-        public readonly byte DataByte;
+        public readonly String Data;
         public SerialDataReceivedEventArgs innerEvent;
-        public SerialDataEventArgs(byte _DataByte, SerialDataReceivedEventArgs e)
+        public SerialDataEventArgs(String _Data, SerialDataReceivedEventArgs e)
         {
-            DataByte = _DataByte;            
+            Data = _Data;            
             innerEvent = e;
         }
     }

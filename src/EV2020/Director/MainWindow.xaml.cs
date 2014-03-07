@@ -22,16 +22,11 @@ namespace EV2020.Director
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		String ComPort;
-		long ping;
-		public String Ping
-		{
-			get { return ping + " ms"; }			
-		}
 		public MainWindow()
 		{
-			InitializeComponent();
-			ping = 35;
+			InitializeComponent();			
+			statusBarComPort.DataContext = Data.db;
+			statusBarLastPing.DataContext = Data.db;
 		}
 		private void comPortsComboBox_DropDownOpened(object sender, EventArgs e)
 		{
@@ -42,7 +37,7 @@ namespace EV2020.Director
 				ComboBoxItem extra = new ComboBoxItem();
 				extra.Content = s;
 
-				if (ComPort == s)
+				if (Data.ComPort == s)
 				{
 					extra.IsSelected = true;
 				}
@@ -53,6 +48,8 @@ namespace EV2020.Director
 		private void initButton_Click(object sender, RoutedEventArgs e)
 		{
 			//Init classes
+			Data.nav = new Navigation();
+			Data.vis = new Visualization(visCanvas, joystickCanvas);
 			
 			if (comPortsComboBox.SelectedItem != null && baudRateComboBox.SelectedItem != null)
 			{
@@ -61,7 +58,8 @@ namespace EV2020.Director
 				if (Data.ComPort != "" && Data.BaudRate > 0)
 				{
 					Data.com = new SerialInterface(Data.ComPort, Data.BaudRate);
-					int res = Data.com.OpenPort();					
+					int res = Data.com.OpenPort();
+					Data.ctr = new Controller();
 					if (res != 0)
 						MessageBox.Show("SerialInterface Error: #" + res + "\n" + Data.com.lastError, "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
 				}
@@ -75,6 +73,9 @@ namespace EV2020.Director
 				MessageBox.Show("No COM Port or Baud Rate chosen.", "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 
+
+			Data.db.UpdateProperty("SerialPortStatus");
+			Data.db.UpdateProperty("SerialPortStatusColor");
 			//enable buttons	
 			initButton.IsEnabled = false;
 			destroyButton.IsEnabled = true;
@@ -91,5 +92,88 @@ namespace EV2020.Director
 			Data.com.Dispose();
 			Data.com = null;
 		}
+
+		private void getStatusButton_Click(object sender, RoutedEventArgs e)
+		{
+			Data.ctr.GetStatus();
+		}
+
+		private void Window_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Space)
+			{
+				Data.ctr.Stop();
+				Data.ctr.Center();
+			}
+			else
+			{
+				if (e.Key == Key.W)
+				{
+					Data.ctr.SetDriving(155);
+					//Data.ctr.Faster();
+				}
+
+				if (e.Key == Key.S)
+				{
+					//Data.ctr.Slower();
+					Data.ctr.SetDriving(142);
+				}
+
+				if (e.Key == Key.D)
+				{
+					//Data.ctr.Right();
+					Data.ctr.SetSteering(100);
+				}
+				if (e.Key == Key.A)
+				{
+					//Data.ctr.Right();
+					Data.ctr.SetSteering(200);
+				}
+			}
+		}
+
+		private void joystickCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			updateJoystick(e);
+		}
+
+		private void updateJoystick(MouseEventArgs e)
+		{
+			if (Data.ctr == null)
+				return;
+			Point pos = e.GetPosition(joystickCanvas);		
+			double centerH = joystickCanvas.ActualHeight / 2;
+			double centerW = joystickCanvas.ActualWidth / 2;
+			Data.ctr.SetDrivingSteering((int)Math.Round(-(pos.Y - centerH) / (centerH / 15)), (int)Math.Round((pos.X - centerW) / (centerW / 50)));
+			Data.vis.drawJoystick();
+		}
+
+		private void joystickCanvas_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (Data.ctr == null)
+				return;
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				updateJoystick(e);
+			}
+		}
+
+		private void joystickCanvas_MouseLeave(object sender, MouseEventArgs e)
+		{
+			if (Data.ctr == null)
+				return;
+			Data.ctr.Stop();
+			Data.ctr.Center();
+			Data.vis.drawJoystick();
+		}
+
+		private void joystickCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			if (Data.ctr == null)
+				return; 
+			Data.ctr.Stop();
+			Data.ctr.Center();
+			Data.vis.drawJoystick();
+		}				
 	}
 }
