@@ -45,8 +45,8 @@ namespace EV2020.Communication
             serialPort.DataBits = 8;
             serialPort.StopBits = StopBits.One;
             serialPort.Handshake = Handshake.RequestToSend;
-			serialPort.ReadBufferSize = 32000;
-			serialPort.WriteBufferSize = 32000;
+			serialPort.ReadBufferSize = 128000;
+			serialPort.WriteBufferSize = 128000;
             serialPort.ReadTimeout = 1000;
             serialPort.WriteTimeout = 1000;
             serialPort.DataReceived += serialPort_DataReceived;

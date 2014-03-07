@@ -72,8 +72,8 @@ namespace EV2020.Director
 			{
 				MessageBox.Show("No COM Port or Baud Rate chosen.", "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
-
-
+			if(Data.matlab==null)
+				Data.matlab = new MATLABWrapper(@"H:\mcode","Groep B1");
 			Data.db.UpdateProperty("SerialPortStatus");
 			Data.db.UpdateProperty("SerialPortStatusColor");
 			//enable buttons	
@@ -89,6 +89,12 @@ namespace EV2020.Director
 			destroyButton.IsEnabled = false;
 			comPortsComboBox.IsEnabled = true;
 			baudRateComboBox.IsEnabled = true;
+			Data.ctr = null;
+			Data.vis = null;
+			Data.nav = null;
+			Data.matlab.CloseAll();
+			Data.matlab.Dispose();
+			Data.matlab = null;
 			Data.com.Dispose();
 			Data.com = null;
 		}
@@ -174,6 +180,13 @@ namespace EV2020.Director
 			Data.ctr.Stop();
 			Data.ctr.Center();
 			Data.vis.drawJoystick();
+		}
+
+		private void testPlotButton_Click(object sender, RoutedEventArgs e)
+		{
+			double[] x = { 1, 2, 3, 4, 5 };
+			double[] y = { 2, 4, 6, 8, 1 };
+			Data.matlab.plot(x, y, "Titel", "X (label)", "Y (label)", "Data legenda");
 		}				
 	}
 }

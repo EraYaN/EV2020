@@ -1,4 +1,5 @@
 ﻿using EV2020.Communication;
+using MLE4WCSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,6 @@ namespace EV2020.Director
 		static public Navigation nav;
 		static public Controller ctr;
 		public static Databindings db = new Databindings();
+		public static MATLABWrapper matlab;
 	}
 }

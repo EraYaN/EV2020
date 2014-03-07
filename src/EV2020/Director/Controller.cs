@@ -15,6 +15,9 @@ namespace EV2020.Director
 		const int DrivingMax = 15;
 		const int SteeringMin = -50;
 		const int SteeringMax = 50;
+		const int SteeringNeutral = 150;
+		const int DrivingNeutral = 150;
+		const int CollisionThreshold = 100;
 
 		private bool _isWaitingForReply = false;
 		private bool _isReceivingLine = false;
@@ -60,7 +63,6 @@ namespace EV2020.Director
 
 		void sendInstructions_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			//TODO send current drive and steering values.
 			//TODO figure out audio.			
 			sendDriveSteering();
 			sendStatusRequest();
@@ -120,18 +122,18 @@ namespace EV2020.Director
 				return;
 			if (line.Substring(0, 1) == "D")
 			{
-				//Steering/Driving info (135 to 165 and 150 is neutral)
+				//Steering/Driving info (150 is neutral)
 				if(!Int32.TryParse(line.Substring(1, 3), out currentSteering)){
 					//TODO handle (bogus data)
 				}
 				if(!Int32.TryParse(line.Substring(5, 3), out currentDriving)){
 					//TODO handle (bogus data)
 				}
-				if (currentSteering != steering)
+				if (currentSteering - SteeringNeutral != steering)
 				{
 					//TODO handle ('D' command not accepted)
 				}
-				if (currentDriving != driving)
+				if (currentDriving - DrivingNeutral != driving)
 				{
 					//TODO handle ('D' command not accepted)
 				}
@@ -156,13 +158,13 @@ namespace EV2020.Director
 				}
 				if (currentRightDist == 999)
 				{
-					//TODO handle (proper data)
+					//TODO handle (too far)
 				}
 				else
 				{
 					//TODO handle (proper data)
 				}
-				if (currentRightDist < 150 || currentLeftDist < 150)
+				if (currentRightDist < CollisionThreshold || currentLeftDist < CollisionThreshold)
 				{
 					Stop();
 					Center();
@@ -218,7 +220,7 @@ namespace EV2020.Director
 		}
 		private void sendDriveSteering()
 		{
-			sendCommand(String.Format("D{0} {1}", steering+150, driving+150));
+			sendCommand(String.Format("D{0} {1}", steering + SteeringNeutral, driving + DrivingNeutral));
 		}
 		private void sendStatusRequest()
 		{

@@ -40,11 +40,15 @@
 				</StackPanel>
 			</GroupBox>
 			<GroupBox Header="Debug">
-				<Button x:Name="getStatusButton" Content="Get Status" Click="getStatusButton_Click"/>
+				<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+					<Button Content="Get Status" x:Name="getStatusButton" Click="getStatusButton_Click" Margin="2"/>
+					<Button x:Name="testPlotButton" Content="Test Plot" Margin="2" Click="testPlotButton_Click"/>
+				</StackPanel>
 			</GroupBox>
 			<GroupBox Header="Joystick">
 				<Canvas x:Name="joystickCanvas" Margin="0,0,0,0" MouseMove="joystickCanvas_MouseMove" Background="LightGray" MouseDown="joystickCanvas_MouseDown" MouseLeave="joystickCanvas_MouseLeave" MouseUp="joystickCanvas_MouseUp" Grid.Column="1" Height="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource Self}}">
-					<Ellipse Width="10" Height="10" Fill="DarkGray" Stroke="Black" StrokeThickness="2" IsHitTestVisible="False"/></Canvas>
+					<Ellipse Width="10" Height="10" Fill="DarkGray" Stroke="Black" StrokeThickness="2" IsHitTestVisible="False"/>
+				</Canvas>
 			</GroupBox>
 		</StackPanel>
 		<StatusBar Grid.ColumnSpan="2" Height="26" VerticalAlignment="Bottom">
@@ -52,6 +56,6 @@
 			<StatusBarItem x:Name="statusBarLastPing" Width="80" HorizontalAlignment="Right" Content="{Binding LastPing, Mode=OneWay}" HorizontalContentAlignment="Center"/>
 		</StatusBar>
 		<Canvas x:Name="visCanvas" Margin="0,0,0,31" Background="White"/>
-		
+
 	</Grid>
 </Window>
