@@ -1,29 +1,29 @@
 %!TEX program = xelatex+makeindex+bibtex
 \documentclass[final]{scrreprt} %scrreprt of scrartcl
 
-\input{../library/preamble.tex}
-\input{../library/style.tex}
-\addbibresource{../library/bibliography.bib}
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
 \title{Module 2 - Report}
 \author{Sander {van Dijk} \and Xenia {Wesdijk}}
 \begin{document}
 
 \chapter{Assignment 2: Sensors}
 
-For assignment 2 we had to measure the limitations 
+For assignment 2 we had to measure the limitations of the parking sensors. By measuring this, we could possibly compensate for the found inaccuracy.
 
 \section{Limitations of the system}
-According to the datasheets of the HC-SR04 the module sends eight 40kHz and detects whether there is a pulse signal back. The time difference between sending and recieving the signal is used to measure the distance between the car and an object. This isn't always accurate.\\
-Firslty we looked at the ranging distance. There's only a certain distance in which the sensor can still detect the signal. According to the datasheet the maximum distance is about 4m. From our measurements we saw however that the maximum distance is 'only' 3m.\\
-Secondly we looked at the detection angle of the sensors. The sensors can best detect objects in a $30\,^{\circ}$ angle. Because of this the measured distance can sometimes be greater than the distance to the object is in reality.\\
+According to the datasheets of the HC-SR04, the module transmits a 40 kHz sound signal and detects whether there is an echo signal back. The time difference between sending and receiving the signal is used to measure the distance between the car and an object.\\
+Firstly, we looked at the ranging distance. There's only a certain distance in which the sensor can still detect the signal. According to the datasheet the maximum distance is about 4 m. However, we concluded a maximum distance of 'only' 3 m from our measurements instead.\\
+Secondly, we looked at the detection angle of the sensors. The sensors can detect objects within a $30\,^{\circ}$ angle. Because of this, the measured distance can possibly be larger than the real distance.\\
 
 
 \section{Static measurement of the sensor}
-For testing the static measurement of the sensor we placed the car in fornt of a squared cabinet. We compared the given distance on the display with the distance we measured by hand. We did this for different distances. From this measurement we concluded that the sensors are definitely accurate because we only saw little deviations from the distances measured by hand. Theses deviations were so small (only 0.5-1 cm) that they aren't worth mentioning. 
+For testing the static measurement of the sensor we placed the car in front of a rectangular cabinet. We compared the given distance on the display with the distance we measured by hand. We did this for different distances. From this measurement we concluded that the sensors are definitely accurate, since only a very small difference was measured. Theses deviations were so small (only 0.5 - 1 cm) that they are not even worth mentioning.
 
 \section{Dynamic measurement of the sensor}
 Before we did the dynamic measurement we had to look at the Doppler effect. The Doppler effect is the change in frequency of a wave for an observer moving relative to its source. So when the car is driving sound signals will be detected sooner than when the car is standing still.
-The frequency of the ultrasonic sensor was 40kHz. When $v$ is equal to the velocity of sound and &v_{b}$ is equal to de speed of the sensor (equals the speed of the car) then the change in the frequency of the sound signal is given by \ref{eq:backwards} and \ref{eq:}. The formula \ref{eq:backwards} is valid in thepropagation is in de direction of the observer. \ref{eq:} can be used when the propagation is away from the observer. The velocity of sound is given in the datasheet and is equals to 340m/s. The speed of the car is (limited to) 10km/h which is 2.78m/s.
+The frequency of the ultrasonic sensor was 40kHz. When $v$ is equal to the velocity of sound and $v_{b}$ is equal to de speed of the sensor (equals the speed of the car), then the change in the frequency of the sound signal is given by Equation \ref{eq:backwards} and \ref{eq:}. Equation \ref{eq:backwards} is valid in case $v_b$ is directioned towards the observer. Otherwise, Equation \ref{eq:} can be used when $v_b$ is directioned away from the observer. The velocity of sound is given in the datasheet, 340m/s. The speed of the car is (limited to) 10 km/h which is 2.78 m/s.
 Filling in the equations we get: 
 \begin{equation}
 \label{eq:backwards}
@@ -35,30 +35,32 @@ f_{w} = f_{b} \cdot \frac{v}{v+v_{b}} = 39.68  \, \mathrm{kHz}
 f_{w} = f_{b} \cdot \frac{v}{v-v_{b}} = 40.3 \, \mathrm{kHz}
 \end {equation}
 
-When the signal propagates in the direction of the observer we've got an wavelength of $\lambda$ = \unit{8.56}mm. The old wavevlength was $\lambda$ = \unit{8.5}mm. This gives us a wavelength difference of 0.82$\%$. When the sounds propegates away from the observer we have got a wavelength difference of 0.74$\%$. The Doppler effect is so small that it is negligible.
+When the signal propagates in the direction of the observer we have got a wavelength of $\lambda$ = \unit{8.56}mm. The old wavelength was $\lambda$ = \unit{8.5}mm. This gives us a wavelength difference of 0.82$\%$. When the sounds propagates away from the observer we have got a wavelength difference of 0.74$\%$. Concluded, the Doppler effect is so small that it is negligible.
 
 \section{Measurement data analysis and interpretation}
+After measuring the parking sensor's performance, we concluded that no compensation is needed. These measurements were done with the car standing still and measuring the distance to a stationary object. In this situation, the Doppler effect does not affect the measurement. However, by calculating the maximum Doppler effect, we concluded that the Doppler effect does not have any significant effect on the parking sensor's performance. \\
+The parking sensors might however measure smaller objects at lower accuracy, since less echo will be caused to measure. Smaller objects like table legs were also detected by the parking sensors, making the parking sensors accurate enough.
 
 \section{Datasheet}
 For this task we had to fill in the blanks in the datasheet of KITT. \\
-We found the values for the Bleutooth operating frequency and range via google. The ultrasonic sensor resolution and distance were given in the HC-SR04 datasheet. 
-The turning radius we found by letting the car drive in a circle and measruing the radius. Lastly, we found the max command refresh time be measuring the refresh time with Matlab. The average refresh time turned out to be around 0.1344s with a variance of 0.0016. This gives us a max refresh time of 0.14s. For all the values see table \ref{tab:table}.
+We found the values for the Bluetooth operating frequency and range by using Google. The ultrasonic sensor resolution and distance were given in the HC-SR04 datasheet. 
+The turning radius was found by letting the car drive in a circle and measruing the radius. Lastly, we found the maximum command refresh time be measuring the refresh time with MATLAB. The average refresh time turned out to be around 0.1344 s with a variance of 0.0016 $s^2$. The standard deviation is calculated by taking the square root of the variance, which is 0.04 s.  This gives us a maximum refresh time of 0.14 s. See Table \ref{tab:kitt_data} for additional calculated values for KITT's datasheet.
 
 \begin{table}[h]
 \begin{center}
-\caption{Operating Ratings}
-\label{tab:table}
 \begin{tabular}{ | l | l |}
     \hline
-    Bluetooth Operating frquency & 2.4GHz \\ \hline
+    Bluetooth Operating frquency & 2.4 GHz \\ \hline
     Bluetooth operating range & 30 feet / 10 meter \\\hline
-    Ultrasonic sensor resolution    & 3mm \\\hline
-    Ultrasonic sensor distance	         & 300cm \\\hline
-    Turning radius & 165cm \\\hline
-    Max. Command refresh time & 0.14s\\\hline
+    Ultrasonic sensor resolution    & 3 mm \\\hline
+    Ultrasonic sensor distance	         & 300 cm \\\hline
+    Turning radius & 165 cm \\\hline
+    Max. Command refresh time & 0.14 s\\\hline
 \end{tabular}
+\caption{Operating ratings}
 \end{center}
 \end{table}
+\label{tab:kitt_data}
 
 
 \end{document}
