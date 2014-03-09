@@ -1,0 +1,37 @@
+%!TEX program = xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+\begin{document}
+
+\chapter{Assignment 1}
+\label{ch:mod2-ass1}
+Before you can connect to KITT you have to pair the bluetooth chip on the KITT control board and the bluetooth chip in your computer.
+You can use the windows bluetooth settings to do so.
+There was a precompiled communications library provided on blackboard.
+We opted to non use MATLAB for our communication because matlab is not so well suited for this kind of task.
+I, Erwin, have developed a neat and working communications module for our EPO-2 project.
+It was easy and straight forward to reuse this, because it contains all nessecary elements.
+It is written in C\# and uses WPF as it's UI library, it is available from my \href{https://github.com/EraYaN/MiDeRP}{EPO-2 repository}.
+The serial communication used there was completely byte based, while the serial communication with KITT is string based.
+So some changes were made to optimize the handling of the data for strings.
+With the C\# implementation of the serial ports we have had no problems what so ever, in stark contrast to the pure MATLAB implementation.
+MATLAB is not capable to correctly handle closing the serial port.
+To circumvent any problems in the future with provided MATLAB scripts for use in the final project, we added a MATLAB interface to the software.
+MATLAB exposes a COM interface on Windows, the performance of this interface is quite good.
+So no need to compile the MATLAB code into an Assembly of a pure c-dll.
+
+We added a simulated joystick control to the UI to control KITT (instead of using keyboard controls) to have greater control over the car.
+Retrieving information from KITT proved to be a problem with the original EPO-2 implementation of the communications library, so we fixed that.
+We define the ping time as the time from the last byte send to the first byte recieved.
+This to eliminate the differences in processing time and packet length.
+We also saw that you can not send to many commands to the car.
+The main MCU then just can't handle it and doesn't do anything or sends back garbled data.
+One command per "ping time" seems to be about the maximum.
+
+The distance sensors are faily accure close by, the further away you get the less accurate the measurements become.
+In the next chapter (Chapter \ref{ch:mod2-ass2}) we will go into more detail what the actual parameters of the car are.
+
+
+\end{document}
