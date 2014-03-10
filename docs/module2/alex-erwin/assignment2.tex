@@ -6,7 +6,57 @@
 \addbibresource{../../library/bibliography.bib}
 \begin{document}
 
-\chapter{Assignment 2}
+\chapter{Assignment 2: Sensors}
 \label{ch:mod2-ass2}
+
+\section{Limitations of the system}
+
+There are a couple of limitations to be considered regarding the HC-SR04 modules.\\
+According to the data sheet the measurement range is 2cm - 400cm. We could confirm that the device can't produce a distance measurement between 0 and 2cm. The maximum measurement distance however turned out to be only 300cm in practice.\\ 
+The claimed ranging accuracy of 3mm turned out to be quite consistent over the whole measurement range.\\
+The measurement angle is about 15 degrees to both the left and right side. This could cause some inaccuracies in distance measurements.\\
+The two modules are mounted on the hood of the car and extend to both the left- and right hand side. Because of the height at which they are located it might occur that very small objects on the ground are not detected. This might cause some minor issues in an obstacle course. But considering that the objects have to be rather small to not be detected, they could possibly be modeled as speed bumps which the car wouldn't have to evade.
+
+\section{Static measurement of the sensor}
+
+To perform measurements the car was placed in front of a closet covering the sensors measurement range. Next the distance as displayed on the car's screen and the distance measured with a tape measure were compared. This was done for multiple distances and the average deviation was between 0,5 and 1 cm. For our purposes these deviations are negligible. Placing an obstacle, like a book, in front of one of the sensors would cause the same deviation. Placing the car in front of a table would result in the table leg being detected. Thus, an object that doesn't cover a large surface is still detected.\\ As observed from the car's screen and by performing multiple "get status" commands from MatLab, the sensors normally need a little time to adjust in the case of a changed surrounding. For example, the distance between a sensor and an object might be 75cm, in this case, the sensor might flick between 75cm and 74cm for about a second.
+
+
+\section{Dynamic measurement of the sensor}
+
+Performing measurements with the vehicle in motion is more difficult. Driving the car at moderate pace (158) while performing multiple "get status" commands results in seemingly useful data. It's hard to say how accurate these distance measurements are.\\ The Doppler effect is also considered. If the source is moving away from the observer then the observed frequency can be calculated using equation \ref{eq:doppler}, otherwise equation \ref{eq:doppler_otherwise} can be used. Here $v$ is equal to the speed of sound and $v_{car}$ is equal to the maximum speed of the car (10 km/h).
+\begin{equation} 
+\label{eq:doppler}
+f = \dfrac{v}{v+v_{car}} \cdot f_{0} = \dfrac{340}{340 + 2,78} \cdot {40*10^3} = 39,68 \text{ kHz}
+\end{equation}
+\begin{equation} 
+\label{eq:doppler_otherwise}
+f = \dfrac{v}{v-v_{car}} \cdot f_{0} = \dfrac{340}{340 - 2,78} \cdot {40*10^3} = 40,33 \text{ kHz}
+\end{equation}
+
+
+\section{Measurement data analysis and interpretation}
+
+The measurement ranging accuracy turned out to be acceptable. The same holds for the minimum and maximum measurement distance. The Doppler effect causes insignificant deviations in the perceived frequency. The speed of the car used for the calculations in \ref{eq:doppler} and \ref{eq:doppler_otherwise} also has to be considered; it's unlikely that during an obstacle course the car will be able to drive at full speed for prolonged periods of time. Therefore, most of the time, the perceived frequency deviation will be even less.
+
+\section{Datasheet}
+
+A couple of parameters have been left out of the KITT datasheet. Below, in table \ref{table:parameters}, we've listed the unknown parameters. The Bluetooth parameters were found on the Bluetooth Wikipedia page. The ultrasonic sensor parameters were found in the datasheet and determined from observations. To determine the turning radius, the car's front wheels were set to the maximum angle in order to drive in a circle. Subsequently the radius could be measured. After running 30 ping measurements, the maximum command refresh time was 0,202614 seconds.
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{ | l | l |}
+    \hline
+    Bluetooth operating frequency & 2.4 GHz \\ \hline
+    Bluetooth operating range & 10 meter \\\hline
+    Ultrasonic sensor resolution    & 3 mm \\\hline
+    Ultrasonic sensor distance	         & 300 cm \\\hline
+    Turning radius & 165 cm \\\hline
+    Max. Command refresh time & 0,202614 s\\\hline
+\end{tabular}
+\caption{Operating ratings}
+\end{center}
+\end{table}
+\label{table:parameters}
 
 \end{document}
