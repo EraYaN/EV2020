@@ -64,8 +64,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Databindings.cs" />
-    <Compile Include="FixedInputSequence.cs" />
+    <Compile Include="InputSequence.cs" />
     <Compile Include="Navigation.cs" />
+    <Compile Include="OutputSequence.cs" />
+    <Compile Include="Sequence.cs" />
     <Compile Include="Visualization.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

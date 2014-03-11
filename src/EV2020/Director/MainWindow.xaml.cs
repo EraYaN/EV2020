@@ -66,7 +66,7 @@ namespace EV2020.Director
 			}
 			/*if(Data.matlab==null)
 				Data.matlab = new MATLABWrapper(@"H:\mcode","Groep B1");*/
-			Data.db.UpdateProperty("FixedInputSequence");
+			Data.db.UpdateProperty("InputSequence");
 			Data.db.UpdateProperty("SerialPortStatus");
 			Data.db.UpdateProperty("SerialPortStatusColor");
 			Data.db.UpdateProperty("EmergencyStop");
@@ -75,7 +75,9 @@ namespace EV2020.Director
 			initButton.IsEnabled = false;
 			destroyButton.IsEnabled = true;
 			comPortsComboBox.IsEnabled = false;
-			baudRateComboBox.IsEnabled = false;			
+			baudRateComboBox.IsEnabled = false;
+			//update vis
+			Data.vis.drawJoystick();
 		}
 
 		private void destroyButton_Click(object sender, RoutedEventArgs e)
@@ -108,32 +110,7 @@ namespace EV2020.Director
 			{
 				Data.ctr.Stop();
 				Data.ctr.Center();
-			}
-			else
-			{
-				if (e.Key == Key.W)
-				{
-					Data.ctr.SetDriving(155);
-					//Data.ctr.Faster();
-				}
-
-				if (e.Key == Key.S)
-				{
-					//Data.ctr.Slower();
-					Data.ctr.SetDriving(142);
-				}
-
-				if (e.Key == Key.D)
-				{
-					//Data.ctr.Right();
-					Data.ctr.SetSteering(100);
-				}
-				if (e.Key == Key.A)
-				{
-					//Data.ctr.Right();
-					Data.ctr.SetSteering(200);
-				}
-			}
+			}			
 		}
 
 		private void joystickCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -197,7 +174,7 @@ namespace EV2020.Director
 		{
 			if (Data.ctr == null)
 				return;
-			FixedInputSequence fis = FixedInputSequence.Pulse(100, 0, 25, 5, 0, 0, 0, 0, 0);
+			InputSequence fis = InputSequence.Pulse(100, 0, 25, 5, 0, 0, 0, 0, 0);
 			Data.ctr.StartFixedInputSequence(ref fis);
 		}				
 	}

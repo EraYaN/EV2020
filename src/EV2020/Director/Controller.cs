@@ -27,7 +27,7 @@ namespace EV2020.Director
 		{
 			get { return _lastPing; }
 		}
-		private FixedInputSequence _fixedInputSequence;
+		private InputSequence _fixedInputSequence;
 		public long FixedInputSequenceExecutingIndex
 		{
 			get { return _fixedInputSequence.Index; }
@@ -122,7 +122,7 @@ namespace EV2020.Director
 					_fixedInputSequenceExecuting = false;
 				_fixedInputSequence++;				
 			}
-			Data.db.UpdateProperty("FixedInputSequence");
+			Data.db.UpdateProperty("InputSequence");
 			sendDriveSteering();
 			sendStatusRequest();
 		}
@@ -412,7 +412,7 @@ namespace EV2020.Director
 				driving = 0;
 				if (_fixedInputSequenceExecuting)
 					StopFixedInputSequence();
-				FixedInputSequence fis = FixedInputSequence.Pulse(50, 0, 10, -currentDriving.Clamp(-DrivingMax, DrivingMax), 0, 0, 0, 0, 0);
+				InputSequence fis = InputSequence.Pulse(50, 0, 10, -currentDriving.Clamp(-DrivingMax, DrivingMax), 0, 0, 0, 0, 0);
 				StartFixedInputSequence(ref fis);
 			}
 			else
@@ -455,7 +455,7 @@ namespace EV2020.Director
 			_emergencyStop = false;
 			Data.db.UpdateProperty("EmergencyStop");			
 		}
-		public void StartFixedInputSequence(ref FixedInputSequence fis)
+		public void StartFixedInputSequence(ref InputSequence fis)
 		{
 			_fixedInputSequence = fis;
 			_fixedInputSequenceExecuting = true;
