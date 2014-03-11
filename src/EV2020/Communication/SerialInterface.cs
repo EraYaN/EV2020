@@ -135,7 +135,7 @@ namespace EV2020.Communication
         void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
 			string indata = serialPort.ReadExisting();
-			System.Diagnostics.Debug.WriteLine("Serial bytes received: {0}", indata);
+			//System.Diagnostics.Debug.WriteLine(String.Format("Serial bytes received: {0}", indata));
 			DataSerial(indata, e);           
         }
     

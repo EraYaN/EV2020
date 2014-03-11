@@ -52,7 +52,7 @@ namespace EV2020.Director
 			get
 			{
 				if (Data.com == null)
-					return Brushes.Red; ;
+					return Brushes.Red;
 				if (Data.com.IsOpen)
 				{
 					int b = Data.com.BytesInRBuffer + Data.com.BytesInTBuffer;
@@ -72,6 +72,40 @@ namespace EV2020.Director
 				else
 				{
 					return Brushes.OrangeRed;
+				}
+			}
+		}
+
+		public String EmergencyStop
+		{
+			get
+			{
+				if(Data.ctr == null)
+					return "ctr is null";
+				if (Data.ctr.IsEmergencyStop)
+				{
+					return "Emergency!";
+				}
+				else
+				{
+					return String.Format("OK. ({0})",Data.ctr.EmergencyErrorCount);
+				}
+			}
+		}
+
+		public String FixedInputSequence
+		{
+			get
+			{
+				if (Data.ctr == null)
+					return "ctr is null";
+				if (Data.ctr.IsFixedInputSequenceExecuting)
+				{
+					return String.Format("Fixed Input {1} of {0}",Data.ctr.FixedInputSequenceExecutingLength, Data.ctr.FixedInputSequenceExecutingIndex);
+				}
+				else
+				{
+					return "No Fixed Input";
 				}
 			}
 		}

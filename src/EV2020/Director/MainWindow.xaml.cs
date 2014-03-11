@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using EV2020.Communication;
+using System;
+using System.IO.Ports;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using EV2020.Communication;
-using MLE4WCSharp;
-using System.IO.Ports;
 
 namespace EV2020.Director
 {
@@ -27,6 +17,8 @@ namespace EV2020.Director
 			InitializeComponent();			
 			statusBarComPort.DataContext = Data.db;
 			statusBarLastPing.DataContext = Data.db;
+			statusBarEmergencyStop.DataContext = Data.db;
+			statusBarFixedInputSequence.DataContext = Data.db;
 		}
 		private void comPortsComboBox_DropDownOpened(object sender, EventArgs e)
 		{
@@ -72,10 +64,13 @@ namespace EV2020.Director
 			{
 				MessageBox.Show("No COM Port or Baud Rate chosen.", "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
-			if(Data.matlab==null)
-				Data.matlab = new MATLABWrapper(@"H:\mcode","Groep B1");
+			/*if(Data.matlab==null)
+				Data.matlab = new MATLABWrapper(@"H:\mcode","Groep B1");*/
+			Data.db.UpdateProperty("FixedInputSequence");
 			Data.db.UpdateProperty("SerialPortStatus");
 			Data.db.UpdateProperty("SerialPortStatusColor");
+			Data.db.UpdateProperty("EmergencyStop");
+							
 			//enable buttons	
 			initButton.IsEnabled = false;
 			destroyButton.IsEnabled = true;
@@ -92,9 +87,12 @@ namespace EV2020.Director
 			Data.ctr = null;
 			Data.vis = null;
 			Data.nav = null;
-			Data.matlab.CloseAll();
-			Data.matlab.Dispose();
-			Data.matlab = null;
+			if (Data.matlab != null)
+			{
+				Data.matlab.CloseAll();
+				Data.matlab.Dispose();
+				Data.matlab = null;
+			}
 			Data.com.Dispose();
 			Data.com = null;
 		}
@@ -141,6 +139,12 @@ namespace EV2020.Director
 		private void joystickCanvas_MouseDown(object sender, MouseButtonEventArgs e)
 		{
 			updateJoystick(e);
+			if (Data.ctr == null)
+				return;
+			if (Data.ctr.IsEmergencyStop)
+			{
+				Data.ctr.ResetEmergencyStop();
+			}
 		}
 
 		private void updateJoystick(MouseEventArgs e)
@@ -150,7 +154,7 @@ namespace EV2020.Director
 			Point pos = e.GetPosition(joystickCanvas);		
 			double centerH = joystickCanvas.ActualHeight / 2;
 			double centerW = joystickCanvas.ActualWidth / 2;
-			Data.ctr.SetDrivingSteering((int)Math.Round(-(pos.Y - centerH) / (centerH / 15)), (int)Math.Round((pos.X - centerW) / (centerW / 50)));
+			Data.ctr.SetDrivingSteering((int)Math.Round(-(pos.Y - centerH) / (centerH / 15)), -(int)Math.Round((pos.X - centerW) / (centerW / 50)));
 			Data.vis.drawJoystick();
 		}
 
@@ -166,11 +170,11 @@ namespace EV2020.Director
 
 		private void joystickCanvas_MouseLeave(object sender, MouseEventArgs e)
 		{
-			if (Data.ctr == null)
+			/*if (Data.ctr == null)
 				return;
 			Data.ctr.Stop();
 			Data.ctr.Center();
-			Data.vis.drawJoystick();
+			Data.vis.drawJoystick();*/
 		}
 
 		private void joystickCanvas_MouseUp(object sender, MouseButtonEventArgs e)
@@ -187,6 +191,14 @@ namespace EV2020.Director
 			double[] x = { 1, 2, 3, 4, 5 };
 			double[] y = { 2, 4, 6, 8, 1 };
 			Data.matlab.plot(x, y, "Titel", "X (label)", "Y (label)", "Data legenda");
+		}
+
+		private void sendPulseButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (Data.ctr == null)
+				return;
+			FixedInputSequence fis = FixedInputSequence.Pulse(100, 0, 25, 5, 0, 0, 0, 0, 0);
+			Data.ctr.StartFixedInputSequence(ref fis);
 		}				
 	}
 }
