@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using OxyPlot;
 
 namespace EV2020.Director
 {
@@ -15,10 +16,11 @@ namespace EV2020.Director
 		public MainWindow()
 		{
 			InitializeComponent();			
-			statusBarComPort.DataContext = Data.db;
+			/*statusBarComPort.DataContext = Data.db;
 			statusBarLastPing.DataContext = Data.db;
 			statusBarEmergencyStop.DataContext = Data.db;
-			statusBarFixedInputSequence.DataContext = Data.db;
+			statusBarFixedInputSequence.DataContext = Data.db;*/
+			this.DataContext = Data.db;
 		}
 		private void comPortsComboBox_DropDownOpened(object sender, EventArgs e)
 		{
@@ -39,6 +41,8 @@ namespace EV2020.Director
 
 		private void initButton_Click(object sender, RoutedEventArgs e)
 		{
+			initButton.IsEnabled = false;
+			initButton.Refresh();
 			//Init classes
 			Data.nav = new Navigation();
 			Data.vis = new Visualization(visCanvas, joystickCanvas);
@@ -66,13 +70,17 @@ namespace EV2020.Director
 			}
 			/*if(Data.matlab==null)
 				Data.matlab = new MATLABWrapper(@"H:\mcode","Groep B1");*/
+			Data.db.UpdateProperty(String.Empty); //Update All Bindings
+			/*
 			Data.db.UpdateProperty("InputSequence");
 			Data.db.UpdateProperty("SerialPortStatus");
 			Data.db.UpdateProperty("SerialPortStatusColor");
 			Data.db.UpdateProperty("EmergencyStop");
+			Data.db.UpdateProperty("BatteryGraphPoints");
+			Data.db.UpdateProperty("BatteryGraphMaxTime");*/
 							
 			//enable buttons	
-			initButton.IsEnabled = false;
+			
 			destroyButton.IsEnabled = true;
 			comPortsComboBox.IsEnabled = false;
 			baudRateComboBox.IsEnabled = false;
@@ -81,9 +89,10 @@ namespace EV2020.Director
 		}
 
 		private void destroyButton_Click(object sender, RoutedEventArgs e)
-		{
-			initButton.IsEnabled = true;
+		{			
 			destroyButton.IsEnabled = false;
+			destroyButton.Refresh();
+			initButton.IsEnabled = true;
 			comPortsComboBox.IsEnabled = true;
 			baudRateComboBox.IsEnabled = true;
 			Data.ctr = null;
@@ -97,6 +106,7 @@ namespace EV2020.Director
 			}
 			Data.com.Dispose();
 			Data.com = null;
+			Data.db.UpdateProperty(String.Empty); //Update All Bindings
 		}
 
 		private void getStatusButton_Click(object sender, RoutedEventArgs e)
@@ -174,7 +184,7 @@ namespace EV2020.Director
 		{
 			if (Data.ctr == null)
 				return;
-			InputSequence fis = InputSequence.Pulse(100, 0, 25, 5, 0, 0, 0, 0, 0);
+			InputSequence fis = new InputSequence(Sequence.Pulse(100, 0, 25, 5, 0),new Sequence(100));
 			Data.ctr.StartFixedInputSequence(ref fis);
 		}				
 	}

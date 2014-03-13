@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxyPlot;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -107,6 +108,76 @@ namespace EV2020.Director
 				{
 					return "No Fixed Input";
 				}
+			}
+		}
+
+		public List<DataPoint> BatteryGraphPoints
+		{
+			get{
+				List<DataPoint> l = new List<DataPoint>();
+				if (Data.ctr == null)
+					return l;
+
+				double x = 0;
+				foreach (double d in Data.ctr.OutputBatteryVoltageHistory.Data){
+					l.Add(new DataPoint(x, d));
+					x += (double)Controller.TimerPeriod / 1000.0;
+				}
+				return l;
+			}
+		}
+		public double BatteryGraphMaxTime
+		{
+			get
+			{
+				if (Data.ctr == null)
+					return (double)Controller.BatteryHistoryPoints * (double)Controller.TimerPeriod / 1000.0;
+
+				return (double)Controller.TimerPeriod / 1000.0 * Data.ctr.OutputBatteryVoltageHistory.Length;
+			}
+		}
+		public double DistanceGraphMaxTime
+		{
+			get
+			{
+				if (Data.ctr == null)
+					return (double)Controller.DistanceHistoryPoints * (double)Controller.TimerPeriod / 1000.0;
+
+				return (double)Controller.TimerPeriod / 1000.0 * Data.ctr.DistanceHistory.Length;
+			}
+		}
+		public List<DataPoint> DistanceLeftGraphPoints
+		{
+			get
+			{
+				List<DataPoint> l = new List<DataPoint>();
+				if (Data.ctr == null)
+					return l;
+
+				double x = 0;
+				foreach (double d in Data.ctr.DistanceHistory.LeftData)
+				{
+					l.Add(new DataPoint(x, d));
+					x += (double)Controller.TimerPeriod / 1000.0;
+				}
+				return l;
+			}
+		}
+		public List<DataPoint> DistanceRightGraphPoints
+		{
+			get
+			{
+				List<DataPoint> l = new List<DataPoint>();
+				if (Data.ctr == null)
+					return l;
+
+				double x = 0;
+				foreach (double d in Data.ctr.DistanceHistory.RightData)
+				{
+					l.Add(new DataPoint(x, d));
+					x += (double)Controller.TimerPeriod / 1000.0;
+				}
+				return l;
 			}
 		}
 

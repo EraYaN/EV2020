@@ -6,27 +6,70 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
-	class OutputSequence : Sequence
+	public class OutputSequence
 	{
-		Decimal[] left;
-		Decimal[] right;
-		
-		public OutputSequence(long _length, long offset = 0)
+		Sequence left;
+		Sequence right;
+		public double[] LeftData
 		{
-			length = _length;			
-			if (offset > length)
-				throw new ArgumentException("Offset is bigger than length.", "offset");			
-			left = new Decimal[length];
-			right = new Decimal[length];
-			index = offset;
-		}		
-		public Decimal GetCurrentLeft()
-		{
-			return left[index];
+			get { return left.Data; }
 		}
-		public Decimal GetCurrentRight()
+		public double[] RightData
 		{
-			return right[index];
+			get { return right.Data; }
+		}
+		public long Index
+		{
+			get
+			{
+				return left.Index;
+			}
+		}
+		public long Length
+		{
+			get
+			{
+				return left.Length;
+			}
+		}
+		
+		public OutputSequence(long Size)
+		{
+			left = new Sequence(Size);
+			right = new Sequence(Size);
+		}		
+		public double GetCurrentLeft()
+		{
+			return left.DataElement;
+		}
+		public double GetCurrentRight()
+		{
+			return right.DataElement;
+		}
+		public void Forward()
+		{
+			left.Forward();
+			right.Forward();
+		}
+		public void Backward()
+		{
+			left.Backward();
+			right.Backward();
+		}
+		public void Rewind()
+		{
+			left.Rewind();
+			right.Rewind();
+		}
+		public void AddToFront(double LeftValue, double RightValue)
+		{
+			left.AddToFront(LeftValue);
+			right.AddToFront(RightValue);
+		}
+		public void AddToBack(double LeftValue, double RightValue)
+		{
+			left.AddToBack(LeftValue);
+			right.AddToBack(RightValue);
 		}
 		
 	}

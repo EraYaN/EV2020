@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace EV2020.Director
 {
@@ -14,5 +16,12 @@ namespace EV2020.Director
 			else if (val.CompareTo(max) > 0) return max;
 			else return val;
 		}
+		private static Action EmptyDelegate = delegate() { };
+
+		public static void Refresh(this UIElement uiElement)
+		{
+			uiElement.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+		}
+		
 	}
 }

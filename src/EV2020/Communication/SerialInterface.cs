@@ -47,8 +47,8 @@ namespace EV2020.Communication
             serialPort.Handshake = Handshake.RequestToSend;
 			serialPort.ReadBufferSize = 128000;
 			serialPort.WriteBufferSize = 128000;
-            serialPort.ReadTimeout = 1000;
-            serialPort.WriteTimeout = 1000;
+            serialPort.ReadTimeout = 2000;
+            serialPort.WriteTimeout = 200;
             serialPort.DataReceived += serialPort_DataReceived;
             serialPort.ErrorReceived += serialPort_ErrorReceived;
         }
@@ -121,8 +121,14 @@ namespace EV2020.Communication
 		{
 			if (!serialPort.IsOpen)
 				return;
-			
-			serialPort.Write(data+'\n');
+			try
+			{
+				serialPort.Write(data + '\n');
+			}
+			catch (TimeoutException toex)
+			{
+				System.Diagnostics.Debug.WriteLine("Timeout exeption.");
+			}
 			//System.Diagnostics.Debug.WriteLine("Serial bytes sent: {0}", data+'\n');
 		}        
 
