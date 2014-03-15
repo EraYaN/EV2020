@@ -102,7 +102,7 @@ namespace EV2020.Director
 					return "ctr is null";
 				if (Data.ctr.IsFixedInputSequenceExecuting)
 				{
-					return String.Format("Fixed Input {1} of {0}",Data.ctr.FixedInputSequenceExecutingLength, Data.ctr.FixedInputSequenceExecutingIndex);
+					return String.Format("Fixed Input {1} of {0}",Data.ctr.FixedInputSequenceExecutingLength, Data.ctr.FixedInputSequenceExecutingIndex+1);
 				}
 				else
 				{
@@ -173,6 +173,50 @@ namespace EV2020.Director
 
 				double x = 0;
 				foreach (double d in Data.ctr.DistanceHistory.RightData)
+				{
+					l.Add(new DataPoint(x, d));
+					x += (double)Controller.TimerPeriod / 1000.0;
+				}
+				return l;
+			}
+		}
+		public double ControlGraphMaxTime
+		{
+			get
+			{
+				if (Data.ctr == null)
+					return (double)Controller.ControlHistoryPoints * (double)Controller.TimerPeriod / 1000.0;
+
+				return (double)Controller.TimerPeriod / 1000.0 * Data.ctr.ControlHistory.Length;
+			}
+		}
+		public List<DataPoint> ControlDrivingGraphPoints
+		{
+			get
+			{
+				List<DataPoint> l = new List<DataPoint>();
+				if (Data.ctr == null)
+					return l;
+
+				double x = 0;
+				foreach (double d in Data.ctr.ControlHistory.LeftData)
+				{
+					l.Add(new DataPoint(x, d));
+					x += (double)Controller.TimerPeriod / 1000.0;
+				}
+				return l;
+			}
+		}
+		public List<DataPoint> ControlSteeringGraphPoints
+		{
+			get
+			{
+				List<DataPoint> l = new List<DataPoint>();
+				if (Data.ctr == null)
+					return l;
+
+				double x = 0;
+				foreach (double d in Data.ctr.ControlHistory.RightData)
 				{
 					l.Add(new DataPoint(x, d));
 					x += (double)Controller.TimerPeriod / 1000.0;

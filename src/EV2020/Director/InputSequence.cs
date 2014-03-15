@@ -30,7 +30,7 @@ namespace EV2020.Director
 		{
 			get
 			{
-				return driving.IsEndOfSignal;
+				return driving.IsEndOfSignal || driving.IsEndOfSignal;
 			}
 		}
 		

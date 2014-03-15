@@ -21,7 +21,7 @@ namespace EV2020.Director
 		}
 		public bool IsEndOfSignal
 		{
-			get { return !(index < Length); }
+			get { return index == Length-1; }
 		}
 		public bool IsStartOfSignal
 		{
@@ -94,6 +94,14 @@ namespace EV2020.Director
 			data = tmp;
 			data[data.Length-1] = Value;
 		}
+		public void Append(Sequence a)
+		{
+			double[] c = new double[data.Length+a.data.Length];
+			Array.Copy(data, c, data.Length);
+			Array.Copy(a.Data, 0, c, data.Length, a.Length);
+			data = c;
+			length = data.Length + a.data.Length;
+		}
 		#region Static generation methods
 		public static Sequence Linear(long samples, double Start, double End)
 		{
@@ -118,6 +126,27 @@ namespace EV2020.Director
 				{
 					Data[I] = Low;
 				}
+			}
+			return new Sequence(Data);
+		}
+		public static Sequence SquareWave(long samples, long period, double High, double Low)
+		{
+			double[] Data = new double[samples];
+			bool high = false;
+			for (long I = 0; I < samples; I++)
+			{
+				if (I % period==0)
+					high = !high;
+				if (high)
+				{
+					Data[I] = High;
+				}
+				else
+				{
+					Data[I] = Low;
+				}
+				if (I == samples-1)
+					Data[I] = 0;
 			}
 			return new Sequence(Data);
 		}

@@ -12,12 +12,13 @@ namespace EV2020.Director
 		public const int DrivingMax = 15;
 		public const int SteeringMin = -50;
 		public const int SteeringMax = 50;
-		public const int SteeringNeutral = 150;
+		public const int SteeringNeutral = 148;
 		public const int DrivingNeutral = 150;
-		public const int CollisionThreshold = 70;
+		public const int CollisionThreshold = 60;
 		public const int TimerPeriod = 100;
 		public const int BatteryHistoryPoints = 600;
-		public const int DistanceHistoryPoints = 600;
+		public const int DistanceHistoryPoints = 300;
+		public const int ControlHistoryPoints = 300;
 
 		private bool _isReceivingLine = false;
 		private int _linesReceived = 0;
@@ -37,6 +38,11 @@ namespace EV2020.Director
 		public OutputSequence DistanceHistory
 		{
 			get { return distanceHistory; }
+		}
+		private OutputSequence controlHistory = new OutputSequence(ControlHistoryPoints);
+		public OutputSequence ControlHistory
+		{
+			get { return controlHistory; }
 		}
 		private InputSequence _fixedInputSequence;
 		public long FixedInputSequenceExecutingIndex
@@ -122,6 +128,7 @@ namespace EV2020.Director
 			sendInstructions.Elapsed+=sendInstructions_Elapsed;
 			sendInstructions.Start();
 			_receivingBuffer = new StringBuilder();
+			_replyStopwatch = new Stopwatch();
 		}
 
 		void sendInstructions_Elapsed(object sender, ElapsedEventArgs e)
@@ -134,8 +141,20 @@ namespace EV2020.Director
 				_fixedInputSequence.Forward();				
 			}
 			Data.db.UpdateProperty("FixedInputSequence");
+			//Add data to graph
+			outputBatteryVoltageHistory.AddToFront((double)currentBatteryVoltage / 1000.0);
+			Data.db.UpdateProperty("BatteryGraphPoints");
+			distanceHistory.AddToFront(currentLeftDistance, currentRightDistance);
+			Data.db.UpdateProperty("DistanceLeftGraphPoints");
+			Data.db.UpdateProperty("DistanceRightGraphPoints");
+			//controlHistory.AddToFront(currentDriving, currentSteering);
+			controlHistory.AddToFront(driving, steering);
+			Data.db.UpdateProperty("ControlDrivingGraphPoints");
+			Data.db.UpdateProperty("ControlSteeringGraphPoints");
 			sendDriveSteering();
 			sendStatusRequest();
+			if (Data.vis != null)
+				Data.vis.drawJoystick();
 		}
 
 		void com_SerialDataEvent(object sender, Communication.SerialDataEventArgs e)
@@ -288,10 +307,8 @@ namespace EV2020.Director
 						{
 							//TODO handle (proper data)
 						}
-						distanceHistory.AddToBack(currentLeftDistance, currentRightDistance);
-						Data.db.UpdateProperty("DistanceLeftGraphPoints");
-						Data.db.UpdateProperty("DistanceRightGraphPoints");
-						if (currentRightDistance < CollisionThreshold || currentLeftDistance < CollisionThreshold)
+						
+						if ((currentRightDistance < CollisionThreshold || currentLeftDistance < CollisionThreshold)&&currentDriving>0)
 						{							
 							_emergencyErrorCount++;
 							if (_emergencyErrorCount > _emergencyErrorCountThreshold)
@@ -333,8 +350,7 @@ namespace EV2020.Director
 						}
 						else
 						{
-							outputBatteryVoltageHistory.AddToBack(currentBatteryVoltage);
-							Data.db.UpdateProperty("BatteryGraphPoints");
+							
 						}
 						if (currentBatteryVoltage < BatteryThreshold)
 						{
@@ -373,22 +389,18 @@ namespace EV2020.Director
 
 			if (!_fixedInputSequenceExecuting)
 			{
-				if (!_emergencyStop)
-				{
-					sendCommand(String.Format("D{0} {1}", steering + SteeringNeutral, driving + DrivingNeutral));
-				}
-				else
+				if (_emergencyStop)				
 				{
 					driving = 0;
-					steering = 0;
-					sendCommand(String.Format("D{0} {1}", steering + SteeringNeutral, driving + DrivingNeutral));
+					steering = 0;					
 				}
 			}
 			else
 			{
-				sendCommand(String.Format("D{0} {1}", _fixedInputSequence.GetCurrentSteering() + SteeringNeutral, _fixedInputSequence.GetCurrentDriving() + DrivingNeutral));
+				driving = (int)Math.Round(_fixedInputSequence.GetCurrentDriving());
+				steering = (int)Math.Round(_fixedInputSequence.GetCurrentSteering());				
 			}
-
+			sendCommand(String.Format("D{0} {1}", steering + SteeringNeutral, driving + DrivingNeutral));
 		}
 		private void sendStatusRequest()
 		{
@@ -419,19 +431,19 @@ namespace EV2020.Director
 		}
 		public void Brake()
 		{
-			if (currentDriving != 0)
+			/*if (currentDriving != 0)
 			{
 				System.Diagnostics.Debug.WriteLine("Braking with: {0}", -currentDriving);
 				driving = 0;
 				if (_fixedInputSequenceExecuting)
 					StopFixedInputSequence();
-				InputSequence fis = new InputSequence( Sequence.Pulse(50, 0, 10, -currentDriving.Clamp(-DrivingMax, DrivingMax), 0),new Sequence(50));
+				InputSequence fis = new InputSequence( Sequence.Pulse(20, 0, 10, (1.5*-currentDriving).Clamp(-DrivingMax, DrivingMax), 0),new Sequence(20));
 				StartFixedInputSequence(ref fis);
 			}
 			else
 			{
 				driving = 0;
-			}
+			}*/
 		}
 		public void Faster(int amount = 1)
 		{

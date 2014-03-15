@@ -45,7 +45,7 @@
 				<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 					<Button Content="Get Status" x:Name="getStatusButton" Click="getStatusButton_Click" Margin="2"/>
 					<Button x:Name="sendPulseButton" Content="Send Pulse" Margin="2" Click="sendPulseButton_Click"/>
-
+					<Button x:Name="sendWaveButton" Content="Send Wave" Margin="2" Click="sendWaveButton_Click"/>
 				</StackPanel>
 			</GroupBox>
 			<GroupBox Header="Joystick">
@@ -72,6 +72,16 @@
 						<oxy:Plot.Series>
 							<oxy:LineSeries ItemsSource="{Binding DistanceLeftGraphPoints}" Color="Red"/>
 							<oxy:LineSeries ItemsSource="{Binding DistanceRightGraphPoints}" Color="Blue"/>
+						</oxy:Plot.Series>
+					</oxy:Plot>
+					<oxy:Plot Title="Control" Height="147" PlotMargins="10" Padding="0" TitleFontSize="10" TitlePadding="0">
+						<oxy:Plot.Axes>
+							<oxy:LinearAxis Position="Bottom" Minimum="0" Maximum="{Binding ControlGraphMaxTime}" FontSize="8" MajorStep="{Binding ControlGraphMaxTime}" MinorStep="5"/>
+							<oxy:LinearAxis Position="Left" Minimum="-50" Maximum="50" FontSize="8" MajorStep="10" MinorStep="5" />
+						</oxy:Plot.Axes>
+						<oxy:Plot.Series>
+							<oxy:LineSeries ItemsSource="{Binding ControlDrivingGraphPoints}" Color="Red"/>
+							<oxy:LineSeries ItemsSource="{Binding ControlSteeringGraphPoints}" Color="Blue"/>
 						</oxy:Plot.Series>
 					</oxy:Plot>
 				</StackPanel>
