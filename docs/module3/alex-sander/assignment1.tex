@@ -1,0 +1,100 @@
+%!TEX program = xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+\title{Module 3 - Report}
+\author{Alex {Misdorp} \and Sander {van Dijk}}
+\begin{document}
+
+\chapter{Assignment 1}
+Using Equation \ref{eq:simple}, a state-space model can be derived. This model is displayed in Equation \ref{eq:simple_matrix}, in which $x$ corresponds with the position and $\dot{x}$ with the velocity. This model is of second order.
+\begin{equation}
+	m \ddot{x} = -\rho_f \dot{x} + u
+	\label{eq:simple}
+\end{equation}
+
+\begin{equation}
+	\begin{bmatrix}
+		\dot{x} \\
+		\ddot{x}
+	\end{bmatrix} =
+	\begin{bmatrix}
+		0 & 1 \\
+		0 & -\frac{\rho_f}{m}
+	\end{bmatrix}
+	\begin{bmatrix}
+		x \\
+		\dot{x}
+	\end{bmatrix} +
+	\begin{bmatrix}
+		0 \\
+		\frac{1}{m}
+	\end{bmatrix}
+	u
+	\label{eq:simple_matrix}
+\end{equation}
+
+The characteristic equation can be derived using Equation \ref{eq:char_eq}, which leads to Equation \ref{eq:char_eq_matrix} for the model in Equation \ref{eq:simple_matrix}. By calculating the determinant from this equation, the characteristic equation is found, as displayed in Equation \ref{eq:char_eq_final}. This leads to the eigenvalues of $0$ and $-\frac{\rho_f}{m}$, the first being on the imaginary axis and the second on the left half of the complex plane. Both poles should be on the left half of the complex plane to be stable, but since one is not, it is not stable. However, because the value is not negative either, the system will not diverge to infinity.
+\\ \\
+The system is not stabilizable, since no matrix $K$ can be found to $(A + BK)$ to get the eigenvalues on the left size of the complex plane. This can also be found by looking at the rank of the matrix, which implies non-full rank. The system is controllable.
+\\ \\
+Lastly, the system is observable, the output position can be used to measure the velocity.
+
+\begin{equation}
+	\left| I \lambda - A \right| = 0
+	\label{eq:char_eq}
+\end{equation}
+
+\begin{equation}
+	\begin{vmatrix}
+		\lambda & -1 \\
+		0 & \lambda + \frac{\rho_f}{m}
+	\end{vmatrix} = 0
+	\label{eq:char_eq_matrix}
+\end{equation}
+
+\begin{equation}
+	\lambda(\lambda + \frac{\rho_f}{m}) = 0
+	\label{eq:char_eq_final}
+\end{equation}
+
+By adding the engine model to the car model, a better understanding of the controllability of the whole system can be achieved. The motor model can be solved to Equation \ref{eq:motor}, which can be used in the original model of Equation \ref{eq:simple}. This yields a third order system, as displayed in Equation \ref{eq:total_system}, but by neglecting the motor coil inductance $L$, it can be simplified to the second order system of Equation \ref{eq:total_system_simple}. Equation \ref{eq:total_system_matrix} is the state-space model of this simplified model.
+
+\begin{equation}
+	V = \frac{Lm\ddot{x}}{k_g k_w k_t} + k_g k_w k_t \dot{x} + \frac{uR}{k_g k_w k_t}
+	\label{eq:motor}
+\end{equation}
+
+\begin{equation}
+	\dddot{x} = -\frac{\ddot{x}}{L} -(\frac{k_g^2 k_w^2 k_t^2}{mRL} + \frac{\rho_f}{mL})\dot{x} + \frac{k_g k_w k_t}{mRL}V
+	\label{eq:total_system}
+\end{equation}
+
+\begin{equation}
+	\ddot{x} = -(\frac{k_g^2 k_w^2 k_t^2}{mR} + \frac{\rho_f}{m})\dot{x} + \frac{k_g k_w k_t}{mR}V
+	\label{eq:total_system_simple}
+\end{equation}
+
+\begin{equation}
+	\begin{bmatrix}
+		\dot{x} \\
+		\ddot{x}
+	\end{bmatrix} =
+	\begin{bmatrix}
+		0 & 1 \\
+		0 & -\frac{\rho_f}{m} - \frac{k_g k_w k_t}{mR}
+	\end{bmatrix}
+	\begin{bmatrix}
+		x \\
+		\dot{x}
+	\end{bmatrix} +
+	\begin{bmatrix}
+		0 \\
+		\frac{k_g k_w k_t}{mR}
+	\end{bmatrix}
+	V
+	\label{eq:total_system_matrix}
+\end{equation}
+
+\end{document}

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using OxyPlot;
+using System.IO;
 
 namespace EV2020.Director
 {
@@ -118,9 +119,42 @@ namespace EV2020.Director
 		{
 			if (e.Key == Key.Space)
 			{
-				Data.ctr.Stop();
 				Data.ctr.Center();
-			}			
+				Data.ctr.Brake();
+				//Data.ctr.Stop();
+				
+			}
+			if (e.Key == Key.S)
+			{
+				using (StreamWriter sw = new StreamWriter(String.Format("driving{0}.txt", DateTime.Now.Ticks)))
+				{
+					foreach (double d in Data.ctr.ControlHistory.LeftData)
+					{
+						sw.WriteLine(d);
+					}
+				}
+				using (StreamWriter sw = new StreamWriter(String.Format("steering{0}.txt", DateTime.Now.Ticks)))
+				{
+					foreach (double d in Data.ctr.ControlHistory.RightData)
+					{
+						sw.WriteLine(d);
+					}
+				}
+				using (StreamWriter sw = new StreamWriter(String.Format("left{0}.txt", DateTime.Now.Ticks)))
+				{
+					foreach (double d in Data.ctr.DistanceHistory.LeftData)
+					{
+						sw.WriteLine(d);
+					}
+				}
+				using (StreamWriter sw = new StreamWriter(String.Format("right{0}.txt", DateTime.Now.Ticks)))
+				{
+					foreach (double d in Data.ctr.DistanceHistory.RightData)
+					{
+						sw.WriteLine(d);
+					}
+				}
+			}	
 		}
 
 		private void joystickCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -184,8 +218,25 @@ namespace EV2020.Director
 		{
 			if (Data.ctr == null)
 				return;
-			InputSequence fis = new InputSequence(Sequence.Pulse(100, 0, 25, 5, 0),new Sequence(100));
+			InputSequence fis = new InputSequence(Sequence.Pulse(100, 0, 20, -10, 0),new Sequence(100));
 			Data.ctr.StartFixedInputSequence(ref fis);
+		}
+
+		private void sendWaveButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (Data.ctr == null)
+				return;
+			Sequence s1 = Sequence.Pulse(50, 0, 20, 5, 0);
+			Sequence s2 = Sequence.Pulse(50, 0, 20, -8, 0);
+			Sequence s = new Sequence();
+			s.Append(s1);
+			s.Append(s2);
+			s.Append(s1);
+			s.Append(s2);
+			s.Append(s1);
+			s.Append(s2);
+			InputSequence fis = new InputSequence(s,new Sequence(s.Length));
+			Data.ctr.StartFixedInputSequence(ref fis);		
 		}				
 	}
 }

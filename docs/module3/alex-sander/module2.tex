@@ -1,0 +1,26 @@
+%!TEX program=xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+\title{Module 1 - Report}
+\author{Alex {Misdorp} \and Sander {van Dijk}}
+\begin{document}
+\pagenumbering{roman}
+
+%----intro
+\subimport{title/}{title.tex}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+\pagenumbering{arabic}
+\subimport{}{assignment1.tex}
+\subimport{}{assignment2.tex}
+\newpage
+\pagenumbering{Roman}
+
+\printbibliography
+\end{document}
