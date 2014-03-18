@@ -12,7 +12,7 @@ namespace EV2020.Director
 		public const int DrivingMax = 15;
 		public const int SteeringMin = -50;
 		public const int SteeringMax = 50;
-		public const int SteeringNeutral = 148;
+		public const int SteeringNeutral = 153;
 		public const int DrivingNeutral = 150;
 		public const int CollisionThreshold = 60;
 		public const int TimerPeriod = 100;

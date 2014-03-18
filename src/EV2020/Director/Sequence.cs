@@ -44,8 +44,8 @@ namespace EV2020.Director
 		protected double[] data;
 		public Sequence()
 		{
-			data = new double[1];
-			length = 1;
+			data = new double[0];
+			length = 0;
 			index = 0;
 		}
 		public Sequence(long Size)
@@ -100,7 +100,7 @@ namespace EV2020.Director
 			Array.Copy(data, c, data.Length);
 			Array.Copy(a.Data, 0, c, data.Length, a.Length);
 			data = c;
-			length = data.Length + a.data.Length;
+			length = data.Length;
 		}
 		#region Static generation methods
 		public static Sequence Linear(long samples, double Start, double End)

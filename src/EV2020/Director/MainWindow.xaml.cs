@@ -126,34 +126,15 @@ namespace EV2020.Director
 			}
 			if (e.Key == Key.S)
 			{
-				using (StreamWriter sw = new StreamWriter(String.Format("driving{0}.txt", DateTime.Now.Ticks)))
+				using (StreamWriter sw = new StreamWriter(String.Format("data{0}.txt", DateTime.Now.Ticks)))
 				{
-					foreach (double d in Data.ctr.ControlHistory.LeftData)
+					sw.WriteLine("input, steering, datal, datar");
+					int len = Data.ctr.ControlHistory.LeftData.Length;
+					for (int I = len-1; I >= 0; I--)
 					{
-						sw.WriteLine(d);
+						sw.WriteLine("{0}, {1}, {2}, {3}", Data.ctr.ControlHistory.LeftData[I], Data.ctr.ControlHistory.RightData[I], Data.ctr.DistanceHistory.LeftData[I], Data.ctr.DistanceHistory.RightData[I]);
 					}
-				}
-				using (StreamWriter sw = new StreamWriter(String.Format("steering{0}.txt", DateTime.Now.Ticks)))
-				{
-					foreach (double d in Data.ctr.ControlHistory.RightData)
-					{
-						sw.WriteLine(d);
-					}
-				}
-				using (StreamWriter sw = new StreamWriter(String.Format("left{0}.txt", DateTime.Now.Ticks)))
-				{
-					foreach (double d in Data.ctr.DistanceHistory.LeftData)
-					{
-						sw.WriteLine(d);
-					}
-				}
-				using (StreamWriter sw = new StreamWriter(String.Format("right{0}.txt", DateTime.Now.Ticks)))
-				{
-					foreach (double d in Data.ctr.DistanceHistory.RightData)
-					{
-						sw.WriteLine(d);
-					}
-				}
+				}				
 			}	
 		}
 
@@ -226,8 +207,8 @@ namespace EV2020.Director
 		{
 			if (Data.ctr == null)
 				return;
-			Sequence s1 = Sequence.Pulse(50, 0, 20, 5, 0);
-			Sequence s2 = Sequence.Pulse(50, 0, 20, -8, 0);
+			Sequence s1 = Sequence.Pulse(40, 0, 15, 5, 0);
+			Sequence s2 = Sequence.Pulse(40, 0, 15, -9, 0);
 			Sequence s = new Sequence();
 			s.Append(s1);
 			s.Append(s2);
