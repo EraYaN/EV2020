@@ -6,6 +6,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using OxyPlot;
 using System.IO;
+using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Numerics.Distributions;
+using System.Diagnostics;
 
 namespace EV2020.Director
 {
@@ -218,6 +222,21 @@ namespace EV2020.Director
 			s.Append(s2);
 			InputSequence fis = new InputSequence(s,new Sequence(s.Length));
 			Data.ctr.StartFixedInputSequence(ref fis);		
-		}				
+		}
+
+        private void testMathButton_Click(object sender, RoutedEventArgs e)
+        {
+            Matrix<double> A = DenseMatrix.OfArray(new double[,] { { 1, 2, 3 }, { 3, 2, 1 }, { 2, 1, 3 } });
+            Matrix<double> B = DenseMatrix.OfArray(new double[,] { { 2, 0, 0 }});
+            Matrix<double> C = DenseMatrix.OfArray(new double[,] { { 5 }, { 0 }, { 5 } });
+            var E = DenseMatrix.CreateRandom(100, 1000, new ContinuousUniform(0, 1));
+            var F = DenseMatrix.CreateRandom(1000, 100, new ContinuousUniform(0, 1));
+            var D = B*A*C;
+            var s = Stopwatch.StartNew();
+            var G = E * F;
+            s.Stop();
+            MessageBox.Show(s.ElapsedMilliseconds.ToString());
+            MessageBox.Show(D.ToString());
+        }				
 	}
 }

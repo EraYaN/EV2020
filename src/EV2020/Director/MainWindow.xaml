@@ -46,6 +46,7 @@
 					<Button Content="Get Status" x:Name="getStatusButton" Click="getStatusButton_Click" Margin="2"/>
 					<Button x:Name="sendPulseButton" Content="Send Pulse" Margin="2" Click="sendPulseButton_Click"/>
 					<Button x:Name="sendWaveButton" Content="Send Wave" Margin="2" Click="sendWaveButton_Click"/>
+                    <Button x:Name="testMathButton" Content="Test Math" Margin="2" Click="testMathButton_Click"/>
 				</StackPanel>
 			</GroupBox>
 			<GroupBox Header="Joystick">
