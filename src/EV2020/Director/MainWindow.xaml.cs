@@ -25,6 +25,7 @@ namespace EV2020.Director
 			statusBarLastPing.DataContext = Data.db;
 			statusBarEmergencyStop.DataContext = Data.db;
 			statusBarFixedInputSequence.DataContext = Data.db;*/
+            MathNet.Numerics.Control.LinearAlgebraProvider = new MathNet.Numerics.Algorithms.LinearAlgebra.Mkl.MklLinearAlgebraProvider();
 			this.DataContext = Data.db;
 		}
 		private void comPortsComboBox_DropDownOpened(object sender, EventArgs e)
@@ -229,8 +230,8 @@ namespace EV2020.Director
             Matrix<double> A = DenseMatrix.OfArray(new double[,] { { 1, 2, 3 }, { 3, 2, 1 }, { 2, 1, 3 } });
             Matrix<double> B = DenseMatrix.OfArray(new double[,] { { 2, 0, 0 }});
             Matrix<double> C = DenseMatrix.OfArray(new double[,] { { 5 }, { 0 }, { 5 } });
-            var E = DenseMatrix.CreateRandom(100, 1000, new ContinuousUniform(0, 1));
-            var F = DenseMatrix.CreateRandom(1000, 100, new ContinuousUniform(0, 1));
+            var E = DenseMatrix.CreateRandom(10000, 1000, new ContinuousUniform(0, 1));
+            var F = DenseMatrix.CreateRandom(1000, 10000, new ContinuousUniform(0, 1));
             var D = B*A*C;
             var s = Stopwatch.StartNew();
             var G = E * F;
