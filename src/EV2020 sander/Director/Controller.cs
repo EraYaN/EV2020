@@ -400,11 +400,12 @@ namespace EV2020.Director
 
 			if (!_fixedInputSequenceExecuting)
 			{
-				if (_emergencyStop)				
+				// Already handled on U message (parking sensor) receive
+				/*if (_emergencyStop)				
 				{
 					driving = 0;
 					steering = 0;					
-				}
+				}*/
 			}
 			else
 			{
