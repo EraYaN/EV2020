@@ -6,11 +6,13 @@
 % sys=idss(A,B,C,D,K,[0 0],0.1);
 % [output, Tsim, outputx]=lsim(ss11,input);
 %sys=ss(A,B,C,D);
-s=ss11dcm;
-s2=ss11dcmCopy;
+s=ss11d;
+samples = 200;
+time=linspace(0,0.1*(samples-1),samples);
+%s2=ss11dcmCopy;
 %Nbar = rscale(ss11d,K);
-[output, Tsim, outputx]=lsim(s,-4.7*norm.u,time);
-output2=lsim(s2,-20*norm.u,time);
+[output, Tsim, outputx]=lsim(s,-1.6*norm.u,time);
+%output2=lsim(s2,-20*norm.u,time);
 % for i=1:300,
 %     u=input(i);
 %     xdot=A*x+B*u;
@@ -18,9 +20,9 @@ output2=lsim(s2,-20*norm.u,time);
 %     x=x+xdot;
 %     output(i)=y;
 % end
-plot(time,[norm.u output output2 norm.y]);
+plot(time,[norm.u output norm.y]);
 axis([0 30 -250 250])
-legend('input','output','output2', 'data');
+legend('input','output', 'data');
 pole(s)
 pole(s2)
 zero(s)

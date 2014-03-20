@@ -235,6 +235,7 @@ pip-log.txt
 *.out
 *.pyg
 !*-rc.pdf
+!**/resources/**/*.pdf
 
 #sublime text shit
 *.sublime-workspace
