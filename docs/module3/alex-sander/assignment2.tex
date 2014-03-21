@@ -1,0 +1,86 @@
+%!TEX program = xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\title{Module 3 - Report}
+\author{Alex {Misdorp} \and Sander {van Dijk}}
+\begin{document}
+
+\chapter{Assignment 2}
+\section*{Task 3: Identifying the models' parameters}
+\section*{Task 4: Observer Design}
+In order to get accurate information about the velocity of the car, an observer is constructed. The poles were chosen to be X and Y, the reason being: ...... From here on we calculated the L matrix which turned out to be:
+\begin{equation}
+\centering
+L =
+\begin{bmatrix}
+  -1,218 & -0.170
+\end{bmatrix}
+\end{equation}
+
+We applied the L matrix to our simulation to create an observer which can be seen in figure \ref{fig:simcircuit}.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\linewidth]{res/model-rest.png}
+\caption{Model used for simulation.}
+\label{fig:simcircuit}
+\end{figure}
+
+As a result the observer tracks the velocity fairly well. This can be seen in figure \ref{fig:observer} where the pink line represent the actual velocity and the blue line the observed velocity. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\linewidth]{res/observer-res.png}
+\caption{Observer in werking.}
+\label{fig:simcircuit}
+\end{figure}
+
+After about 1,5 seconds there is only a slight difference between the two lines and after two seconds they are nearly identical. This is in agreement with the requirements for an observer; the difference $x(t)-\hat{x}$ converges to zero and after a certain time point $t_i$ where $x(t) = \hat{x}$, this equation remains satisfied for $t$\geq $t_i$.
+
+\section*{Task 5: Controller design}
+
+To obtain oscillatory behavior we chose poles at X and Y. This results in the following K matrix:
+\begin{equation}
+\centering
+K = 
+\begin{bmatrix}
+  XXX & XXX
+\end{bmatrix}
+\end{equation}
+Leading to the oscillatory response as seen in figure \ref{fig:oscillatory}.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale = 0.5]{res/osc2-res.png}
+\caption{Oscillatory behaviour.}
+\label{fig:oscillatory}
+\end{figure}
+
+To obtain the desired critically damped response we had to choose our poles in the left half-plane. One would not want the poles to be too close to zero which might cause stability issues, on the other hand one would not want to place the poles too far to the left because this might not be practically feasible. Therefore we chose our poles at $-1+100i$ and $1+101i$. This results in the following K matrix:
+\begin{equation}
+\centering
+K =
+\begin{bmatrix}
+  0 & 0,8
+\end{bmatrix}
+\end{equation}
+
+Using this K matrix we receive a critically damped response as seen in figure \ref{fig:critically}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.5]{res/critically-res.png}
+\caption{Critically damped behaviour.}
+\label{fig:critically}
+\end{figure}
+
+In accordance to the preceding figure we obtain the desired closed loop behaviour in our simulation.\\\\
+\\
+CONTROL INPUT ontbreekt nog???\\
+welke polen???\\
+dingen voor assignment 1 en 2\\
+\end{document}
