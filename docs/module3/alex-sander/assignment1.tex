@@ -35,11 +35,11 @@ Using Equation \ref{eq:simple}, a state-space model can be derived. This model i
 	\label{eq:simple_matrix}
 \end{equation}
 
-The characteristic equation can be derived using Equation \ref{eq:char_eq}, which leads to Equation \ref{eq:char_eq_matrix} for the model in Equation \ref{eq:simple_matrix}. By calculating the determinant from this equation, the characteristic equation is found, as displayed in Equation \ref{eq:char_eq_final}. This leads to the eigenvalues of $0$ and $-\frac{\rho_f}{m}$, the first being on the imaginary axis and the second on the left half of the complex plane. Both poles should be on the left half of the complex plane to be stable, but since one is not, it is not stable. However, because the value is not negative either, the system will not diverge to infinity.
+The characteristic equation can be derived using Equation \ref{eq:char_eq}, which leads to Equation \ref{eq:char_eq_matrix} for the model in Equation \ref{eq:simple_matrix}. By calculating the determinant from this equation, the characteristic equation is found, as displayed in Equation \ref{eq:char_eq_final}. This leads to the eigenvalues of $0$ and $-\frac{\rho_f}{m}$, the first being on the imaginary axis and the second on the left half of the complex plane. Both poles should be on the left half of the complex plane to be stable, but since one is not, it is not stable.
 \\ \\
-The system is not stabilizable, since no matrix $K$ can be found to $(A + BK)$ to get the eigenvalues on the left size of the complex plane. This can also be found by looking at the rank of the matrix, which implies non-full rank. The system is controllable.
+The controllability matrix has a rank of two, which is full-rank for a second order system. Hence the system is controllable, which by definition makes the system stabilizable too.
 \\ \\
-Lastly, the system is observable, the output position can be used to measure the velocity.
+Lastly, since the observability matrix is also full-rank, the system is observable.
 
 \begin{equation}
 	\left| I \lambda - A \right| = 0
