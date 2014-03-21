@@ -154,6 +154,12 @@ namespace EV2020.Director
 			controlHistory.AddToFront(driving, steering);
 			Data.db.UpdateProperty("ControlDrivingGraphPoints");
 			Data.db.UpdateProperty("ControlSteeringGraphPoints");
+
+			// Update the observer, to brake OR just update the current velocity
+			int brakeDriving = observer.Update(currentLeftDistance < currentRightDistance ? currentLeftDistance : currentRightDistance, driving);
+			if (braking)
+				driving = brakeDriving;
+
 			sendDriveSteering();
 			sendStatusRequest();
 			if (Data.vis != null)
@@ -332,11 +338,6 @@ namespace EV2020.Director
 								Data.db.UpdateProperty("EmergencyStop");
 							}
 						}
-
-						// Update the observer, to brake OR just update the current velocity
-						int brakeDriving = observer.Update(currentLeftDistance < currentRightDistance ? currentLeftDistance : currentRightDistance, driving);
-						if (_emergencyStop)
-							driving = brakeDriving;
 
 						tmps = null;
 					}
