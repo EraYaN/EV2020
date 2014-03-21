@@ -4,7 +4,7 @@
 		xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
 		xmlns:oxy="http://oxyplot.codeplex.com"
         xmlns:local="clr-namespace:EV2020.Director" x:Class="EV2020.Director.MainWindow"
-        Title="EV2020 KITT Director by Erwin de Haan" Height="800" Width="800" KeyDown="Window_KeyDown" WindowState="Maximized">	
+        Title="EV2020 KITT Director by Erwin de Haan" Height="800" Width="800" KeyDown="Window_KeyDown" WindowState="Maximized">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition/>
@@ -46,7 +46,7 @@
 					<Button Content="Get Status" x:Name="getStatusButton" Click="getStatusButton_Click" Margin="2"/>
 					<Button x:Name="sendPulseButton" Content="Send Pulse" Margin="2" Click="sendPulseButton_Click"/>
 					<Button x:Name="sendWaveButton" Content="Send Wave" Margin="2" Click="sendWaveButton_Click"/>
-                    <Button x:Name="testMathButton" Content="Test Math" Margin="2" Click="testMathButton_Click"/>
+					<Button x:Name="testMathButton" Content="Test Math" Margin="2" Click="testMathButton_Click"/>
 				</StackPanel>
 			</GroupBox>
 			<GroupBox Header="Joystick">
@@ -89,13 +89,15 @@
 			</GroupBox>
 		</StackPanel>
 		<StatusBar Grid.ColumnSpan="2" Height="26" VerticalAlignment="Bottom">
-			<StatusBarItem Width="40" Content="{Binding SerialPortStatus, Mode=OneWay}" Foreground="{Binding SerialPortStatusColor, Mode=OneWay}" x:Name="statusBarComPort" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>			
+			<StatusBarItem Width="40" Content="{Binding SerialPortStatus, Mode=OneWay}" Foreground="{Binding SerialPortStatusColor, Mode=OneWay}" x:Name="statusBarComPort" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 			<StatusBarItem x:Name="statusBarEmergencyStop" Width="80" Content="{Binding LastPing, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 			<StatusBarItem x:Name="statusBarFixedInputSequence" Width="120" Content="{Binding FixedInputSequence, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 			<StatusBarItem x:Name="statusBarLastPing" Width="80" Content="{Binding EmergencyStop, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
 		</StatusBar>
-		<Canvas x:Name="visCanvas" Margin="0,0,0,31" Background="White"/>
-		
+		<Canvas x:Name="visCanvas" Margin="0,0,0,31" Background="White">
+			<TextBlock Canvas.Left="10" TextWrapping="Wrap" Text="{Binding StateString, Mode=OneWay}" Canvas.Top="10" Height="230" Width="500"/>
+		</Canvas>
+
 
 	</Grid>
 </Window>

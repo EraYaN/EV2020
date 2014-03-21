@@ -75,6 +75,7 @@
     <Compile Include="Databindings.cs" />
     <Compile Include="InputSequence.cs" />
     <Compile Include="Navigation.cs" />
+    <Compile Include="Observer.cs" />
     <Compile Include="OutputSequence.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="Visualization.cs" />

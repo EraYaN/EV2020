@@ -46,7 +46,14 @@ namespace EV2020.Director
 			}
 			else
 			{
-				c.Dispatcher.Invoke(drawJoystick, DispatcherPriority.Normal);
+				try
+				{
+					c.Dispatcher.Invoke(drawJoystick, DispatcherPriority.Normal);
+				}
+				catch (Exception)
+				{
+
+				}
 			}
 		}
 	}

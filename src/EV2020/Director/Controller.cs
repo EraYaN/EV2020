@@ -120,6 +120,11 @@ namespace EV2020.Director
 		{
 			get { return currentAudioState; }
 		}
+		private double target = 0.4;
+		public double Target
+		{
+			get { return target; }
+		}
 
 		public Controller()
 		{
@@ -138,9 +143,24 @@ namespace EV2020.Director
 			{
 				if (_fixedInputSequence.IsEndOfSignal) 
 					_fixedInputSequenceExecuting = false;
-				_fixedInputSequence.Forward();				
+				_fixedInputSequence.Forward();
+			}
+			else
+			{
+				if (Data.obsvr != null)
+				{
+					int d = (int)Math.Round(Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100));
+					if (d == 0)
+						SetDriving(0);
+					else if(d>0)
+						SetDriving(-7);
+					else
+						SetDriving(3);
+				}
+
 			}
 			Data.db.UpdateProperty("FixedInputSequence");
+
 			//Add data to graph
 			outputBatteryVoltageHistory.AddToFront((double)currentBatteryVoltage / 1000.0);
 			Data.db.UpdateProperty("BatteryGraphPoints");
@@ -417,11 +437,11 @@ namespace EV2020.Director
 			}
 		}
 		public void SetDriving(int d){
-			driving = d;
+			driving = d.Clamp(DrivingMin, DrivingMax);
 			sendDriveSteering();
 		}
 		public void SetSteering(int s){
-			steering = s;
+			steering = s.Clamp(SteeringMin, SteeringMax);
 			sendDriveSteering();
 		}
 		public void Stop()
