@@ -7,7 +7,7 @@
 \author{Alex {Misdorp} \and Sander {van Dijk}}
 \begin{document}
 
-\chapter{Assignment 1}
+\chapter{Assignment 1: System identification}
 Using Equation \ref{eq:simple}, a state-space model can be derived. This model is displayed in Equation \ref{eq:simple_matrix}, in which $x$ corresponds with the position and $\dot{x}$ with the velocity. This model is of second order.
 \begin{equation}
 	m \ddot{x} = -\rho_f \dot{x} + u
@@ -39,20 +39,37 @@ The characteristic equation can be derived using Equation \ref{eq:char_eq}, whic
 \\ \\
 To find out about the controllability we set up a controllability matrix as seen in \ref{eq:controllability}.
 \begin{equation}
-n = 2
-\newline
-\centering1
 C =
 \begin{bmatrix}
-\B & AB
+B & AB
 \end{bmatrix}
 \end{equation}
+\begin{equation}
+C =
+\begin{bmatrix}
+0 & \frac{1}{m}\\
+\frac{1}{m} & \frac{\rho_f}{m^2}
+\end{bmatrix}\label{eq:controllability}
+\end{equation}
 
-
-controllability matrix has a rank of two, which is full-rank for a second order system. Hence the system is controllable, which by definition makes the system stabilizable too.
-\\ \\
-Lastly, since the observability matrix is also full-rank, the system is observable.
-
+The preceding matrix is rank two, which is full-rank for a second order system. Hence the system is controllable, which by definition makes the system stabilizable too.
+\\\\
+A similar procedure holds to find out the observability. First we set up the observability matrix:
+\begin{equation}
+C =
+\begin{bmatrix}
+C\\
+CA
+\end{bmatrix}
+\end{equation}
+\begin{equation}
+C =
+\begin{bmatrix}
+1 & 0\\
+0 & 1
+\end{bmatrix}\label{eq:observability}
+\end{equation}
+The observability matrix is rank two and thus full rank. Therefore the system is observable.
 \begin{equation}
 	det(\left I \lambda - A \right) = 0
 	\label{eq:char_eq}
@@ -108,5 +125,7 @@ By adding the engine model to the car model, a better understanding of the contr
 	V
 	\label{eq:total_system_matrix}
 \end{equation}
+
+The same way as calculated with equations 1.3 to 1.6 we determined that the system is not stable. However, the system is controllable (and therefore stabilizable) and observable.
 
 \end{document}
