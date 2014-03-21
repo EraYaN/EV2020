@@ -20,40 +20,44 @@ namespace EV2020.Director
         static public Controller ctr;
         public static Databindings db = new Databindings();
         public static MATLABWrapper matlab;
+		public static Observer obsvr;
         // State matrix [-1.540497550593680 0.499996085982763;-0.050981466007821 -1.221182449406320]
-        Matrix<double> A = DenseMatrix.OfArray(new double[,] 
+		public static Matrix<double> A = DenseMatrix.OfArray(new double[,] 
         { 
-            { -1.540497550593680, 0.499996085982763 },
-            { -0.050981466007821, -1.221182449406320 }
+            //{ -1.540497550593680, 0.499996085982763 },
+            //{ -0.050981466007821, -1.221182449406320 }
+		   { -2.68, 1.93 },
+           { 1.78, -3.5 }
         });
         // Input-to-state matrix
-        Matrix<double> B = DenseMatrix.OfArray(new double[,] 
+		public static Matrix<double> B = DenseMatrix.OfArray(new double[,] 
         {
             { -24.048787384198400 },
             { 38.614088839675570 } 
         });
         // State-to-output matrix
-        Matrix<double> C = DenseMatrix.OfArray(new double[,] 
+		public static Matrix<double> C = DenseMatrix.OfArray(new double[,] 
         { 
             { 1, 0 } 
         });
         // Feedthrough matrix
-        Matrix<double> D = DenseMatrix.OfArray(new double[,] 
+		public static Matrix<double> D = DenseMatrix.OfArray(new double[,] 
         { 
             { 0 }
         });
         // Controller Gain 
-        Matrix<double> K = DenseMatrix.OfArray(new double[,] 
+		public static Matrix<double> K = DenseMatrix.OfArray(new double[,] 
         { 
-            { -0.064057182010178, -0.020791231841726 }
+            //{ -0.064057182010178, -0.020791231841726 }
+			{ -0.11, -0.04 }
         });
-        // Observer Gain
-        Matrix<double> L = DenseMatrix.OfArray(new double[,] 
+		// Observer Gain
+		public static Matrix<double> L = DenseMatrix.OfArray(new double[,] 
         { 
-            { 37.238320000000000 }, 
-            { 7.052425167927809e+02 } 
+            { 5 }, 
+            { 10 } 
         });
         // Input scale gain
-        double Nbar = -0.128112399834024;
+		public static double Nbar = -0.128112399834024;
     }
 }

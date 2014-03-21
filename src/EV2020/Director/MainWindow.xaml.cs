@@ -50,6 +50,7 @@ namespace EV2020.Director
 			initButton.IsEnabled = false;
 			initButton.Refresh();
 			//Init classes
+			Data.obsvr = new Observer();
 			Data.nav = new Navigation();
 			Data.vis = new Visualization(visCanvas, joystickCanvas);
 			
@@ -102,6 +103,7 @@ namespace EV2020.Director
 			comPortsComboBox.IsEnabled = true;
 			baudRateComboBox.IsEnabled = true;
 			Data.ctr = null;
+			Data.obsvr = null;
 			Data.vis = null;
 			Data.nav = null;
 			if (Data.matlab != null)

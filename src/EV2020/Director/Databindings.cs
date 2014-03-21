@@ -225,6 +225,21 @@ namespace EV2020.Director
 			}
 		}
 
+		public String StateString
+		{
+			get
+			{
+				if (Data.obsvr != null)
+				{
+					return Data.obsvr.X;
+				}
+				else
+				{
+					return "obsvr is null";
+				}
+			}
+		}
+
 		public void UpdateProperty(string name)
 		{
 			OnPropertyChanged(name);

@@ -1,6 +1,7 @@
 s=ss11;
-poles=[-1.38084 -1.38084];
-Lpoles=[-20 -20];
+%poles=[-1.38084 -1.38084];
+poles=[-5 -1.2];
+Lpoles=[-8 -14];
 
 K=acker(s.a,s.b,poles);
 A=s.a-s.b*K;
@@ -10,4 +11,4 @@ D=s.d;
 Nbar=rscale(A,B,C,D,K);
 L=acker(A',C',Lpoles)';
 
-sim('modelerwin');
+%sim('modelerwin');
