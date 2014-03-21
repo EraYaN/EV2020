@@ -12,7 +12,7 @@
 \chapter{Assignment 2}
 \section*{Task 3: Identifying the models' parameters}
 
-Now that a model has been constructed we need to find the values for our A and B matrix. To find these we sent the car a signal and measured the output of the ultrasound sensors. In figure \ref{fig:KITT-input-output-model} the results are on display.
+Now that a model has been constructed we need to find the values for our A and B matrix. To find these we sent the car a signal and measured the output of the ultrasound sensors. In Figure \ref{fig:KITT-input-output-model} the results are on display.
 The blue signal represents the input signal and periodically goes above $x=0$ and beneath it. In between those transitions there will be a small delay where the input remains zero for a while. The model output will react accordingly whereby the postion increases for a positive input and decreases for a negative input.
 The output signal from KITT shows a phase shift which might be contributed to the car's acceleration that is not instantaneous, there will be a certain delay. The jerking of the red line might also be contributed to this.
 
@@ -21,7 +21,7 @@ The output signal from KITT shows a phase shift which might be contributed to th
     	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
     	\input{res/KITT-input-output-model-output.tikz}    	
-    	\caption{The simulation and the car's response.}
+    	\caption{The simulation and the car's response}
     	\label{fig:KITT-input-output-model}
 \end{figure}
 
@@ -53,21 +53,21 @@ L=
  \end{bmatrix}
 \end{equation}
 
-With the use of Simulink we build a model to test our observer, it can be found in \ref{app:model}.
-As seen in figure \ref{ result the observer tracks the velocity fairly well. This can be seen in figure \ref{fig:observer} where the pink line represent the actual velocity and the blue line the observed velocity. 
+With the use of Simulink we build a model to test our observer, it can be found in Appendix A.
+As seen in Figure \ref{fig:observer} the observer tracks the velocity fairly well. This can be seen in Figure \ref{fig:observer} where the pink line represent the actual velocity and the blue line the observed velocity. 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{res/observer-res.png}
-\caption{Observer at work.}
+\includegraphics[width=0.5\linewidth]{res/observer-res.png}
+\caption{Observer tracking the velocity}
 \label{fig:observer}
 \end{figure}
 
-After about 1,5 seconds there is only a slight difference between the two lines and after two seconds they are nearly identical. This is in agreement with the requirements for an observer; the difference $x(t)-\hat{x}$ converges to zero and after a certain time point $t_i$ where $x(t) = \hat{x}$, this equation remains satisfied for $t$\geq $t_i$.
+After about 1,5 seconds there is only a slight difference between the two lines and after two seconds they are nearly identical. This is in agreement with the requirements for an observer; the difference $x(t)-\hat{x}$ converges to zero and after a certain time point $t_i$ where $x(t) = \hat{x}$, this equation remains satisfied for $t$ \geq $~t_i$.
 
 \section*{Task 5: Controller design}
 
-To obtain oscillatory behavior we chose the poles at $-1 + 3i$ and $-1 - 3i$. This results in the following K matrix:
+To obtain oscillatory behavior we chose the poles at $-1 + 3i$ and $-1 - 3i$. These poles converge to the desired value since they both lie in the left halfplane of the complex plane, but this happens in an oscillating way. This results in the following K matrix:
 \begin{equation}
 \centering
 K = 
@@ -75,12 +75,12 @@ K =
   0.271 & 0.168
 \end{bmatrix}
 \end{equation}
-Leading to the oscillatory response as seen in figure \ref{fig:oscillatory}.
+Leading to the oscillatory response as seen in Figure \ref{fig:oscillatory}.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[scale = 0.5]{res/osc-res.png}
-\caption{Oscillatory behaviour.}
+\caption{Oscillatory behaviour}
 \label{fig:oscillatory}
 \end{figure}
 
@@ -93,16 +93,29 @@ K =
 \end{bmatrix}
 \end{equation}
 
-Using this K matrix we receive a critically damped response as seen in figure \ref{fig:critically}.
+Using this K matrix we receive a critically damped response as seen in Figure \ref{fig:crittically}.
 
 \begin{figure}[H]
 	\centering
     	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
     	\input{res/model-step-response.tikz}    	
-    	\caption{The model’s step response with controller and observer.}
+    	\caption{The model’s step response with controller and observer}
     	\label{fig:crittically}
 \end{figure}
 
-In accordance to the preceding figure we obtain the desired closed loop behaviour in our simulation.
+In accordance to Figure \ref{fig:crittically} we obtain the desired closed loop behaviour in our simulation.
+\\ \\
+The model has been implemented on KITT in C\#. As result, KITT drives autonomically towards the given distance from the wall and stops there. However, at first KITT oscillated around the target distance instead of stopping there immediately. This was solved by changing the damping from the underdamped situation to a overdamped situation. Crittically damping is very hard to acchieve with such a complicated system and could easily change to underdamped to changing environment variables, such as the supercap voltage. The new poles are located at $5$ and $1.2$, resulting in the following K matrix:
+
+\begin{equation}
+\centering
+K = 
+\begin{bmatrix}
+  -0.111 & 0.0388
+\end{bmatrix}
+\end{equation}
+
+With this new K matrix, KITT now drives to the destination distance without oscillating around it anymore. But since it is overdamped, KITT will not reach the target in an optimal time.
+
 \end{document}
