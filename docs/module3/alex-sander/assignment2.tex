@@ -11,6 +11,38 @@
 
 \chapter{Assignment 2}
 \section*{Task 3: Identifying the models' parameters}
+
+Now that a model has been constructed we need to find the values for our A and B matrix. To find these we sent the car a signal and measured the output of the ultrasound sensors. In figure \ref{fig:KITT-input-output-model} the results are on display.
+The blue signal represents the input signal and periodically goes above $x=0$ and beneath it. In between those transitions there will be a small delay where the input remains zero for a while. The model output will react accordingly whereby the postion increases for a positive input and decreases for a negative input.
+The output signal from KITT shows a phase shift which might be contributed to the car's acceleration that is not instantaneous, there will be a certain delay. The jerking of the red line might also be contributed to this.
+
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{res/KITT-input-output-model-output.tikz}    	
+    	\caption{The simulation and the car's response.}
+    	\label{fig:KITT-input-output-model}
+\end{figure}
+
+The measurements resulted in the following A matrix and associated eigenvalues.
+
+\begin{equation}
+A=
+\begin{bmatrix}
+  0 & 1 \\
+  -2,5245 & -2,0240
+ \end{bmatrix}
+\qquad
+eig(A)=
+\begin{bmatrix}
+ -1.0120 + 1.2249i \\
+  -1.0120 - 1.2249i
+ \end{bmatrix}
+\end{equation}
+
+Because the real part of the eigenvalues are non positive the system appears to be stable. Generally speaking the simulation is a pretty good approximation whereby the phase shift should be kept in mind.
+
 \section*{Task 4: Observer Design}
 In order to get accurate information about the velocity of the car, an observer is constructed. The poles were chosen to be X and Y, the reason being: ...... From here on we calculated the L matrix which turned out to be:
 \begin{equation}
