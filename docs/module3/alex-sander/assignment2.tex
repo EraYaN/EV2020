@@ -75,39 +75,41 @@ After about 1,5 seconds there is only a slight difference between the two lines 
 
 \section*{Task 5: Controller design}
 
-To obtain oscillatory behavior we chose poles at X and Y. This results in the following K matrix:
+To obtain oscillatory behavior we chose the poles at $-1 + 3i$ and $-1 - 3i$. This results in the following K matrix:
 \begin{equation}
 \centering
 K = 
 \begin{bmatrix}
-  XXX & XXX
+  0.271 & 0.168
 \end{bmatrix}
 \end{equation}
 Leading to the oscillatory response as seen in figure \ref{fig:oscillatory}.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale = 0.5]{res/osc2-res.png}
+\includegraphics[scale = 0.5]{res/osc-res.png}
 \caption{Oscillatory behaviour.}
 \label{fig:oscillatory}
 \end{figure}
 
-To obtain the desired critically damped response we had to choose our poles in the left half-plane. One would not want the poles to be too close to zero which might cause stability issues, on the other hand one would not want to place the poles too far to the left because this might not be practically feasible. Therefore we chose our poles at $-1+100i$ and $1+101i$. This results in the following K matrix:
+To obtain the desired critically damped response we had to choose our poles in the left half-plane on the real axis. Also, they would have to be on the same exact spot, making a double pole. One would not want the poles to be too close to zero which might cause stability issues, on the other hand one would not want to place the poles too far to the left because this might not be practically feasible. Therefore the double pole was chosen at $-1.38$, which was found by trying multiple values to optimize the damping. This results in the following K matrix:
 \begin{equation}
 \centering
 K =
 \begin{bmatrix}
-  0 & 0,8
+  -0.0641 & -0.0208
 \end{bmatrix}
 \end{equation}
 
 Using this K matrix we receive a critically damped response as seen in figure \ref{fig:critically}.
 
 \begin{figure}[H]
-\centering
-\includegraphics[scale = 0.5]{res/critically-res.png}
-\caption{Critically damped behaviour.}
-\label{fig:critically}
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{res/model-step-response.tikz}    	
+    	\caption{The model’s step response with controller and observer.}
+    	\label{fig:crittically}
 \end{figure}
 
 In accordance to the preceding figure we obtain the desired closed loop behaviour in our simulation.\\\\
