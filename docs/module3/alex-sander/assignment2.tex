@@ -44,31 +44,23 @@ eig(A)=
 Because the real part of the eigenvalues are non positive the system appears to be stable. Generally speaking the simulation is a pretty good approximation whereby the phase shift should be kept in mind.
 
 \section*{Task 4: Observer Design}
-In order to get accurate information about the velocity of the car, an observer is constructed. The poles were chosen to be X and Y, the reason being: ...... From here on we calculated the L matrix which turned out to be:
+In order to get accurate information about the velocity of the car, an observer is constructed. Both poles have been set a -20, determining the poles was a bit of a trial and error process. The main requirement is that the poles are located in the left plane. The more negative the real part of a pole is, the stronger the damping. However choosing the poles to far to the left is not practical. Using MatLab and setting the poles at -20 we calculated the following L matrix:
 \begin{equation}
-\centering
-L =
+L=
 \begin{bmatrix}
-  -1,218 & -0.170
-\end{bmatrix}
+  37.238 \\
+  705.24
+ \end{bmatrix}
 \end{equation}
 
-We applied the L matrix to our simulation to create an observer which can be seen in figure \ref{fig:simcircuit}.
+With the use of Simulink we build a model to test our observer, it can be found in \ref{app:model}.
+As seen in figure \ref{ result the observer tracks the velocity fairly well. This can be seen in figure \ref{fig:observer} where the pink line represent the actual velocity and the blue line the observed velocity. 
 
-\begin{figure}[h!]
-\centering
-\includegraphics[width=\linewidth]{res/model-rest.png}
-\caption{Model used for simulation.}
-\label{fig:simcircuit}
-\end{figure}
-
-As a result the observer tracks the velocity fairly well. This can be seen in figure \ref{fig:observer} where the pink line represent the actual velocity and the blue line the observed velocity. 
-
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{res/observer-res.png}
-\caption{Observer in werking.}
-\label{fig:simcircuit}
+\caption{Observer at work.}
+\label{fig:observer}
 \end{figure}
 
 After about 1,5 seconds there is only a slight difference between the two lines and after two seconds they are nearly identical. This is in agreement with the requirements for an observer; the difference $x(t)-\hat{x}$ converges to zero and after a certain time point $t_i$ where $x(t) = \hat{x}$, this equation remains satisfied for $t$\geq $t_i$.
@@ -110,9 +102,5 @@ Using this K matrix we receive a critically damped response as seen in figure \r
 \label{fig:critically}
 \end{figure}
 
-In accordance to the preceding figure we obtain the desired closed loop behaviour in our simulation.\\\\
-\\
-CONTROL INPUT ontbreekt nog???\\
-welke polen???\\
-dingen voor assignment 1 en 2\\
+In accordance to the preceding figure we obtain the desired closed loop behaviour in our simulation.
 \end{document}

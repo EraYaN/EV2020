@@ -35,14 +35,26 @@ Using Equation \ref{eq:simple}, a state-space model can be derived. This model i
 	\label{eq:simple_matrix}
 \end{equation}
 
-The characteristic equation can be derived using Equation \ref{eq:char_eq}, which leads to Equation \ref{eq:char_eq_matrix} for the model in Equation \ref{eq:simple_matrix}. By calculating the determinant from this equation, the characteristic equation is found, as displayed in Equation \ref{eq:char_eq_final}. This leads to the eigenvalues of $0$ and $-\frac{\rho_f}{m}$, the first being on the imaginary axis and the second on the left half of the complex plane. Both poles should be on the left half of the complex plane to be stable, but since one is not, it is not stable.
+The characteristic equation can be derived using Equation \ref{eq:char_eq}, which leads to Equation \ref{eq:char_eq_matrix} for the model in Equation \ref{eq:simple_matrix}. By calculating the determinant of this equation, the characteristic equation is found, as displayed in Equation \ref{eq:char_eq_final}. This leads to the eigenvalues of $0$ and $-\frac{\rho_f}{m}$, the first being on the imaginary axis and the second on the left half of the complex plane. Both poles should be on the left half of the complex plane to be stable, but since one is not, it is not stable.
 \\ \\
-The controllability matrix has a rank of two, which is full-rank for a second order system. Hence the system is controllable, which by definition makes the system stabilizable too.
+To find out about the controllability we set up a controllability matrix as seen in \ref{eq:controllability}.
+\begin{equation}
+n = 2
+\newline
+\centering1
+C =
+\begin{bmatrix}
+\B & AB
+\end{bmatrix}
+\end{equation}
+
+
+controllability matrix has a rank of two, which is full-rank for a second order system. Hence the system is controllable, which by definition makes the system stabilizable too.
 \\ \\
 Lastly, since the observability matrix is also full-rank, the system is observable.
 
 \begin{equation}
-	\left| I \lambda - A \right| = 0
+	det(\left I \lambda - A \right) = 0
 	\label{eq:char_eq}
 \end{equation}
 
