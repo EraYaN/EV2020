@@ -3,6 +3,8 @@
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../../library/bibliography.bib}
+\title{Module 3 - Control and Trajectory Tracking}
+\author{Erwin {de Haan} \and Xenia {Wesdijk}}
 \begin{document}
 
 \chapter{Task 1 \& 2}
@@ -11,7 +13,204 @@
 \section{Task 1}
 \label{sec:mod3-tsk1}
 
+\begin{enumerate}
+\item \textit{Derive a corresponding state-space model. The states are $x_{1}$: position, $x_{2}$: velocity. The input is u: the motor force, and the measured output is y = $x_{1}$: the position.}\\
+\\
+Starting with equation \ref{eq:motion} we first transformed it into equation \ref{eq:switch} from which we were able to derive a state-space model. This state-space model is showed in \ref{eq:matrix}. $\ddot{x_{1}}$ and $\dot{x_{1}}$ from \ref{eq:motion} and \ref{eq:switch} are replaced by $\ddot{x}$ and $\dot{x}$ in the state-space model in equation \ref{eq:matrix}.
+
+\begin{equation}
+	m \ddot{x_{1}} = -\rho_f \dot{x_{1}} +\textit{u}
+	\label{eq:motion}
+\end{equation}
+\begin{equation}
+	\ddot{x_{1}} = -\frac{\rho_f}{m} \dot{x_{1}} +(\frac{1}{m})\textit{u}
+	\label{eq:switch}
+\end{equation}
+\begin{equation}
+	\begin{bmatrix}
+		\dot{x} \\
+		\ddot{x}
+	\end{bmatrix} =
+	\begin{bmatrix}
+		0 & 1 \\
+		0 & -\frac{\rho_f}{m}
+	\end{bmatrix}
+	\begin{bmatrix}
+		x \\
+		\dot{x}
+	\end{bmatrix} +
+	\begin{bmatrix}
+		0 \\
+		\frac{1}{m}
+	\end{bmatrix}
+	\textit{u}
+	\label{eq:matrix}
+\end{equation}
+\\
+\item \textit{What is the order of this system? What are the coefficients for the characteristic equation? Is this system stable? Controllable? Observable? If the system is not stable, is it stabilizable?}
+\label{ref:task12}\\
+\\
+ In the model of equation \ref{eq:matrix} $x$ equals the position and $\dot{x}$ equals the velocity (which is the derivative of $x$). Our derived state-space model is thus a second order model. \\
+In order to find the characteristic equation we have to use equation \ref{eq:labda} on the model of equation \ref{eq:matrix}. This leads to the matrix in \ref{eq:fmatrix}. When calculating the determinant from \ref{eq:fmatrix} we find the characteristic equation as displayed in \ref{eq:characteristic}. Solving this equation for $\lambda$ we find the two eigenvalues $\lambda$ =  $0$ and $\lambda$ = $-\frac{\rho_f}{m}$. In order for our system to be stable it needs to have two poles on the left half of the complex plane. It now, however, has one on the imaginary axis ($\lambda$ = $0$) and the other one on the left half of the complex plane ($\lambda$ = $-\frac{\rho_f}{m}$), so our system is not stable.\\
+\begin{equation}
+	\left| I \lambda - A \right| = 0
+	\label{eq:labda}
+\end{equation}
+
+\begin{equation}
+	\begin{vmatrix}
+		\lambda & -1 \\
+		0 & \lambda + \frac{\rho_f}{m}
+	\end{vmatrix} = 0
+	\label{eq:fmatrix}
+\end{equation}
+
+\begin{equation}
+	\lambda(\lambda + \frac{\rho_f}{m}) = 0
+	\label{eq:characteristic}
+\end{equation}
+\\
+Because our A matrix is not diagonal it means that there is coupling between the states $\dot{x}$ and $\ddot{x}$. Due to the coupling between the states we know that our system is controllable.\\
+Our system is also observable since the rank is two, which is the same as the order of the system.\\
+Lastly we need to check if our system is stabilizable. A system is stabilizable when there is a matrix $K$ that is able to get the eigenvalues on the left side of the complex plane. Equation \ref{eq:K} can be used to find such a $K$ matrix. Since we can't find a $K$ matrix who can do this or system is not stabilizable.
+
+\begin{equation}
+	(A + BK)
+\label{eq:K}
+\end{equation}
+
+
+\end{enumerate}
+
 \section{Task 2}
 \label{sec:mod3-tsk2}
+\begin{enumerate}
+\item \textit{Combine the previously found state-space model of the car position with the DC motor model into a single state-space model. Make sure you relate the velocity of the motor to the forward velocity of the car and compute the parameter $k_{w}$ given the wheel radius.}\\
+\\
+We started out with the following equation. Which was given in our manual (\cite{epo4-manual}).
+\begin{equation}
+V = iR + L\frac{d}{dt}i + e
+\label{eq:start}
+\end{equation}
+Also given was:
+\begin{equation}
+e = k_t \omega
+\label{eq:e}
+\end{equation}
+Filling equation \ref{eq:e} in to equation \ref{eq:start} gives: 
+\begin{equation}
+V = iR + L\frac{d}{dt}i + k_t \omega
+\label{eq:1}
+\end{equation}
+
+\begin{equation}
+i = \frac{\tau_m}{k_t}
+\label{eq:2}
+\end{equation}
+
+\begin{equation}
+V = \frac{\tau_m}{k_t}R + L\frac{d}{dt}\frac{\tau_m}{k_t} +  k_t \omega
+\label{eq:3}
+\end{equation}
+
+\begin{equation}
+\tau_m = \frac{\tau_w}{k_g}
+\label{eq:4}
+\end{equation}
+
+\begin{equation}
+V = \frac{\tau_w}{k_t k_g}R + L\frac{d}{dt}\frac{\tau_w}{k_t k_g} +  k_t \omega
+\label{eq:5}
+\end{equation}
+
+\begin{equation}
+\tau_w = \frac{\tau}{k_w}
+\label{eq:6}
+\end{equation}
+
+\begin{equation}
+V = \frac{\tau}{k_t k_g k_w}R + L\frac{d}{dt}\frac{\tau}{k_t k_g k_w} +  k_t \omega
+\label{eq:final}
+\end{equation}\\
+By subsituting all our given equations (step by step) into euqation \ref{eq:start}, as is shown above, we finally find equation \ref{eq:final}. We still have $\omega$ in this equation. We know that $\omega$ = $\frac{\dot{x}}{r}$. Using this in equation \ref{eq:final} gives us equation \ref{eq:withradius}. In this case $\tau$ represents the force, which is equal to $ma$. $a$ is the acceleration, same as $\ddot{x}$. So $\tau$ = $m\ddot{x}$. Using this to replace $\tau$ in equation \ref{eq:withradius} gives us equation \ref{eq:filled}. 
+
+\begin{equation}
+V = \frac{\tau}{k_t k_g k_w}R + L\frac{d}{dt}\frac{\tau}{k_t k_g k_w} +  \frac{k_t \dot{x}}{r}
+\label{eq:withradius}
+\end{equation}
+
+\begin{equation}
+V = \frac{m\ddot{x}}{k_t k_g k_w}R + L\frac{d}{dt}\frac{m\ddot{x}}{k_t k_g k_w} +  \frac{k_t \dot{x}}{r}
+\label{eq:filled}
+\end{equation}\\
+\\ 
+Equation \ref{eq:filled} can also be written as equation \ref{eq:new}. Equation \ref{eq:new} is a third order system. In \ref{sec:vraag2} of \ref{sec:mod3-tsk2} we can neglect L and we will see that we're left with a second order system, also see equation \ref{eq:tau}. 
+\begin{equation}
+V = \frac{m\ddot{x}}{k_t k_g k_w}R + \frac{Lm\dddot{x}}{k_t k_g k_w} +  \frac{k_t \dot{x}}{r}
+\label{eq:new}
+\end{equation}\\
+\\
+The last thing we still had to do was compute de parameter $k_{w}$ given the radius of the wheel. From the definition of $\tau$ ($\tau$ = $F$ $\cdot$ $r$) and from equation \ref{eq:6} we can find that $k_{w}$ =  $\frac{1}{r_w}$ in which $r_{w}$ stands for the radius of the wheel. 
+
+
+\item \textit{What is the order of this system?\\ Simplify  by setting the motor coil inductance L to zero. What are the coefficients for the characteristic equation? Is this system stable? Controllable? Observable? If the system is not stable, is it stabilizable?}
+\label{sec:vraag2}\\
+\\
+When we set the motor coil inductance to zero and use equation \ref{eq:withradius} we get equation \ref{eq:Lzero}.
+\begin{equation}
+V = \frac{\tau}{k_t k_g k_w}R +  \frac{k_t \dot{x}}{r}
+\label{eq:Lzero}
+\end{equation}\\
+Rewriting this equation we get equation \ref{eq:tau}. 
+\begin{equation}
+\tau = \frac{k_t k_g k_w}{R} V +  \frac{k_t² k_g k_w \dot{x}}{Rr}
+\label{eq:tau}
+\end{equation}
+\\
+Putting equation \ref{eq:tau} into equation \ref{eq:motion} we get \ref{eq:motiontau}.
+
+\begin{equation}
+m\ddot{x} = -( \rho_f + \frac{k_t² k_g k_w}{Rr}) \dot{x} + \frac{k_t k_g k_w}{R}V
+\label{eq:motiontau}
+\end{equation}
+\\
+Solving this for $\ddot{x}$ we get equation \ref{eq:finito}.
+\\
+\begin{equation}
+\ddot{x} = -( \frac{\rho_f}{m} + \frac{k_t² k_g k_w}{mRr}) \dot{x} + \frac{k_t k_g k_w}{mR}V
+\label{eq:finito}
+\end{equation}\\
+
+And finally equation \ref{eq:finito} leads us to \ref{eq:total} which is a simplified model for the DC motor model. 
+\begin{equation}
+	\begin{bmatrix}
+		\dot{x} \\
+		\ddot{x}
+	\end{bmatrix} =
+	\begin{bmatrix}
+		0 & 1 \\
+		0 & -\frac{\rho_f}{m} - \frac{k_t² k_g k_w}{mRr}
+	\end{bmatrix}
+	\begin{bmatrix}
+		x \\
+		\dot{x}
+	\end{bmatrix} +
+	\begin{bmatrix}
+		0 \\
+		\frac{k_t k_g k_w}{mR}
+	\end{bmatrix}
+	V
+	\label{eq:total}
+\end{equation}
+\\
+Now we again need to find the coefficients of the characteristic equation. By using the same methods as in section \ref{ref:task12} from \ref{sec:mod3-tsk1} we find that the eigenvalues are $\lambda$ = $0$ and $\lambda$ = $ -\frac{\rho_f}{m} - \frac{k_t² k_g k_w}{mRr}$. Since the matrix has the same form as in section \ref{ref:task12} from \ref{sec:mod3-tsk1}, the same things apply to this matrix. 
+So it is not stable, but stablizable. It's observable and controllable.
+
+
+\end{enumerate}
+
+
+
+
 
 \end{document}
