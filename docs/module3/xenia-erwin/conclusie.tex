@@ -1,0 +1,24 @@
+%!TEX program = xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+\begin{document}
+
+\chapter{Conclusion}
+\label{ch:mod3-con}
+The current model when implemented and used with the car is far from optimal.
+The result of the model implemented as-is in shown in figure \ref{fig:real-world-response}.
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/real-world-response.tikz}    	
+    	\caption{The real world response.}
+    	\label{fig:real-world-response}
+\end{figure}
+We got the hint that for the midterm we we're allowed to implement any kind of controller, so we will investigate the possibilities.
+We created a way to make the controllers adhere to an interface.
+So we can drop any of em in and try them.
+
+\end{document}

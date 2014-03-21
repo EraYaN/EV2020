@@ -7,7 +7,7 @@
 
 \chapter{Assignment 2: Feedback controller design}
 \label{ch:mod3-ass2}
-\section{Task 4}
+\section{Task 4: Observer Design}
 \label{sec:mod3-tsk4}
 We placed the poles for the $A’$ and $C’$ matrices on a more arbitrary number and far and foremost a number futher to the left.
 Because the model we use to simulate the system (figure \ref{fig:simulink-model}) is “perfect” is a sense that two of the same systems give the same output.
@@ -23,7 +23,7 @@ L=
 In the simulation $y-\hat{y}=0$, because of the lack of difference between the systems.
 When a constant offset or noise is introduced in the $y$ signal then the influence of L is noticable.
 The effect in practice will futher determine the refinement of the L matrix.
-\section{Task 5}
+\section{Task 5: Controller Design}
 \label{sec:mod3-tsk5}
 We placed the poles of the system found in chapter \ref{ch:mod3-ass1} both at -1.3808 using the acker function in MATLAB.
 The result is shown in figure \ref{fig:KITT-input-output-model-output-after-pole-placing}.
@@ -34,6 +34,21 @@ So we started with the poles somewhere at -2.5 and then we moved them gradually 
 Because the zero is in the right hand pane, so with a negative real part, this does not really intoduce any weird artefacts in the simulation.
 So in the end the simulation converges faily quickly but not too quickly (in around 2.5 seconds).
 If the model converged too quickly KITT would, due to the slow update rate, overshoot the desired position.
+\begin{equation}
+K=
+\begin{bmatrix}
+  -0.064057 & -0.020791
+ \end{bmatrix}
+\end{equation}
+And the resulting A matrix. $A’=A-KB$
+\begin{equation}
+A’=
+\begin{bmatrix}
+   -1.5405& 0.50000\\
+   -0.050981 &  -1.2212
+ \end{bmatrix}
+\end{equation}
+This clearly is no longer in observability canonical form.
 \begin{figure}[H]
 	\centering
     	\setlength\figureheight{4cm}
@@ -58,19 +73,4 @@ If the model converged too quickly KITT would, due to the slow update rate, over
     	\caption{The model used to simulate the observer and controller.}
     	\label{fig:simulink-model}
 \end{figure}
-\begin{equation}
-K=
-\begin{bmatrix}
-  -0.064057 & -0.020791
- \end{bmatrix}
-\end{equation}
-And the resulting A matrix. $A’=A-KB$
-\begin{equation}
-A’=
-\begin{bmatrix}
-   -1.5405& 0.50000\\
-   -0.050981 &  -1.2212
- \end{bmatrix}
-\end{equation}
-This clearly is no longer in observability canonical form.
 \end{document}
