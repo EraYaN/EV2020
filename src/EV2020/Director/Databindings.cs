@@ -225,13 +225,13 @@ namespace EV2020.Director
 			}
 		}
 
-		public String StateString
+		public String ModelDebugInfo
 		{
 			get
 			{
 				if (Data.obsvr != null)
 				{
-					return Data.obsvr.X;
+					return Data.obsvr.DebugInfo;
 				}
 				else
 				{

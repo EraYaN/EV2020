@@ -95,7 +95,7 @@
 			<StatusBarItem x:Name="statusBarLastPing" Width="80" Content="{Binding EmergencyStop, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
 		</StatusBar>
 		<Canvas x:Name="visCanvas" Margin="0,0,0,31" Background="White">
-			<TextBlock Canvas.Left="10" TextWrapping="Wrap" Text="{Binding StateString, Mode=OneWay}" Canvas.Top="10" Height="230" Width="500"/>
+			<TextBlock Canvas.Left="10" TextWrapping="Wrap" Text="{Binding ModelDebugInfo, Mode=OneWay}" Canvas.Top="10" Height="230" Width="500"/>
 		</Canvas>
 
 

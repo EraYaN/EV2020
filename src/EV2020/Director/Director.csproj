@@ -73,10 +73,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Databindings.cs" />
+    <Compile Include="IModel.cs" />
     <Compile Include="InputSequence.cs" />
     <Compile Include="Navigation.cs" />
     <Compile Include="Observer.cs" />
     <Compile Include="OutputSequence.cs" />
+    <Compile Include="PDDefaultModel.cs" />
+    <Compile Include="PDEpicModel.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="Visualization.cs" />
     <Page Include="MainWindow.xaml">

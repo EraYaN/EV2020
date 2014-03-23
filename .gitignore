@@ -243,3 +243,4 @@ pip-log.txt
 #Simulink shit
 slprj
 *.mexw64
+*.autosave

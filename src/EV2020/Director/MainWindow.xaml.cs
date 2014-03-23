@@ -10,6 +10,7 @@ using MathNet.Numerics.LinearAlgebra.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.Distributions;
 using System.Diagnostics;
+using MathNet.Numerics.Algorithms.LinearAlgebra.Mkl;
 
 namespace EV2020.Director
 {
@@ -25,7 +26,7 @@ namespace EV2020.Director
 			statusBarLastPing.DataContext = Data.db;
 			statusBarEmergencyStop.DataContext = Data.db;
 			statusBarFixedInputSequence.DataContext = Data.db;*/
-            MathNet.Numerics.Control.LinearAlgebraProvider = new MathNet.Numerics.Algorithms.LinearAlgebra.Mkl.MklLinearAlgebraProvider();
+            MathNet.Numerics.Control.LinearAlgebraProvider = new MklLinearAlgebraProvider();
 			this.DataContext = Data.db;
 		}
 		private void comPortsComboBox_DropDownOpened(object sender, EventArgs e)
@@ -50,7 +51,7 @@ namespace EV2020.Director
 			initButton.IsEnabled = false;
 			initButton.Refresh();
 			//Init classes
-			Data.obsvr = new Observer();
+			Data.obsvr = new Observer(new PDEpicModel());
 			Data.nav = new Navigation();
 			Data.vis = new Visualization(visCanvas, joystickCanvas);
 			
