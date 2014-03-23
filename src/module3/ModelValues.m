@@ -2,17 +2,21 @@
 %B = [5.639000000000000;-39.940000000000000];
 %C = [1,0];
 
-L_poles = [-4, -4]; %[-4, -4]
-K_poles = [-2, -2]; %[-1.38084, -1.38084]
+A = [0,1;0,-1.782000000000000];
+B = [0;-39.940000000000000];
+C = [1,0];
 
-L = acker(ss11.a', ss11.c', L_poles);
-K = acker(ss11.a, ss11.b, K_poles);
+L_poles = [-10, -10]; %[-4, -4]
+K_poles = [-1.5, -6]; %[-1.38084, -1.38084] % PERFECT FOR 300->6: [-0.5, -3]
 
-A = ss11.a-ss11.b*K;
-B = ss11.b;
-C = ss11.c;
+L = acker(A', C', L_poles);
+K = acker(A, B, K_poles);
+
+%A = A-B*K;
+%B = ss11.b;
+%C = ss11.c;
 D = 0;
 
 nbar = rscale(A, B, C, D, K);
 
-sim('model2');
+sim('model_final');

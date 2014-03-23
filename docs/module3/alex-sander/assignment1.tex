@@ -37,6 +37,23 @@ Using Equation \ref{eq:simple}, a state-space model can be derived. This model i
 
 The characteristic equation can be derived using Equation \ref{eq:char_eq}, which leads to Equation \ref{eq:char_eq_matrix} for the model in Equation \ref{eq:simple_matrix}. By calculating the determinant of this equation, the characteristic equation is found, as displayed in Equation \ref{eq:char_eq_final}. This leads to the eigenvalues of $0$ and $-\frac{\rho_f}{m}$, the first being on the imaginary axis and the second on the left half of the complex plane. Both poles should be on the left half of the complex plane to be stable, but since one is not, it is not stable.
 \\ \\
+\begin{equation}
+	\left| I \lambda - A \right| = 0
+	\label{eq:char_eq}
+\end{equation}
+\begin{equation}
+	\begin{vmatrix}
+		\lambda & -1 \\
+		0 & \lambda + \frac{\rho_f}{m}
+	\end{vmatrix} = 0
+	\label{eq:char_eq_matrix}
+\end{equation}
+
+\begin{equation}
+	\lambda(\lambda + \frac{\rho_f}{m}) = 0
+	\label{eq:char_eq_final}
+\end{equation}
+\\
 To find out about the controllability we set up a controllability matrix as seen in \ref{eq:controllability}.
 \begin{equation}
 C =
@@ -70,23 +87,7 @@ C =
 \end{bmatrix}\label{eq:observability}
 \end{equation}
 The observability matrix is rank two and thus full rank. Therefore the system is observable.
-\begin{equation}
-	det(\left I \lambda - A \right) = 0
-	\label{eq:char_eq}
-\end{equation}
-
-\begin{equation}
-	\begin{vmatrix}
-		\lambda & -1 \\
-		0 & \lambda + \frac{\rho_f}{m}
-	\end{vmatrix} = 0
-	\label{eq:char_eq_matrix}
-\end{equation}
-
-\begin{equation}
-	\lambda(\lambda + \frac{\rho_f}{m}) = 0
-	\label{eq:char_eq_final}
-\end{equation}
+\\\\
 
 By adding the engine model to the car model, a better understanding of the controllability of the whole system can be achieved. The motor model can be solved to Equation \ref{eq:motor}, which can be used in the original model of Equation \ref{eq:simple}. This yields a third order system, as displayed in Equation \ref{eq:total_system}, but by neglecting the motor coil inductance $L$, it can be simplified to the second order system of Equation \ref{eq:total_system_simple}. Equation \ref{eq:total_system_matrix} is the state-space model of this simplified model.
 
