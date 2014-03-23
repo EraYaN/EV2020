@@ -41,6 +41,20 @@ namespace EV2020.Director
 				return data[index];
 			}
 		}
+		public double FirstDataElement
+		{
+			get
+			{
+				return data[0];
+			}
+		}
+		public double LastDataElement
+		{
+			get
+			{
+				return data[length-1];
+			}
+		}
 		protected double[] data;
 		public Sequence()
 		{
@@ -101,7 +115,7 @@ namespace EV2020.Director
 			Array.Copy(a.Data, 0, c, data.Length, a.Length);
 			data = c;
 			length = data.Length;
-		}
+		}		
 		#region Static generation methods
 		public static Sequence Linear(long samples, double Start, double End)
 		{
