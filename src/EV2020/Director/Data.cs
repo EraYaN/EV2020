@@ -20,8 +20,6 @@ namespace EV2020.Director
         static public Controller ctr;
         public static Databindings db = new Databindings();
         public static MATLABWrapper matlab;
-		public static Observer obsvr;
-		// State matrix [0 1;0 -1.782000000000000]
-		
+		public static Observer obsvr;		
     }
 }

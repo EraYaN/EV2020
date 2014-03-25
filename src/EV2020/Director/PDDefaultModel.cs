@@ -10,7 +10,7 @@ namespace EV2020.Director
 {
 	class PDDefaultModel : IModel
 	{
-		// State Matrix
+		// State matrix
 		readonly Matrix<double> A = null;
 		// Input-to-state matrix
 		readonly Matrix<double> B = null;
