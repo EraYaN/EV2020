@@ -12,7 +12,7 @@ namespace EV2020.Director
 {
     public static class Data
     {
-        public static string ComPort = "COM1";
+        public static string ComPort = "COM10";
         public static int BaudRate = 115200;
         static public SerialInterface com;
         static public Visualization vis;

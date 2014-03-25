@@ -55,7 +55,7 @@ namespace EV2020.Communication
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
+            //GC.SuppressFinalize(this);
         }       
         
         protected virtual void Dispose(bool disposing)

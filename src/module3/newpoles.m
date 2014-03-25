@@ -4,7 +4,7 @@ poles=[-5 -1.2];
 Lpoles=[-8 -14];
 
 K=acker(s.a,s.b,poles);
-A=s.a-s.b*K;
+A=s.a;
 B=s.b;
 C=s.c;
 D=s.d;
