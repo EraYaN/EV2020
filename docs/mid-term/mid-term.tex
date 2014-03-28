@@ -1,0 +1,28 @@
+%!TEX program=xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+\begin{document}
+\pagenumbering{roman}
+
+%----intro
+\subimport{title/}{title.tex}
+
+\newpage
+\subimport{}{introduction.tex}
+\tableofcontents
+
+\newpage
+\pagenumbering{arabic}
+\subimport{system-model}{system-model.tex}
+\subimport{communication}{communication.tex}
+\subimport{system-identification}{system-identification.tex}
+\subimport{system-integration}{system-integration.tex}
+\subimport{conclusions}{conclusions.tex}
+\newpage
+\pagenumbering{Roman}
+
+\printbibliography
+\subimport{appendices}{appendices.tex}
+\end{document}
