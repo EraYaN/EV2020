@@ -122,7 +122,7 @@ namespace EV2020.Director
 		{
 			get { return currentAudioState; }
 		}
-		private double target = 0.2;
+		private double target = 0.25;
 		public double Target
 		{
 			get { return target; }
@@ -152,6 +152,8 @@ namespace EV2020.Director
 				if (Data.obsvr != null)
 				{
 					double d = Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100);
+					//double d = Data.obsvr.Tick(Math.Min(currentLeftDistance, currentRightDistance), Target * 100);
+					//double d = Data.obsvr.Tick(currentLeftDistance, Target * 100);
 					/*if (d == 0)
 						SetDriving(0);
 					else if(d>0)
@@ -333,7 +335,7 @@ namespace EV2020.Director
 							//TODO handle (proper data)
 						}
 						
-						if ((currentRightDistance < CollisionThreshold || currentLeftDistance < CollisionThreshold)&&currentDriving>0)
+						/*if ((currentRightDistance < CollisionThreshold || currentLeftDistance < CollisionThreshold)&&currentDriving>0)
 						{							
 							_emergencyErrorCount++;
 							if (_emergencyErrorCount > _emergencyErrorCountThreshold)
@@ -351,7 +353,7 @@ namespace EV2020.Director
 								_emergencyErrorCount = 0;
 								Data.db.UpdateProperty("EmergencyStop");
 							}
-						}
+						}*/
 						tmps = null;
 					}
 					else if (line.Substring(0, 2) == "Au")

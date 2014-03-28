@@ -74,6 +74,7 @@
     </ApplicationDefinition>
     <Compile Include="Databindings.cs" />
     <Compile Include="IModel.cs" />
+    <Compile Include="INavigator.cs" />
     <Compile Include="InputSequence.cs" />
     <Compile Include="Navigation.cs" />
     <Compile Include="Observer.cs" />

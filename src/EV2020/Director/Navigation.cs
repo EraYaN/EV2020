@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
-	public class Navigation
+	public class StandardNavigation : INavigator
 	{
-		
-		public Navigation()
+
+		public StandardNavigation()
 		{
 			//constructor
 			
 		}
 
-		~Navigation()
+		~StandardNavigation()
 		{
 			//destructor
 		}	
