@@ -134,15 +134,18 @@ namespace EV2020.Director
 			}
 			if (e.Key == Key.S)
 			{
-				using (StreamWriter sw = new StreamWriter(String.Format("data{0}.txt", DateTime.Now.Ticks)))
+				if (Data.ctr != null)
 				{
-					sw.WriteLine("input, steering, datal, datar");
-					int len = Data.ctr.ControlHistory.LeftData.Length;
-					for (int I = len-1; I >= 0; I--)
+					using (StreamWriter sw = new StreamWriter(String.Format("data{0}.txt", DateTime.Now.Ticks)))
 					{
-						sw.WriteLine("{0}, {1}, {2}, {3}", Data.ctr.ControlHistory.LeftData[I], Data.ctr.ControlHistory.RightData[I], Data.ctr.DistanceHistory.LeftData[I], Data.ctr.DistanceHistory.RightData[I]);
+						sw.WriteLine("input, steering, datal, datar");
+						int len = Data.ctr.ControlHistory.LeftData.Length;
+						for (int I = len - 1; I >= 0; I--)
+						{
+							sw.WriteLine("{0}, {1}, {2}, {3}", Data.ctr.ControlHistory.LeftData[I], Data.ctr.ControlHistory.RightData[I], Data.ctr.DistanceHistory.LeftData[I], Data.ctr.DistanceHistory.RightData[I]);
+						}
 					}
-				}				
+				}
 			}	
 		}
 

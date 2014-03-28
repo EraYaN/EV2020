@@ -10,6 +10,7 @@ namespace EV2020.Director
 {
 	class PDDefaultModel : IModel
 	{
+		// State matrix
 		readonly Matrix<double> A = null;
 		// Input-to-state matrix
 		readonly Matrix<double> B = null;
@@ -22,7 +23,7 @@ namespace EV2020.Director
 		// Observer Gain
 		readonly Matrix<double> L = null;
 		// Input scale gain
-		readonly double Nbar = -0.128112399834024;
+		readonly double Nbar = -0.596358408970907;
 
 		Matrix<double> x;
 		Matrix<double> xDot;
@@ -31,41 +32,12 @@ namespace EV2020.Director
 
 		public PDDefaultModel()
 		{
-			A = DenseMatrix.OfArray(new double[,]
-        {
-            //{ -1.540497550593680, 0.499996085982763 },
-            //{ -0.050981466007821, -1.221182449406320 }
-			{ -2.68, 1.93 },
-			{ 1.78, -3.5 }
-        });
-			// Input-to-state matrix
-			B = DenseMatrix.OfArray(new double[,]
-        {
-            { -24.048787384198400 },
-            { 38.614088839675570 }
-        });
-			// State-to-output matrix
-			C = DenseMatrix.OfArray(new double[,]
-        {
-            { 1, 0 }
-        });
-			// Feedthrough matrix
-			D = DenseMatrix.OfArray(new double[,]
-        {
-            { 0 }
-        });
-			// Controller Gain
-			K = DenseMatrix.OfArray(new double[,]
-        {
-            //{ -0.064057182010178, -0.020791231841726 }
-			{ -0.11, -0.04 }
-        });
-			// Observer Gain
-			L = DenseMatrix.OfArray(new double[,]
-        {
-            { 5 },
-            { 10 }
-        });
+			A = DenseMatrix.OfArray(new double[,] { { 0, 1 }, { -2.524491182968118, -2.024016922829008 } });
+			B = DenseMatrix.OfArray(new double[,] { { -24.048787384198400 }, { 38.614088839675570 } });
+			C = DenseMatrix.OfArray(new double[,] { { 1, 0 } });
+			D = DenseMatrix.OfArray(new double[,] { { 0 } });
+			K = DenseMatrix.OfArray(new double[,] { { -0.1114, -0.0388 } });
+			L = DenseMatrix.OfArray(new double[,] { { 37.2383 }, { 705.2425 } });
 		}
 		public void Init()
 		{
@@ -82,16 +54,17 @@ namespace EV2020.Director
 		public double Tick(double Distance, double Target)
 		{
 			double TargetScaled = Nbar * (Target); // In Meters
-			Matrix<double> feedback = -K * x;
-			Matrix<double> u = DenseMatrix.OfArray(new double[,] { { TargetScaled } }) + feedback;
-			xDot = A * x + B * u + L * (DenseMatrix.OfArray(new double[,] { { Distance } }) - C * x);
+			double feedback = (-K * x)[0,0];
+			double u = TargetScaled + feedback;
+			u = u.Clamp(-7, 7);
+			xDot = A * x + B * u + L * (Distance - (C * x)[0,0]);
 			if (lastTimestamp != 0)
 			{
 				double dt = ((double)DateTime.Now.Ticks - lastTimestamp) / TimeSpan.TicksPerSecond;
 				x += xDot * dt;
 			}
 			lastTimestamp = DateTime.Now.Ticks;
-			return (x[0, 0] - Target) / Nbar;
+			return u;
 		}
 		public String GetDebugInfo()
 		{

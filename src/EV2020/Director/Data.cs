@@ -12,7 +12,7 @@ namespace EV2020.Director
 {
     public static class Data
     {
-        public static string ComPort = "COM1";
+        public static string ComPort = "COM10";
         public static int BaudRate = 115200;
         static public SerialInterface com;
         static public Visualization vis;
@@ -20,8 +20,6 @@ namespace EV2020.Director
         static public Controller ctr;
         public static Databindings db = new Databindings();
         public static MATLABWrapper matlab;
-		public static Observer obsvr;
-		// State matrix [0 1;0 -1.782000000000000]
-		
+		public static Observer obsvr;		
     }
 }

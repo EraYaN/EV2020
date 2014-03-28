@@ -80,6 +80,7 @@
     <Compile Include="OutputSequence.cs" />
     <Compile Include="PDDefaultModel.cs" />
     <Compile Include="PDEpicModel.cs" />
+    <Compile Include="PIDModel.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="Visualization.cs" />
     <Page Include="MainWindow.xaml">

@@ -14,7 +14,9 @@ namespace EV2020.Director
 		public const int SteeringMax = 50;
 		public const int SteeringNeutral = 153;
 		public const int DrivingNeutral = 150;
-		public const int CollisionThreshold = 60;
+		public const int DrivingOffsetUp = 3;
+		public const int DrivingOffsetDown = -6;
+		public const int CollisionThreshold = 0;
 		public const int TimerPeriod = 100;
 		public const int BatteryHistoryPoints = 600;
 		public const int DistanceHistoryPoints = 300;
@@ -120,7 +122,7 @@ namespace EV2020.Director
 		{
 			get { return currentAudioState; }
 		}
-		private double target = 0.4;
+		private double target = 0.2;
 		public double Target
 		{
 			get { return target; }
@@ -149,13 +151,14 @@ namespace EV2020.Director
 			{
 				if (Data.obsvr != null)
 				{
-					int d = (int)Math.Round(Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100));
-					if (d == 0)
+					double d = Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100);
+					/*if (d == 0)
 						SetDriving(0);
 					else if(d>0)
-						SetDriving(-7);
+						SetDriving(-8);
 					else
-						SetDriving(3);
+						SetDriving(4);*/
+					SetDriving((int)Math.Round(d));
 				}
 
 			}
@@ -314,6 +317,7 @@ namespace EV2020.Director
 						if (currentLeftDistance == 999)
 						{
 							//TODO handle (too far)
+							currentLeftDistance = 300;
 						}
 						else
 						{
@@ -322,6 +326,7 @@ namespace EV2020.Director
 						if (currentRightDistance == 999)
 						{
 							//TODO handle (too far)
+							currentRightDistance = 300;
 						}
 						else
 						{
@@ -432,11 +437,24 @@ namespace EV2020.Director
 		public void SetDrivingSteering(int d, int s){
 			if (!_fixedInputSequenceExecuting)
 			{
+				//anti deadzone
+				if (d > 0)
+					d += DrivingOffsetUp;
+				else if (d < 0)
+					d -= DrivingOffsetDown;
 				driving = d.Clamp(DrivingMin, DrivingMax);
 				steering = s.Clamp(SteeringMin, SteeringMax);				
 			}
 		}
 		public void SetDriving(int d){
+			//anti deadzone
+			//System.Diagnostics.Debug.WriteLine("d: {0}", d);
+			if (d > 0)
+				d += DrivingOffsetUp;
+			else if (d < 0)
+				d += DrivingOffsetDown;
+			//System.Diagnostics.Debug.WriteLine("dd: {0}", d);
+		
 			driving = d.Clamp(DrivingMin, DrivingMax);
 			sendDriveSteering();
 		}
