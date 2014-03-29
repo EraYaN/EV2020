@@ -7,10 +7,16 @@
 \usepackage{graphicx}
 \title{Module 3 - Report}
 \author{Alex {Misdorp} \and Sander {van Dijk}}
+
+\pgfplotsset{every axis/.append style={
+        legend style={ legend cell align=left, font=\small }}}
+
 \begin{document}
 
 \chapter{Assignment 2}
 \section*{Task 3: Identifying the models' parameters}
+
+\iffalse
 
 Now that a model has been constructed we need to find the values for our A and B matrix. To find these we sent the car a signal and measured the output of the ultrasound sensors. In Figure \ref{fig:KITT-input-output-model} the results are on display.
 The blue signal represents the input signal and periodically goes above $x=0$ and beneath it. In between those transitions there will be a small delay where the input remains zero for a while. The model output will react accordingly whereby the postion increases for a positive input and decreases for a negative input.
@@ -121,5 +127,50 @@ K =
 \end{equation}
 
 With this new K matrix, KITT now drives to the destination distance without oscillating around it anymore. But since it is overdamped, KITT will not reach the target in an optimal time.
+
+\fi
+
+\begin{figure} [H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    %title={Driving to target point: 6 cm},
+    axis y line*=left,
+    xlabel={Time (s)},
+    ylabel={Distance (cm)},
+    xmin=0, xmax=5,
+    ymin=-50, ymax=350,
+    xtick={0,1,2,3,4,5},
+    ytick={-50,0,50,100,150,200,250,300,350},
+    legend pos=north east,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+
+\addplot [color=blue, mark=none] table [col sep=comma] {res/csv/distances_kitt.csv}; \label{KITT}
+\addplot [color=red, mark=none] table [col sep=comma] {res/csv/distances_compensator.csv}; \label{Compensation}
+ 
+\end{axis}
+
+\begin{axis}[
+    axis y line*=right,
+    ylabel={Drive},
+    xmin=0, xmax=5,
+    ymin=-6, ymax=18,
+    ytick={-6,-3,0,3,6,9,12,15,18},
+]
+\addlegendimage{/pgfplots/refstyle=KITT}
+\addlegendentry{KITT}
+\addlegendimage{/pgfplots/refstyle=Compensation}
+\addlegendentry{Compensation}
+
+\addplot [color=gray, mark=none] table [col sep=comma] {res/csv/drive.csv}; \label{Drive}
+\addlegendentry{Drive}
+ 
+\end{axis}
+\end{tikzpicture}
+\label{fig:distances}
+\caption{Driving to target point: 6 cm}
+\end{figure}
 
 \end{document}

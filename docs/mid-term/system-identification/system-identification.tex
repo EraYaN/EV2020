@@ -3,8 +3,401 @@
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../../library/bibliography.bib}
+
+\pgfplotsset{every axis/.append style={
+        legend style={ legend cell align=left, font=\small }}}
+
 \begin{document}
 
 \chapter{System Identification}
+
+\section*{System model}
+Using Equation \ref{eq:simple}, a state-space model can be derived.
+This model is displayed in Equation \ref{eq:simple_matrix}, in which $x$ corresponds with the position and $\dot{x}$ with the velocity.
+This model is of second order.
+\begin{equation}
+	m \ddot{x} = -\rho_f \dot{x} + u
+	\label{eq:simple}
+\end{equation}
+
+\begin{equation}
+	\begin{bmatrix}
+		\dot{x} \\
+		\ddot{x}
+	\end{bmatrix} =
+	\begin{bmatrix}
+		0 & 1 \\
+		0 & -\frac{\rho_f}{m}
+	\end{bmatrix}
+	\begin{bmatrix}
+		x \\
+		\dot{x}
+	\end{bmatrix} +
+	\begin{bmatrix}
+		0 \\
+		\frac{1}{m}
+	\end{bmatrix}
+	u
+	\label{eq:simple_matrix}
+\end{equation}
+
+The characteristic equation can be derived using Equation \ref{eq:char_eq}, which leads to Equation \ref{eq:char_eq_final} for the model in Equation \ref{eq:simple_matrix}.
+This leads to the eigenvalues of $0$ and $-\frac{\rho_f}{m}$, the first being on the imaginary axis and the second on the left half of the complex plane.
+Both poles should be on the left half of the complex plane to be stable, but since one is not, it is not stable.
+\\ \\
+\begin{equation}
+	\left| I \lambda - A \right| = 0
+	\label{eq:char_eq}
+\end{equation}
+\begin{equation}
+	\lambda(\lambda + \frac{\rho_f}{m}) = 0
+	\label{eq:char_eq_final}
+\end{equation}
+\\
+To find out about the controllability we set up a controllability matrix as seen in Equation \ref{eq:controllability}.
+\begin{equation}
+C =
+\begin{bmatrix}
+B & AB
+\end{bmatrix}
+\end{equation}
+\begin{equation}
+C =
+\begin{bmatrix}
+0 & \frac{1}{m}\\
+\frac{1}{m} & \frac{\rho_f}{m^2}
+\end{bmatrix}\label{eq:controllability}
+\end{equation}
+
+The preceding matrix is rank two, which is full-rank for a second order system.
+Hence the system is controllable, which by definition makes the system stabilizable too.
+\\\\
+A similar procedure holds to find out the observability.
+First we set up the observability matrix:
+\begin{equation}
+C =
+\begin{bmatrix}
+C\\
+CA
+\end{bmatrix}
+\end{equation}
+\begin{equation}
+C =
+\begin{bmatrix}
+1 & 0\\
+0 & 1
+\end{bmatrix}\label{eq:observability}
+\end{equation}
+The observability matrix is rank two and thus full rank.
+Therefore the system is observable.
+\\\\
+By adding the engine model to the car model, a better understanding of the controllability of the whole system can be achieved.
+The motor model can be solved to Equation \ref{eq:motor}, which can be used in the original model of Equation \ref{eq:simple}.
+This yields a third order system, as displayed in Equation \ref{eq:total_system}, but by neglecting the motor coil inductance $L$, it can be simplified to the second order system of Equation \ref{eq:total_system_simple}.
+Equation \ref{eq:total_system_matrix} is the state-space model of this simplified model.
+
+\begin{equation}
+	V = \frac{Lm\ddot{x}}{k_g k_w k_t} + k_g k_w k_t \dot{x} + \frac{uR}{k_g k_w k_t}
+	\label{eq:motor}
+\end{equation}
+
+\begin{equation}
+	\dddot{x} = -\frac{\ddot{x}}{L} -(\frac{k_g^2 k_w^2 k_t^2}{mRL} + \frac{\rho_f}{mL})\dot{x} + \frac{k_g k_w k_t}{mRL}V
+	\label{eq:total_system}
+\end{equation}
+
+\begin{equation}
+	\ddot{x} = -(\frac{k_g^2 k_w^2 k_t^2}{mR} + \frac{\rho_f}{m})\dot{x} + \frac{k_g k_w k_t}{mR}V
+	\label{eq:total_system_simple}
+\end{equation}
+
+\begin{equation}
+	\begin{bmatrix}
+		\dot{x} \\
+		\ddot{x}
+	\end{bmatrix} =
+	\begin{bmatrix}
+		0 & 1 \\
+		0 & -\frac{\rho_f}{m} - \frac{k_g k_w k_t}{mR}
+	\end{bmatrix}
+	\begin{bmatrix}
+		x \\
+		\dot{x}
+	\end{bmatrix} +
+	\begin{bmatrix}
+		0 \\
+		\frac{k_g k_w k_t}{mR}
+	\end{bmatrix}
+	V
+	\label{eq:total_system_matrix}
+\end{equation}
+
+The same way as calculated with equations 1.3 to 1.6 we determined that the system is not stable.
+However, the system is controllable (and therefore stabilizable) and observable.
+
+\section*{Simulink model}
+To test the different compensator possibilities, a Simulink model was designed.
+The model can be found in Figure \ref{TODO}.
+This model was made to optimally simulate the car and the compensator.
+In this model, the Bluetooth connection delay is also included since it could cause the system to oscillate when compensating for an outdated system state.
+These delays, to and from the car, were both set to \unit[50]{ms}, which is about half the average ping time as found in Module 2.
+The output of the system is clamped between -15 and 15, and will always be an integer value instead of the default double type.
+
+\section*{Task 3: Identifying the models' parameters}
+Now that a model has been constructed we need to find the values for the $A$ and $B$ matrix.
+To find these we sent the car a signal and measured the output of the ultrasound sensors.
+In Figure \ref{fig:identification} the results are on display.
+The blue signal represents the input signal and periodically goes above $x=0$ and beneath it.
+In between those transitions there will be a small delay where the input remains zero for a while.
+The model output will react accordingly whereby the postion increases for a positive input and decreases for a negative input.
+The output signal from KITT shows a phase shift which might be contributed to the car's acceleration that is not instantaneous, there will be a certain delay.
+
+\begin{figure} [H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    height=7cm,
+    width=0.8\linewidth,
+    %title={Model identification},
+    axis y line*=left,
+    xlabel={Time (\unit{s})},
+    ylabel={Distance (\unit{cm})},
+    xmin=0, xmax=20,
+    ymin=-200, ymax=200,
+    xtick={0,2,4,6,8,10,12,14,16,18,20},
+    ytick={-200,-150,-100,-50,0,50,100,150,200},
+    legend pos=south west,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+
+\addplot [color=blue, mark=none] table [col sep=comma] {resources/csv/identification/kitt.csv}; \label{KITT}
+\addplot [color=red, mark=none] table [col sep=comma] {resources/csv/identification/model.csv}; \label{Model}
+ 
+\end{axis}
+
+\begin{axis}[
+    height=7cm,
+    width=0.8\linewidth,
+    axis y line*=right,
+    ylabel={Drive},
+    xmin=0, xmax=20,
+    hide x axis,
+    ymin=-10, ymax=6,
+    ytick={-10,-8,-6,-4,-2,0,2,4,6},
+    legend pos=south west,
+]
+\addlegendimage{/pgfplots/refstyle=KITT}
+\addlegendentry{KITT}
+\addlegendimage{/pgfplots/refstyle=Model}
+\addlegendentry{Model}
+
+\addplot [color=gray, mark=none] table [col sep=comma] {resources/csv/identification/drive.csv}; \label{Drive}
+\addlegendentry{Drive}
+ 
+\end{axis}
+\end{tikzpicture}
+\caption{The model's and the car's response}
+\label{fig:identification}
+\end{figure}
+
+The measurements resulted in the following $A$ matrix and associated eigenvalues.
+
+\begin{equation}
+A=
+\begin{bmatrix}
+  0 & 1 \\
+  -0.2968 & -1.7820
+ \end{bmatrix}
+\qquad
+eig(A)=
+\begin{bmatrix}
+  -0.1860 \\
+  -1.5960
+ \end{bmatrix}
+\end{equation}
+
+However, since Matlab tries to fit the model as good as possible, having no actual clue what it is calculating, errors might occur.
+One of these errors is the value of $A_{21}$, which is not equal to zero as expected.
+According to this value of $A_{21}$, the acceleration depends on the location of the car, which makes no physical sense in the given situation.
+Therefore, the value of $A_{21}$ is an error, and thus replaced by zero.
+This resulted in the following new $A$ matrix and its associated eigenvalues.
+
+\begin{equation}
+A=
+\begin{bmatrix}
+  0 & 1 \\
+  0 & -1.7820
+ \end{bmatrix}
+\qquad
+eig(A)=
+\begin{bmatrix}
+   0 \\
+  -1.7820
+ \end{bmatrix}
+\end{equation}
+
+The system is not stable since not both eigenvalues are in the left half of the complex plane.
+Generally speaking the simulation is a pretty good approximation whereby the phase shift should be kept in mind.
+
+\section*{Task 4: Observer Design}
+In order to get accurate information about the velocity of the car, an observer is constructed.
+Both poles have been set to -10, which were determined by ajusting the poles untill the observer followed the actual velocity as good as possible.
+The main requirement is that the poles are located in the left complex halfplane.
+The more negative the real part of a pole is, the stronger the damping.
+However choosing the poles too far to the left is not practical since there are delays in the system.
+These delays could cause an oscillation when the correction is overly performed, resulting in large amounts of noise on the observer's distance and velocity.
+Using MatLab and setting the poles at -10 we calculated the following $L$ matrix:
+\begin{equation}
+L=
+\begin{bmatrix}
+  18.2180 \\
+  67.5355
+ \end{bmatrix}
+\end{equation}
+
+The observer was tested in an altered version of the Simulink model.
+This version replaced the input from the compensator to the car with a sequence of random driving commands in the range of -5 to 5, which updated every \unit[100]{ms}.
+The objective was to follow the velocity as good as possible by measuring only the position of the car.
+The altered model kept the realistic delay of \unit[50]{ms} between the car and the observer.
+The results can be seen in Figures \ref{fig:observer_distance} and \ref{fig:observer_velocity} where the blue lines represent the actual distance and velocity and the red lines the observed distance and velocity.
+Both the distance and velocity are followed very good by the observer, even when the car started with a velocity of 5 m/s, which was unknown to the observer.
+
+\begin{figure} [H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    height=7cm,
+    width=0.8\linewidth,
+    %title={Observer distance},
+    axis y line*=left,
+    xlabel={Time (\unit{s})},
+    ylabel={Distance (\unit{cm})},
+    xmin=0, xmax=10,
+    ymin=280, ymax=305,
+    xtick={0,1,2,3,4,5,6,7,8,9,10},
+    %ytick={280, 290, 300, 310, 320},
+    legend pos=north east,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+
+\addplot [color=blue, mark=none] table [col sep=comma] {resources/csv/observer/distances_kitt.csv}; \label{KITT}
+\addplot [color=red, mark=none] table [col sep=comma] {resources/csv/observer/distances_observer.csv}; \label{Observer}
+\legend{KITT, Observer}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Observer performance, distance compare}
+\label{fig:observer_distance}
+\end{figure}
+
+\begin{figure} [H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    height=7cm,
+    width=0.8\linewidth,
+    %title={Observer velocity},
+    axis y line*=left,
+    xlabel={Time (\unit{s})},
+    ylabel={Velocity (\unit{cm/s})},
+    xmin=0, xmax=10,
+    ymin=-15, ymax=10,
+    xtick={0,1,2,3,4,5,6,7,8,9,10},
+    %ytick={280, 290, 300, 310, 320},
+    legend pos=north east,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+
+\addplot [color=blue, mark=none] table [col sep=comma] {resources/csv/observer/velocities_kitt.csv}; \label{KITT}
+\addplot [color=red, mark=none] table [col sep=comma] {resources/csv/observer/velocities_observer.csv}; \label{Observer}
+\legend{KITT, Observer}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Observer performance, velocity compare}
+\label{fig:observer_velocity}
+\end{figure}
+
+Within a half second, the observer finds and follows the actual velocity as seen in Figure \ref{fig:observer_velocity}.
+This is in agreement with the requirements for an observer; the difference $x(t)-\hat{x}$ converges to zero and after a certain time point $t_i$ where $x(t) = \hat{x}$, this equation remains satisfied for $t$ \geq $~t_i$.
+Without the delay, the preceding statement would be exactly implemented, resulting in an ideal observer.
+But since there is a delay, this ideal observer can not exist.
+
+\section*{Task 5: Controller design}
+The controller was designed to both drive to the target position and reduce the velocity to zero.
+These two objectives oppose each other when the car is not on the target position and standing still.
+Therefore, a good ratio between the two must be found.
+This can be achieved by placing the poles of the $K$ matrix, where multiple criteria must be fulfilled.
+Firstly, both poles must be located in the left half of the complex plane ($\operatorname{Re}(pole) < 0$).
+Secondly, the system must not be underdamped.
+Crittically damped would be the best option for an ideal system, but since the system experiences large delays, this might not be the perfect damping.
+Overdamping the system creates a more stable situation since the actual state of the system is not defined errorless.
+Also, the system parameters such as the $B$ matrix are variable and not well-defined.
+When the supercap voltage is below the default \unit[20]{V}, the forward force on the car caused by a given drive command will be lower.
+The $K$ matrix poles were set to $-4$ and $-1.5$, resulting in the following matrix:
+
+\begin{equation}
+\centering
+K = 
+\begin{bmatrix}
+  -0.1502 & -0.0931
+\end{bmatrix}
+\end{equation}
+
+When simulating with this $K$ matrix, Figure \ref{fig:distances} displays the distance to wall, which is set to a target of \unit[6]{cm}.
+The blue line which represends KITT ends at 6 cm with a maximum variation of \unit[1]{cm} as for all other target locations.
+The red line will always ends near zero, since it represends the observer state's distance.
+Since this distance is defined as KITT's actual distance minus the target location, the observer's distance always needs to converge to zero.
+
+\begin{figure} [H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    height=7cm,
+    width=0.8\linewidth,
+    %title={Driving to target point: 6 \unit{cm}},
+    axis y line*=left,
+    xlabel={Time (\unit{s})},
+    ylabel={Distance (\unit{cm})},
+    xmin=0, xmax=5,
+    ymin=-50, ymax=350,
+    xtick={0,1,2,3,4,5},
+    ytick={-50,0,50,100,150,200,250,300,350},
+    legend pos=north east,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+
+\addplot [color=blue, mark=none] table [col sep=comma] {resources/csv/final/distances_kitt.csv}; \label{KITT}
+\addplot [color=red, mark=none] table [col sep=comma] {resources/csv/final/distances_compensator.csv}; \label{Compensation}
+ 
+\end{axis}
+
+\begin{axis}[
+    height=7cm,
+    width=0.8\linewidth,
+    axis y line*=right,
+    ylabel={Drive},
+    xmin=0, xmax=5,
+    hide x axis,
+    ymin=-6, ymax=18,
+    ytick={-6,-3,0,3,6,9,12,15,18},
+]
+\addlegendimage{/pgfplots/refstyle=KITT}
+\addlegendentry{KITT}
+\addlegendimage{/pgfplots/refstyle=Compensation}
+\addlegendentry{Compensation}
+
+\addplot [color=gray, mark=none] table [col sep=comma] {resources/csv/final/drive.csv}; \label{Drive}
+\addlegendentry{Drive}
+ 
+\end{axis}
+\end{tikzpicture}
+\caption{Driving to target location: \unit[6]{cm}}
+\label{fig:distances}
+\end{figure}
 
 \end{document}

@@ -7,7 +7,7 @@ B = [0;-39.940000000000000];
 C = [1,0];
 
 L_poles = [-10, -10]; %[-4, -4]
-K_poles = [-1.5, -6]; %[-1.38084, -1.38084] % PERFECT FOR 300->6: [-0.5, -3]
+K_poles = [-1.5, -4]; %[-1.38084, -1.38084] % PERFECT FOR 300->6: [-0.5, -3]
 
 L = acker(A', C', L_poles);
 K = acker(A, B, K_poles);
@@ -17,6 +17,6 @@ K = acker(A, B, K_poles);
 %C = ss11.c;
 D = 0;
 
-nbar = rscale(A, B, C, D, K);
+%nbar = rscale(A, B, C, D, K);
 
 sim('model_final');
