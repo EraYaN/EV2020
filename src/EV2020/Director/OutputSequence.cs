@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// Class to make it easier to save the output from the car (left and right)
+	/// </summary>
 	public class OutputSequence
 	{
 		Sequence left;

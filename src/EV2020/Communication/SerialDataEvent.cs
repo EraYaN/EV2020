@@ -3,6 +3,9 @@ using System.IO.Ports;
 
 namespace EV2020.Communication
 {
+	/// <summary>
+	/// A custom event used for higher-level (String) serial messaging.
+	/// </summary>
     public class SerialDataEventArgs : EventArgs
     {
         public readonly String Data;

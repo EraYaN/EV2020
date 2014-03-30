@@ -9,6 +9,9 @@ using System.Windows.Media;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// Class used as a custom "ViewModel" without actually being a ViewModel.
+	/// </summary>
 	public class Databindings : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;		

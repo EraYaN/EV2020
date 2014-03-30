@@ -8,6 +8,9 @@ using System.Windows.Threading;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// A helper class the contains all extension methods.
+	/// </summary>
 	public static class Helpers
 	{
 		public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>

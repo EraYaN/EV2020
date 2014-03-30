@@ -6,6 +6,9 @@ using System.Windows;
 
 namespace EV2020.Communication
 {
+	/// <summary>
+	/// The actual serial class used in the Director.
+	/// </summary>
     public class SerialInterface : ISerial, IDisposable
     {
         string port;

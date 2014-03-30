@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// The base sequence class.
+	/// </summary>
 	public class Sequence
 	{
 		protected long length;

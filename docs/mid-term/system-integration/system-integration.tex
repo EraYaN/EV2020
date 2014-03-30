@@ -6,5 +6,71 @@
 \begin{document}
 
 \chapter{System Integration}
+\label{ch:system-integration}
+We use a program written in C\# to control the car.
+The full source in included in Appendix \ref{app:source}.
+First of we will quickly explain the different components of the program.
+After that we will go into some extra detail on why we choose this approach.
+A system diagram is shown in figure \ref{fig:system-diagram}.
+For any implementation details please consult the source code.
+\begin{figure}[H]
+	\centering    	
+    	\includegraphics[width=\textwidth]{resources/system-diagram.pdf}
+    	\caption{The system in diagram form.}
+    	\label{fig:system-diagram}
+\end{figure}
+Here follows a rundown of all the components.
+\section{GUI (Visualization)}
+This part handles everything to do with the GUI and the Databindingsa to the underlying parts.
+The associated classes and files are:
+\begin{itemize}
+\item App (Appendix \ref{appsec:App.xaml.cs} \& \ref{appsec:App.xaml})
+\item MainWindow (Appendix \ref{appsec:MainWindow.xaml.cs} \& \ref{appsec:MainWindow.xaml})
+\item Data (Appendix \ref{appsec:Data.cs})
+\item Arrow (Appendix \ref{appsec:Arrow.cs})
+\item Visualization (Appendix \ref{appsec:Visualization.cs})
+\item Databindings (Appendix \ref{appsec:Databindings.cs})
+\end{itemize}
+\section{Controller}
+This part is the "brain", here the serial events are handled and commands sent.
+The associated classes and files are:
+\begin{itemize}
+\item Controller (Appendix \ref{appsec:Controller.cs})
+\item Data (Appendix \ref{appsec:Data.cs})
+\end{itemize}
+\section{Navigation}
+This is not yet in use. Now the Target field on the Controller class serves this function.
+The associated classes, interfaces and files are:
+\begin{itemize}
+\item StandardNavigation (Appendix \ref{appsec:StandardNavigation.cs})
+\item INavigator (Appendix \ref{appsec:INavigator.cs})
+\end{itemize}
+\section{Observer}
+This part is the gateway to the implemented model. This to update any UI databindings.
+The associated classes and files are:
+\begin{itemize}
+\item Observer (Appendix \ref{appsec:Observer.cs})
+\end{itemize}
+\section{Model}
+This part constsist of a standarized interface and a couple of implemented models.
+Those are drop-in replacements of each other.
+Our current used model is PDEpicModel
+The associated classes, interfaces and files are:
+\begin{itemize}
+\item IModel (Appendix \ref{appsec:IModel.cs})
+\item PDEpicModel (Appendix \ref{appsec:PDEpicModel.cs})
+\item PDDefaultModel (Appendix \ref{appsec:PDDefaultModel.cs})
+\item PIDModel (Appendix \ref{appsec:PIDModel.cs})
+\end{itemize}
+\section{Serial}
+This part handled all serial communication asynchronously and the receive side is event driven.
+The associated classes, interfaces and files are:
+\begin{itemize}
+\item ISerial (Appendix \ref{appsec:ISerial.cs})
+\item SerialDataEvent (Appendix \ref{appsec:SerialDataEvent.cs})
+\item SerialInterface (Appendix \ref{appsec:SerialInterface.cs})
+\end{itemize}
+\section{Bluetooth Chipset}
+The adapter we use most of the time is an Intel(R) Centrino(R) Wireless Bluetooth(R) 4.0 + High Speed Adapter embedded together with the WiFi module in one of our own laptops.
 
 \end{document}

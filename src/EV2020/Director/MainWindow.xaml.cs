@@ -52,7 +52,7 @@ namespace EV2020.Director
 			initButton.Refresh();
 			//Init classes
 			Data.obsvr = new Observer(new PDEpicModel());
-			Data.nav = new Navigation();
+			Data.nav = new StandardNavigation();
 			Data.vis = new Visualization(visCanvas, joystickCanvas);
 			
 			if (comPortsComboBox.SelectedItem != null && baudRateComboBox.SelectedItem != null)
@@ -76,19 +76,12 @@ namespace EV2020.Director
 			{
 				MessageBox.Show("No COM Port or Baud Rate chosen.", "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
+			//MATLAB is for now not needed.
 			/*if(Data.matlab==null)
 				Data.matlab = new MATLABWrapper(@"H:\mcode","Groep B1");*/
-			Data.db.UpdateProperty(String.Empty); //Update All Bindings
-			/*
-			Data.db.UpdateProperty("InputSequence");
-			Data.db.UpdateProperty("SerialPortStatus");
-			Data.db.UpdateProperty("SerialPortStatusColor");
-			Data.db.UpdateProperty("EmergencyStop");
-			Data.db.UpdateProperty("BatteryGraphPoints");
-			Data.db.UpdateProperty("BatteryGraphMaxTime");*/
+			Data.db.UpdateProperty(String.Empty); //Update All Bindings			
 							
-			//enable buttons	
-			
+			//enable buttons				
 			destroyButton.IsEnabled = true;
 			comPortsComboBox.IsEnabled = false;
 			baudRateComboBox.IsEnabled = false;

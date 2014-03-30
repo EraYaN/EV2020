@@ -76,7 +76,7 @@
     <Compile Include="IModel.cs" />
     <Compile Include="INavigator.cs" />
     <Compile Include="InputSequence.cs" />
-    <Compile Include="Navigation.cs" />
+    <Compile Include="StandardNavigation.cs" />
     <Compile Include="Observer.cs" />
     <Compile Include="OutputSequence.cs" />
     <Compile Include="PDDefaultModel.cs" />

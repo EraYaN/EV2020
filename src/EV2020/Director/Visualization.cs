@@ -34,6 +34,7 @@ namespace EV2020.Director
 		}	
 
 		public void drawJoystick(){
+			//Check for access to the UI thread.
 			if (jc.Dispatcher.CheckAccess())
 			{
 				double centerH = jc.ActualHeight / 2;

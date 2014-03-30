@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// The wrapper class for the model used to update the UI bindings (for now)
+	/// </summary>
 	public class Observer
 	{
 		IModel model;

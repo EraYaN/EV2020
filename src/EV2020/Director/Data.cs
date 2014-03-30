@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// The static Data class.
+	/// </summary>
     public static class Data
     {
         public static string ComPort = "COM10";

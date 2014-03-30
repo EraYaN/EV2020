@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// A model made from a better fit in MATLAB.
+	/// </summary>
 	class PDDefaultModel : IModel
 	{
 		// State matrix

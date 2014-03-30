@@ -8,7 +8,10 @@ using System.Windows.Shapes;
 
 namespace EV2020.Director
 {
-	//Source: http://www.codeproject.com/articles/23116/wpf-arrow-and-custom-shapes
+	/// <summary>
+	/// A shape class that defines an Arrow, for use on a Canvas.
+	/// Source: http://www.codeproject.com/articles/23116/wpf-arrow-and-custom-shapes
+	/// </summary>
 	public sealed class Arrow : Shape
 	{
 		#region Dependency Properties
