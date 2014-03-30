@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// The model interface.
+	/// </summary>
 	public interface IModel
 	{
 		void Init();	

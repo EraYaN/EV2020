@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// The model with the PID Controller. Not finished.
+	/// </summary>
 	class PIDModel
 	{	
 		

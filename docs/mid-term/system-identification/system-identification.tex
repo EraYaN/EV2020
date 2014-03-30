@@ -44,7 +44,7 @@ This model is of second order.
 The characteristic equation can be derived using Equation \ref{eq:char_eq}, which leads to Equation \ref{eq:char_eq_final} for the model in Equation \ref{eq:simple_matrix}.
 This leads to the eigenvalues of $0$ and $-\frac{\rho_f}{m}$, the first being on the imaginary axis and the second on the left half of the complex plane.
 Both poles should be on the left half of the complex plane to be stable, but since one is not, it is not stable.
-\\ \\
+\\
 \begin{equation}
 	\left| I \lambda - A \right| = 0
 	\label{eq:char_eq}
@@ -71,7 +71,7 @@ C =
 
 The preceding matrix is rank two, which is full-rank for a second order system.
 Hence the system is controllable, which by definition makes the system stabilizable too.
-\\\\
+\\
 A similar procedure holds to find out the observability.
 First we set up the observability matrix:
 \begin{equation}
@@ -90,7 +90,7 @@ C =
 \end{equation}
 The observability matrix is rank two and thus full rank.
 Therefore the system is observable.
-\\\\
+\\
 By adding the engine model to the car model, a better understanding of the controllability of the whole system can be achieved.
 The motor model can be solved to Equation \ref{eq:motor}, which can be used in the original model of Equation \ref{eq:simple}.
 This yields a third order system, as displayed in Equation \ref{eq:total_system}, but by neglecting the motor coil inductance $L$, it can be simplified to the second order system of Equation \ref{eq:total_system_simple}.

@@ -28,15 +28,12 @@ We had two reasons for this decision.
 \item First, the drain-source on-state resistance was approximally ten times lower on the OptiMOS 3, causing the transistor to generate less heat and gain better efficiency.
 \item Secondly, by looking at the current-voltage characteristics per frequency (\cite{OptiMOS2} \emph{:3 Safe operating area} and \cite{OptiMOS3} \emph{:3 Safe operating area}) we found out that the OptiMOS 3 performs better at higher frequencies than the OptiMOS 2.
 \end{enumerate}
-
-
-\\ \\
 We also had to choose the diodes used on the secondary side of the tranformer. The diodes will form a full bridge rectifier, which in combination with a capacitor, will form a AC-DC converter.
 The candidates are the SB540 (datasheet: \cite{SB540}) and the SF61 (datasheet: \cite{SF61}).
 The forward voltage of the two diodes differ, the SB540's is lower. This is favorable since there will be more voltage left on the output terminals.
 On the other hand, the SF61 has a much lower reverse current. Lower reverse current makes the diode more ideal, since it sould only conduct when the current is in forward direction.
 We chose the SF61 since we thought the reverse current would be more important.
-\\ \\
+\\
 %After soldering the inverter and rectifier we tested the two parts.
 %Figure \ref{fig:AandB} displays the voltage on the output-A and output-B of the UC3525a, which are the oscillating opposites of each other.
 %This oscillating pair drives the transistor H-bridge, powering the primary coil.
@@ -61,7 +58,7 @@ The mutual inductance of the two coils can be found by measuring both the opposi
 \end{table}
 
 We also measured the resistances of the two coils. The primary coil has a resistance of 0.3 $\Omega$ and the secondary coil has a resistance of 0.1 $\Omega$.
-\\ \\
+\\
 We used the circuit shown in Figure 1.9 of \cite{epo4-manual} to model our circuit. Equation \ref{eq:matrix} was created by applying Kirchhoff's Voltage Law on both current loops.
 
 \begin{equation}

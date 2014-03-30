@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// The interface for the navigation classes.
+	/// This will be used in the future, instead of the constant in the Controller class.
+	/// </summary>
 	public interface INavigator
 	{
 		void Init();

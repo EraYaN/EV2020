@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// The model made with a worse fit in MATLAB, but truer to reality.
+	/// </summary>
 	class PDEpicModel : IModel
 	{
 		// State matrix
@@ -42,6 +45,7 @@ namespace EV2020.Director
 
 		public void Init()
 		{
+			//Start was 300 cm from the wall.
 			x = DenseMatrix.OfArray(new double[,] { { 300 }, { 0 } });
 			lastTimestamp = 0;
 		}
@@ -55,21 +59,30 @@ namespace EV2020.Director
 		public double Tick(double Distance, double Target)
 		{
 			debug1 = ((-K * x)[0, 0]);
+
+			//Calculate the feedback. And clamp the value to the maximum values to be send to the car the "back" value is higher for faster braking.
 			double feedback = ((-K * x)[0, 0]).Clamp(-9, 5);
+
+			// Dead zone. Non-symmetrical
 			if (feedback > -1 && feedback < 1.5)
 				feedback = 0;
-			/*if (feedback > 0)
-				feedback = 5;
-			else if (feedback<0)
-				feedback = -9;*/
+
+			//Calculate the change in x, xDot
 			xDot = A * x + B * feedback + L * ((Distance - Target) - (C * x)[0,0]);
+
+			//Save the "now"
+			long nowTimestamp = DateTime.Now.Ticks;
+			//If lastTimestamp is not 0 then add the change to the x value times dt.
 			if (lastTimestamp != 0)
 			{
-				double dt = ((double)DateTime.Now.Ticks - lastTimestamp) / TimeSpan.TicksPerSecond;
+
+				double dt = ((double)nowTimestamp - lastTimestamp) / TimeSpan.TicksPerSecond;
 				x += xDot * dt;
 			}
-			lastTimestamp = DateTime.Now.Ticks;
-			return feedback;//Math.Round((-K * x)[0, 0]).Clamp(-15, 15);
+			// Set new timestamp in ticks.
+			lastTimestamp = nowTimestamp;
+			//return the feedback value for sending to the car.
+			return feedback;
 		}
 		public String GetDebugInfo()
 		{

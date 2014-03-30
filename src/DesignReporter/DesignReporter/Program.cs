@@ -56,7 +56,7 @@ namespace DesignReporter
 			files.Sort((x, y) => StringComparer.OrdinalIgnoreCase.Compare(x.FullName, y.FullName));
 			IEnumerable<FileInfo> fileQuery =
 			from fileQ in files
-            where !fileQ.FullName.Contains("obj") && !fileQ.FullName.Contains("Visual Micro") && !fileQ.FullName.Contains("robotsim") && !fileQ.FullName.Contains("Properties") && !fileQ.FullName.Contains("App") && !fileQ.FullName.Contains("quartus")
+            where !fileQ.FullName.Contains("obj") && !fileQ.FullName.Contains("Properties") && !fileQ.FullName.Contains("quartus")
 			select fileQ;
 			
 			StreamWriter file = outputPath.CreateText();

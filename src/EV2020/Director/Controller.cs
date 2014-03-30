@@ -5,6 +5,9 @@ using System.Timers;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// The class that actually handles the in and output to the car.
+	/// </summary>
 	public class Controller
 	{
 		public const int BatteryThreshold = 12000;
@@ -140,26 +143,27 @@ namespace EV2020.Director
 
 		void sendInstructions_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			//TODO figure out audio.	
+			//TODO figure out audio.
+	
+			//Check if we are sending a predefined sequence.
 			if (_fixedInputSequenceExecuting)
 			{
 				if (_fixedInputSequence.IsEndOfSignal) 
 					_fixedInputSequenceExecuting = false;
+				//advace the pointer in the sequence
 				_fixedInputSequence.Forward();
+				//Set the current values for sending to car.
+				SetDrivingSteering((int)Math.Round(_fixedInputSequence.GetCurrentDriving()),(int)Math.Round(_fixedInputSequence.GetCurrentSteering()));
 			}
 			else
 			{
 				if (Data.obsvr != null)
 				{
-					double d = Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100);
-					//double d = Data.obsvr.Tick(Math.Min(currentLeftDistance, currentRightDistance), Target * 100);
-					//double d = Data.obsvr.Tick(currentLeftDistance, Target * 100);
-					/*if (d == 0)
-						SetDriving(0);
-					else if(d>0)
-						SetDriving(-8);
-					else
-						SetDriving(4);*/
+					double d = Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100); //using average of the sensor values.
+					//double d = Data.obsvr.Tick(Math.Min(currentLeftDistance, currentRightDistance), Target * 100); //using minimum of the sensor values.
+					//double d = Data.obsvr.Tick(currentLeftDistance, Target * 100); //using left sensor value.
+					
+					//Set Driving for sending to car.
 					SetDriving((int)Math.Round(d));
 				}
 
@@ -413,20 +417,12 @@ namespace EV2020.Director
 		}
 		private void sendDriveSteering()
 		{
-
-			if (!_fixedInputSequenceExecuting)
+			if (_emergencyStop)				
 			{
-				if (_emergencyStop)				
-				{
-					driving = 0;
-					steering = 0;					
-				}
+				driving = 0;
+				steering = 0;					
 			}
-			else
-			{
-				driving = (int)Math.Round(_fixedInputSequence.GetCurrentDriving());
-				steering = (int)Math.Round(_fixedInputSequence.GetCurrentSteering());				
-			}
+			//Send the sotred values to the car.
 			sendCommand(String.Format("D{0} {1}", steering + SteeringNeutral, driving + DrivingNeutral));
 		}
 		private void sendStatusRequest()
@@ -449,13 +445,11 @@ namespace EV2020.Director
 			}
 		}
 		public void SetDriving(int d){
-			//anti deadzone
-			//System.Diagnostics.Debug.WriteLine("d: {0}", d);
+			//Anti Deadzone	of the car.		
 			if (d > 0)
 				d += DrivingOffsetUp;
 			else if (d < 0)
 				d += DrivingOffsetDown;
-			//System.Diagnostics.Debug.WriteLine("dd: {0}", d);
 		
 			driving = d.Clamp(DrivingMin, DrivingMax);
 			sendDriveSteering();
@@ -471,6 +465,7 @@ namespace EV2020.Director
 		}
 		public void Brake()
 		{
+			//Disabled.
 			/*if (currentDriving != 0)
 			{
 				System.Diagnostics.Debug.WriteLine("Braking with: {0}", -currentDriving);

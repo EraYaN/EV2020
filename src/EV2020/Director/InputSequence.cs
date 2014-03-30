@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace EV2020.Director
 {
+	/// <summary>
+	/// A class to make it easier to store the input signals.
+	/// </summary>
 	public class InputSequence
 	{
 		Sequence driving;
@@ -37,7 +40,7 @@ namespace EV2020.Director
 		public InputSequence(Sequence Driving, Sequence Steering, double Multiplier=1)
 		{
 			if (Driving.Length != Steering.Length)
-				throw new ArgumentException("The length on the two sequences must be the same.");
+				throw new ArgumentException("The length of the two sequences must be the same.");
 			driving = Driving;
 			steering = Steering;
 			//sync Sequences
