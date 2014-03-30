@@ -3,18 +3,20 @@
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../../library/bibliography.bib}
-\usepackage{amsmath}
-\usepackage{graphicx}
-\title{Module 3 - Report}
-\author{Alex {Misdorp} \and Sander {van Dijk}}
 \begin{document}
-\chapter*{Appendix A}
-
+\begin{appendices}
+\renewcommand{\chapternumber}{\appendixname\space\thechapter} 
+\chapter{Model}
+\label{app:model}
 \begin{figure}[H]
 	\centering    	
     	\includegraphics[width=\textwidth]{resources/model.png}
     	\caption{The model used to simulate the observer and controller}
     	\label{app:model}
 \end{figure}
+\chapter{Source}
+\label{app:source}
+\subimport{../../../}{sourceBijlage}
 
+\end{appendices}
 \end{document}
