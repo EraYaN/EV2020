@@ -7,7 +7,7 @@
 
 \begin{document}
 
-\chapter{Werking van de overcurrent protection}
+\chapter{The overcurrent protection}
 In order to wireless charge our car we had to design a DC-DC converter. The DC-DC converter is splitted into two parts, the DC-AC converter and AC-DC converter respectively. 
 For the DC-AC converter see Figure \ref{fig:DC-AC} and for the AC-DC see Figure \ref{fig:AC-DC}
 
@@ -80,7 +80,7 @@ When using the circuit shown in Figure 1.9 of \cite{epo4-manual} to model our ci
 		I_2
 	\end{bmatrix}
 	\label{eq:matrix}
-\end{equation}\\
+\end{equation}
 
 
 Using this expression we can write the Kirchhoff voltage loop law equations for the system:
@@ -92,7 +92,7 @@ Using this expression we can write the Kirchhoff voltage loop law equations for 
 \begin{equation}
 \label{eq4}
 0 = j\omega M \boldsymbol{\mathrm{I_{1}}} -(j\omega {L_{2}} + {R_{2}} + R)\boldsymbol{\mathrm{I_{2}}}
-\end{equation}\\
+\end{equation}
 
 
 We can now use equations \ref{eq3} and \ref{eq4} to find the two unknown values: $I_{1}$, $I_{2}$. \\
@@ -106,14 +106,14 @@ The efficiency can be calculated using the equation \ref{eq5}.
 $$ \mathrm{effici\ddot{e}ntie} = \frac{P_{load}}{P_{source}} $$
 \end{array}\
 \end{equation}
-\\
+
 To find the power factor of the circuit we use equation \ref{eq6}.
 \begin{equation}\
 \begin{array}{l}
 \label{eq6}
 $$ \mathrm{pf} = \frac{P_{source}}{|S|}$$
 \end{array}\
-\end{equation}\\
+\end{equation}
 
 The results of our calculations can be found in table \ref{table2}.\\
 
@@ -206,7 +206,6 @@ The new values can be found in table \ref{table3}. \\
 \label{table3}
 \end{center}
 \end{table}
-\\
 
 
 \chapter{Discussion on the overcurrent protection}

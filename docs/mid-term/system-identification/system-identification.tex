@@ -171,8 +171,8 @@ The output signal from KITT shows a phase shift which might be contributed to th
     grid style=dashed,
 ]
 
-\addplot [color=blue, mark=none] table [col sep=comma] {resources/csv/identification/kitt.csv}; \label{KITT}
-\addplot [color=red, mark=none] table [col sep=comma] {resources/csv/identification/model.csv}; \label{Model}
+\addplot [color=blue, mark=none] table [col sep=comma, row sep=crcr] {system-identification/resources/csv/identification/kitt.csv}; \label{KITT}
+\addplot [color=red, mark=none] table [col sep=comma, row sep=crcr] {system-identification/resources/csv/identification/model.csv}; \label{Model}
  
 \end{axis}
 
@@ -192,7 +192,7 @@ The output signal from KITT shows a phase shift which might be contributed to th
 \addlegendimage{/pgfplots/refstyle=Model}
 \addlegendentry{Model}
 
-\addplot [color=gray, mark=none] table [col sep=comma] {resources/csv/identification/drive.csv}; \label{Drive}
+\addplot [color=gray, mark=none] table [col sep=comma] {system-identification/resources/csv/identification/drive.csv}; \label{Drive}
 \addlegendentry{Drive}
  
 \end{axis}
@@ -282,8 +282,8 @@ Both the distance and velocity are followed very good by the observer, even when
     grid style=dashed,
 ]
 
-\addplot [color=blue, mark=none] table [col sep=comma] {resources/csv/observer/distances_kitt.csv}; \label{KITT}
-\addplot [color=red, mark=none] table [col sep=comma] {resources/csv/observer/distances_observer.csv}; \label{Observer}
+\addplot [color=blue, mark=none] table [col sep=comma] {system-identification/resources/csv/observer/distances_kitt.csv}; \label{KITT}
+\addplot [color=red, mark=none] table [col sep=comma] {system-identification/resources/csv/observer/distances_observer.csv}; \label{Observer}
 \legend{KITT, Observer}
 
 \end{axis}
@@ -311,8 +311,8 @@ Both the distance and velocity are followed very good by the observer, even when
     grid style=dashed,
 ]
 
-\addplot [color=blue, mark=none] table [col sep=comma] {resources/csv/observer/velocities_kitt.csv}; \label{KITT}
-\addplot [color=red, mark=none] table [col sep=comma] {resources/csv/observer/velocities_observer.csv}; \label{Observer}
+\addplot [color=blue, mark=none] table [col sep=comma] {system-identification/resources/csv/observer/velocities_kitt.csv}; \label{KITT}
+\addplot [color=red, mark=none] table [col sep=comma] {system-identification/resources/csv/observer/velocities_observer.csv}; \label{Observer}
 \legend{KITT, Observer}
 
 \end{axis}
@@ -371,8 +371,8 @@ Since this distance is defined as KITT's actual distance minus the target locati
     grid style=dashed,
 ]
 
-\addplot [color=blue, mark=none] table [col sep=comma] {resources/csv/final/distances_kitt.csv}; \label{KITT}
-\addplot [color=red, mark=none] table [col sep=comma] {resources/csv/final/distances_compensator.csv}; \label{Compensation}
+\addplot [color=blue, mark=none] table [col sep=comma] {system-identification/resources/csv/final/distances_kitt.csv}; \label{KITT}
+\addplot [color=red, mark=none] table [col sep=comma] {system-identification/resources/csv/final/distances_compensator.csv}; \label{Compensation}
  
 \end{axis}
 
@@ -391,7 +391,7 @@ Since this distance is defined as KITT's actual distance minus the target locati
 \addlegendimage{/pgfplots/refstyle=Compensation}
 \addlegendentry{Compensation}
 
-\addplot [color=gray, mark=none] table [col sep=comma] {resources/csv/final/drive.csv}; \label{Drive}
+\addplot [color=gray, mark=none] table [col sep=comma] {system-identification/resources/csv/final/drive.csv}; \label{Drive}
 \addlegendentry{Drive}
  
 \end{axis}
