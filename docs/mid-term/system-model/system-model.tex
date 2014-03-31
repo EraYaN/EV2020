@@ -7,7 +7,7 @@
 
 \begin{document}
 
-\chapter{The overcurrent protection}
+\chapter{Wireless charging}
 In order to wireless charge our car we had to design a DC-DC converter. The DC-DC converter is splitted into two parts, the DC-AC converter and AC-DC converter respectively. 
 For the DC-AC converter see Figure \ref{fig:DC-AC} and for the AC-DC see Figure \ref{fig:AC-DC}
 
@@ -37,7 +37,9 @@ The forward voltage of the two diodes differ, the SB540's is lower.
 This is favorable since there will be more voltage left on the output terminals.
 On the other hand, the SF61 has a much lower reverse current. 
 Lower reverse current makes the diode more ideal, since it should only conduct when the current is in forward direction.
-We chose the SF61 since we thought the reverse current is of much more importance in our circuit.\\
+The SB530 would be the better option when weighting these pros and cons since the reverse current is small enough with both diodes, but the forward voltage makes a rather large difference.
+However, we did not implement these diodes because we did not know the forward voltage was more important at that time.
+In the near future, we might replace the diodes with the SB540 to gain a better performance. \\
 
 
 
@@ -68,16 +70,16 @@ The primary coil has a resistance of 0.3 $\Omega$ and the secondary coil has a r
 When using the circuit shown in Figure 1.9 of \cite{epo4-manual} to model our circuit, the equations of the coupled inductors can be written as in Equation \ref{eq:matrix}.\\
 \begin{equation}
 	\begin{bmatrix}
-		V_1 \\
-		V_2
+		V_{in} \\
+		0
 	\end{bmatrix} =
 	\begin{bmatrix}
-		j \omega L_1 + R_1 & -j \omega M \\
-		j \omega M & - (j \omega L_2 + R_2 + R)
+		j \omega L_1 + r_1 & -j \omega M \\
+		-j \omega M & j \omega L_2 + r_2 + R
 	\end{bmatrix}
 	\begin{bmatrix}
-		I_1 \\
-		I_2
+		i_1 \\
+		i_2
 	\end{bmatrix}
 	\label{eq:matrix}
 \end{equation}
@@ -86,28 +88,28 @@ When using the circuit shown in Figure 1.9 of \cite{epo4-manual} to model our ci
 Using this expression we can write the Kirchhoff voltage loop law equations for the system:
 \begin{equation} 
 \label{eq3}
-\boldsymbol{\mathrm{V_{in}}} = (j\omega {L_{1}} + {R_{1}} )\boldsymbol{\mathrm{I_{1}}} - j\omega M \boldsymbol{\mathrm{I_{2}}}
+\boldsymbol{\mathrm{V_{in}}} = (j\omega {L_{1}} + {R_{1}} ) i_{1} - j\omega M i_{2}
 \end{equation}
 
 \begin{equation}
 \label{eq4}
-0 = j\omega M \boldsymbol{\mathrm{I_{1}}} -(j\omega {L_{2}} + {R_{2}} + R)\boldsymbol{\mathrm{I_{2}}}
+0 = j\omega M i_{1} -(j\omega {L_{2}} + {R_{2}} + R) i_{2}
 \end{equation}
 
 
-We can now use equations \ref{eq3} and \ref{eq4} to find the two unknown values: $I_{1}$, $I_{2}$. \\
+We can now use equations \ref{eq3} and \ref{eq4} to find the two unknown values: $i_{1}$, $i_{2}$. \\
 We also need to find the efficiency and the power factor of the circuit.\\
 
-The efficiency can be calculated using the equation \ref{eq5}.
+The efficiency can be calculated using the Equation \ref{eq5}.
 
 \begin{equation}\
 \begin{array}{l}
 \label{eq5}
-$$ \mathrm{effici\ddot{e}ntie} = \frac{P_{load}}{P_{source}} $$
+$$ \eta = \frac{P_{load}}{P_{source}} $$ % \mathrm{efficiency}
 \end{array}\
 \end{equation}
 
-To find the power factor of the circuit we use equation \ref{eq6}.
+To find the power factor of the circuit we use Equation \ref{eq6}.
 \begin{equation}\
 \begin{array}{l}
 \label{eq6}
@@ -115,14 +117,14 @@ $$ \mathrm{pf} = \frac{P_{source}}{|S|}$$
 \end{array}\
 \end{equation}
 
-The results of our calculations can be found in table \ref{table2}.\\
+The results of our calculations can be found in Table \ref{table2}.\\
 
 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{ l | l | l | l }
     
-    \textbf{\textit{d} (cm)}            & \textbf{pf}              & \textbf{effici\"{e}ntie}  &  \textbf{P load (W)}\\	\hline
+    \textit{d} (cm)            & pf              & efficiency  &  $P_{load}$ (W)\\	\hline
     6                           & 0.0142                       & 0.8266                   &  0.0184  \\
     4                           & 0.0238                   & 0.8914                    &  0.0337\\
     2                           & 0.0544                       & 0.9450                     &  0.0849 \\
@@ -154,68 +156,71 @@ $$\Leftrightarrow C_{2} =  \frac{1}{\omega^2 L_{2}}$$
 Using these equations we found the following values for $C_1$ and $C_2$:
 \begin{equation}\
 \begin{array}{l}
-$$C_{1} =  \frac{1}{(2\pi \cdot (100\cdot 10^3)) ^2 207 \cdot 10^-6} = 12.2 \nano F$$
+$$C_{1} =  \frac{1}{(2\pi \cdot (100\cdot 10^3)) ^2 207 \cdot 10^-6} = 12.2~\nano F$$
 \end{array}\
 \end{equation}
 \begin{equation}\
 \begin{array}{l}
-$$C_{2} =  \frac{1}{(2\pi \cdot (100\cdot 10^3)) ^2 23.4 \cdot 10^-6} = 108 \nano F$$
+$$C_{2} =  \frac{1}{(2\pi \cdot (100\cdot 10^3)) ^2 23.4 \cdot 10^-6} = 108~\nano F$$
 \end{array}\
 \end{equation}
 \\
 
-Since our calculated values for $C_1$ (12.2 \nano F) and $C_2$ (108 \nano F) weren't available.
-We had to choose different values. \\
+Since our calculated values for $C_1$ (12.2~\nano F) and $C_2$ (108~\nano F) were not exactly available we had to choose slightly different values.
+We could approximate both values within 5\% deviation of the calculated values. \\
 
-When using capacitors in our circuit matrix equation Equation \ref{eq:matrix} will change. 
+When using capacitors in our circuit matrix, Equation \ref{eq:matrix} will change. 
 The new matrix equations will be as shown in Equation \ref{eq:matrix2}. \\
 
 \begin{equation}
 	\begin{bmatrix}
-		V_1 \\
-		V_2
+		V_{in} \\
+		0
 	\end{bmatrix} =
 	\begin{bmatrix}
-		j\omega 
-L_{1} + \frac{1}{j\omega C_{1}} + R_{1}& - j\omega M \\
-		j\omega M& - (j\omega L_{2} + \frac{1}{j\omega C_{2}} + R_{2} + R)
+		 r_1 & -j \omega M \\
+		-j \omega M & r_2 + R
 	\end{bmatrix}
 	\begin{bmatrix}
-		I_1 \\
-		I_2
+		i_1 \\
+		i_2
 	\end{bmatrix}
 	\label{eq:matrix2}
-\end{equation}\\
+\end{equation}
 
 
 
 
-Since we have now compensated our circuit our values for the efficiency and power factor will change. 
+Since we have now compensated the circuit, the values for the efficiency and power factor will change. 
 The new values can be found in table \ref{table3}. \\
 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{ l | l | l | l }
     
-    \textbf{\textit{d} (cm)}            & \textbf{pf}              & \textbf{effici\"{e}ntie}  &  \textbf{P load (W)}\\	\hline
+    \textit{d} (cm)            & pf              & efficiency  &  $P_{load}$ (W)\\	\hline
     6                           & 1                     & 0.9310                & 37.0226  \\
     4                           &1                  & 0.9561                     & 21.8635\\
     2                           & 1                   & 0.9752                    &  9.7946 \\
 \end{tabular}
-\caption{Power factor and efficiency for the different distances when the circuit is compensated.}
+\caption{Power factor and efficiency for the different distances when the circuit is compensated}
 \label{table3}
 \end{center}
 \end{table}
 
 
-\chapter{Discussion on the overcurrent protection}
+\section*{Discussion}
 
-As shown in Table \ref{table3} we can see that the efficiency of our system is very high. 
-It however isn't this efficient in practice.
+As shown in Table \ref{table3} the efficiency of our system is very high. 
+It however is not this efficient in practice.
 When testing our system at a distance of 6 cm, we calculated that the efficiency was only 71.6\%.
 The difference between the calculations in \ref{table3} and the real value can be explained by looking into the compensation. 
 The capacitors we used on the primary and secundary side were not the exact same values as calculated.
 Finetuning the frequency can not fix the problem on the primary and secundary side at the same time since the required frequencies differ. 
+Also, the efficiency of the AC-DC converter were left out of scope.
+In this secondary circuit, the diodes used for rectifying take a rather large forward voltage.
+This forward voltage can be reduced if we replace the current SF61 diodes with SB540 diodes.
+\\ \\
 Due to the efficiency difference it takes a little longer to charge the capacitor bench up to 20$V$.
-It eventually took our circuit 5.02 minutes to completely charge the bench. 
+During the mid-term charging test, our circuit needed 5:02 minutes to completely charge the bench.
 \end{document}
