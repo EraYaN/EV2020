@@ -17,13 +17,13 @@ namespace DesignReporter
 		static DirectoryInfo docs;
         static FileInfo outputPath;
 		static String start =
-			@"%!TEX program=xelatex+makeindex+bibtex
-			\documentclass{report}
-			\input{docs/library/import}
-			\input{docs/library/style}
-			\addbibresource{docs/library/bibliography.bib}
+@"%!TEX program=xelatex+makeindex+bibtex
+\documentclass{report}
+\input{docs/library/import}
+\input{docs/library/style}
+\addbibresource{docs/library/bibliography.bib}
 
-			\begin{document}";
+\begin{document}";
 
 		static StreamWriter file;
 		static long hardwareLines = 0;
@@ -133,7 +133,7 @@ namespace DesignReporter
 					string pathescaped = fi.FullName.Replace(outputPath.Directory.FullName + "\\", "").Replace('\\', '/');
 
 					//Add source code to file
-					file.WriteLine(String.Format("\\label{{lst:{0}}}\r\n\\includecode[{1}]{{{2}}}{{{3}}}\r\n", caption.Replace('/', '-'), extensions[ext], caption, pathescaped));
+					file.WriteLine(String.Format("\\includecode[{1}]{{{2}}}{{{3}}}{{lst:{0}}}\r\n", caption.Replace('/', '-'), extensions[ext], caption, pathescaped));
 					
 					//Count lines
 					if (ext == ".vhdl" || ext == ".vhd")
