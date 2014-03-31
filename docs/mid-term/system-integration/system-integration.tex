@@ -9,14 +9,14 @@
 \label{ch:system-integration}
 We use a program written in C\# to control the car.
 The full source in included in Appendix \ref{app:source}.
-First of we will quickly explain the different components of the program.
+First, we will quickly explain the different components of the program.
 After that we will go into some extra detail on why we choose this approach.
 A system diagram is shown in figure \ref{fig:system-diagram}.
 For any implementation details please consult the source code.
 \begin{figure}[H]
 	\centering    	
     	\includegraphics[width=\textwidth]{resources/system-diagram.pdf}
-    	\caption{The system in diagram form.}
+    	\caption{The system in diagram form}
     	\label{fig:system-diagram}
 \end{figure}
 Here follows a rundown of all the components.
@@ -46,7 +46,7 @@ The associated classes, interfaces and files are:
 \item INavigator (Appendix \ref{appsec:INavigator.cs})
 \end{itemize}
 \section{Observer}
-This part is the gateway to the implemented model. This to update any UI databindings.
+This part is the gateway to the implemented model.
 The associated classes and files are:
 \begin{itemize}
 \item Observer (Appendix \ref{appsec:Observer.cs})
@@ -54,7 +54,7 @@ The associated classes and files are:
 \section{Model}
 This part constsist of a standarized interface and a couple of implemented models.
 Those are drop-in replacements of each other.
-Our current used model is PDEpicModel
+Our currently used model is PDEpicModel.
 The associated classes, interfaces and files are:
 \begin{itemize}
 \item IModel (Appendix \ref{appsec:IModel.cs})
@@ -63,7 +63,7 @@ The associated classes, interfaces and files are:
 \item PIDModel (Appendix \ref{appsec:PIDModel.cs})
 \end{itemize}
 \section{Serial}
-This part handled all serial communication asynchronously and the receive side is event driven.
+This part handles all serial communication asynchronously and drives the receive events.
 The associated classes, interfaces and files are:
 \begin{itemize}
 \item ISerial (Appendix \ref{appsec:ISerial.cs})
