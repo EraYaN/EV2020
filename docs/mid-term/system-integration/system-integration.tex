@@ -24,32 +24,32 @@ Here follows a rundown of all the components.
 This part handles everything to do with the GUI and the Databindingsa to the underlying parts.
 The associated classes and files are:
 \begin{itemize}
-\item App (Appendix \ref{appsec:App.xaml.cs} \& \ref{appsec:App.xaml})
-\item MainWindow (Appendix \ref{appsec:MainWindow.xaml.cs} \& \ref{appsec:MainWindow.xaml})
-\item Data (Appendix \ref{appsec:Data.cs})
-\item Arrow (Appendix \ref{appsec:Arrow.cs})
-\item Visualization (Appendix \ref{appsec:Visualization.cs})
-\item Databindings (Appendix \ref{appsec:Databindings.cs})
+\item App (Appendix \ref{lst:Director-App.xaml.cs} \& \ref{lst:Director-App.xaml})
+\item MainWindow (Appendix \ref{lst:Director-MainWindow.xaml.cs} \& \ref{lst:Director-MainWindow.xaml})
+\item Data (Appendix \ref{lst:Director-Data.cs})
+\item Arrow (Appendix \ref{lst:Director-Arrow.cs})
+\item Visualization (Appendix \ref{lst:Director-Visualization.cs})
+\item Databindings (Appendix \ref{lst:Director-Databindings.cs})
 \end{itemize}
 \section{Controller}
 This part is the "brain", here the serial events are handled and commands sent.
 The associated classes and files are:
 \begin{itemize}
-\item Controller (Appendix \ref{appsec:Controller.cs})
-\item Data (Appendix \ref{appsec:Data.cs})
+\item Controller (Appendix \ref{lst:Director-Controller.cs})
+\item Data (Appendix \ref{lst:Director-Data.cs})
 \end{itemize}
 \section{Navigation}
 This is not yet in use. Now the Target field on the Controller class serves this function.
 The associated classes, interfaces and files are:
 \begin{itemize}
-\item StandardNavigation (Appendix \ref{appsec:StandardNavigation.cs})
-\item INavigator (Appendix \ref{appsec:INavigator.cs})
+\item StandardNavigation (Appendix \ref{lst:Director-StandardNavigation.cs})
+\item INavigator (Appendix \ref{lst:Director-INavigator.cs})
 \end{itemize}
 \section{Observer}
 This part is the gateway to the implemented model.
 The associated classes and files are:
 \begin{itemize}
-\item Observer (Appendix \ref{appsec:Observer.cs})
+\item Observer (Appendix \ref{lst:Director-Observer.cs})
 \end{itemize}
 \section{Model}
 This part constsist of a standarized interface and a couple of implemented models.
@@ -57,20 +57,31 @@ Those are drop-in replacements of each other.
 Our currently used model is PDEpicModel.
 The associated classes, interfaces and files are:
 \begin{itemize}
-\item IModel (Appendix \ref{appsec:IModel.cs})
-\item PDEpicModel (Appendix \ref{appsec:PDEpicModel.cs})
-\item PDDefaultModel (Appendix \ref{appsec:PDDefaultModel.cs})
-\item PIDModel (Appendix \ref{appsec:PIDModel.cs})
+\item IModel (Appendix \ref{lst:Director-IModel.cs})
+\item PDEpicModel (Appendix \ref{lst:Director-PDEpicModel.cs})
+\item PDDefaultModel (Appendix \ref{lst:Director-PDDefaultModel.cs})
+\item PIDModel (Appendix \ref{lst:Director-PIDModel.cs})
 \end{itemize}
 \section{Serial}
 This part handles all serial communication asynchronously and drives the receive events.
 The associated classes, interfaces and files are:
 \begin{itemize}
-\item ISerial (Appendix \ref{appsec:ISerial.cs})
-\item SerialDataEvent (Appendix \ref{appsec:SerialDataEvent.cs})
-\item SerialInterface (Appendix \ref{appsec:SerialInterface.cs})
+\item ISerial (Appendix \ref{lst:Communication-ISerial.cs})
+\item SerialDataEvent (Appendix \ref{lst:Communication-SerialDataEvent.cs})
+\item SerialInterface (Appendix \ref{lst:Communication-SerialInterface.cs})
 \end{itemize}
 \section{Bluetooth Chipset}
 The adapter we use most of the time is an Intel(R) Centrino(R) Wireless Bluetooth(R) 4.0 + High Speed Adapter embedded together with the WiFi module in one of our own laptops.
+
+\section{Systen response}
+In figure \ref{fig:system-response} you can see the data of a run towards the wall.
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+    	\input{resources/system-response.tikz}    	
+    	\caption{The system response of the “drive-to-wall command”.}
+    	\label{fig:system-response}
+\end{figure}
 
 \end{document}
