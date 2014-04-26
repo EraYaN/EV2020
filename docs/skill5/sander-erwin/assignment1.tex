@@ -3,9 +3,163 @@
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../../library/bibliography.bib}
+\usepackage[europeanresistors,americaninductors]{circuitikz}
 \begin{document}
 
 \chapter{Assignment 1: One dimensional wave propagation - the transmission channel model}
 \label{ch:sk5-ass1}
+\section{Task 1}
+
+\begin{figure} [H]
+\center
+\begin{circuitikz}[american voltages]
+\draw
+	(0,0) to [short, o-] (3,0)
+	to [L, l=$Z_p:  j \omega L$] (3,2)
+	to [C, -o, l_=$Z_s: \frac{1}{j \omega C}$] (0,2)
+
+	(3,0) to [short, *-] (4,0)
+	to [R, l_=$Z_0$] (4,2)
+	to [short, -*] (3,2);
+\end{circuitikz}
+\caption{Section of the transmission channel.}
+\label{fig:circuit}
+\end{figure}
+
+The transmission channel used in this task has a series impedance $Z_s$ of $\frac{1}{j \omega C}$ and a parallel impedance $Z_p$ of $j \omega L$. A cuircuit that fits that parameters is displayed in Figure \ref{fig:circuit}. The equivalent impedance of the circuit in Figure \ref{fig:circuit} must be $Z_0$:
+
+\begin{equation}
+	Z_0 = Z_s + \frac{Z_p Z_0}{Z_p + Z_0}
+\end{equation}
+
+\begin{equation}
+	Z_0 = \frac{1}{2j \omega C} + j \sqrt{\frac{1}{4 \omega^2 C^2} - \frac{L}{C}}
+\end{equation}
+
+The first term, $1 / (2j \omega C)$, is set to be in the power source at the start of the transmission channel and is thus not present when not looking at the ends of the transmission channel. Hence the first term is removed when not looking at the very start of the transmission line:
+
+\begin{equation}
+	Z_0 = j \sqrt{\frac{1}{4 \omega^2 C^2} - \frac{L}{C}}
+\end{equation}
+
+When $\omega^2 < \frac{1}{4CL}$, the characterisic impedance $Z_0$ is entirely real, otherwise it is entirely imaginary. When $Z_0$ is equal to zero, the cutoff frequency is reached, which is at $\omega = \sqrt{\frac{1}{4CL}}$.
+
+The voltage drop across one section of the transmission line will be $I_n Z_s$ with $I_n$ the current through the transmission channel which equals $V_n / Z_0$ with $Z_n$ the voltage across all previous sections of the transmision channel section. According to this, the voltage before and after one section of the transmision line are proportional to each other anywhere on the transmission channel. This proportional factor is:
+
+%\begin{equation}
+%	\gamma = 1 - \frac{Z_s}{Z_0} = \frac{\sqrt{\frac{1}{4 \omega^2 C^2} - \frac{L}{C}} + \frac{1}{2 \omega C}}{\sqrt{\frac{1}{4 \omega^2 C^2} - \frac{L}{C}} - \frac{1}{2 \omega C}}
+%\label{eq:equivalent_impedence}
+%\end{equation}
+
+\begin{equation}
+	\gamma = 1 - \frac{Z_s}{Z_0} = \frac{\sqrt{\frac{1}{4} - LC \omega^2} - \frac{1}{2}}{\sqrt{\frac{1}{4} - LC \omega^2} + \frac{1}{2}}
+\end{equation}
+
+This network behaves like a high-pass filter since a capacitor is used as $Z_s$, which will not conduct at all when a DC signal is supplied.
+
+\section{Task 2}
+The reflection coefficient is given by:
+
+\begin{equation}
+	\Gamma = \frac{Z_l - Z_0}{Z_l + Z_0}
+\label{eq:rc}
+\end{equation}
+
+Which is used in the calculation of the voltage on a certain location on the channel $z$ at time $t$:
+
+\begin{equation}
+	V(z,t) = U(t - \gamma z) + \Gamma U(t + \gamma(z - 2l)) - \Gamma U(t - \gamma(z - 2l)) - \Gamma^2 U(t + \gamma(z - 4l)) ...
+\label{eq:v}
+\end{equation}
+
+When the channel terminal is an open circuit, $Z_l$ will be infinitily high. Using this in Eq. \ref{eq:rc} and using l'Hopital's rule:
+
+\begin{equation}
+	\Gamma = \lim_{Z_l \to \infty} \frac{Z_l - Z_0}{Z_l + Z_0} = \lim_{Z_l \to \infty} \frac{1}{1} = 1
+\end{equation}
+
+Using this $\Gamma$ in Eq. \ref{eq:v} of 1 at $z = l$ gives:
+
+\begin{equation}
+	V(z,t) = 2U(t - \gamma z) + 2U(t + \gamma(z - 3l)) - 2U(t - \gamma(z + 5l)) ...
+\label{eq:v}
+\end{equation}
+
+When the terminal is short circuited, $Z_l$ will be zero. Using this in Eq. {eq:rc}:
+
+\begin{equation}
+	\Gamma = \frac{0 - Z_0}{0 + Z_0} = -1
+\end{equation}
+
+Using this $\Gamma$ of -1 in Eq. \ref{eq:v} at $z = l$ gives:
+
+\begin{equation}
+	V(l,t) = 0
+\end{equation}
+
+Which makes sense since no voltage could exist over a resistance of exactly zero Ohms.
+
+\section{Task 3}
+A lossless tranmission line with $L_0 = 0.5 \mu H$ in series, $C_0 = 2 pF$ in parallel and $Z_l = 100 \Omega$ as load has a characteristic impedance of:
+
+\begin{equation}
+	Z_0 = \sqrt{\frac{L_0}{C_0}} = 500 \Omega
+\end{equation}
+
+The propagation of a rectangular signal U(t) through this transmission line can be calculated by using the Matlab script task-3.m, which can be found in Appendix A. The Matlab plotting script Bscan\_plot.m was provided, which can be found in Appendix A as well.
+
+The Matlab script task-3.m generates a V(x,t) and I(x,t) 3D plot with x $\epsilon$ [0,1.2] m and t $\epsilon$ [0,5] ns as shown below.
+
+\iffalse
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{0.8\linewidth}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/Voltage100Ohm.tikz}
+	\label{fig:wheel-torque-labcar}
+	\caption{Voltage on the transmission channel with rectangular pulse.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{0.8\linewidth}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/Current100Ohm.tikz}
+	\label{fig:wheel-torque-labcar}
+	\caption{Current through the transmission channel with rectangular pulse.}
+\end{figure}
+\fi
+
+The characteristic impedance of 
+
+\section{Task 4}
+The load impedance $Z_l$ is changed to $50 + j50 \Omega$, while keeping the configuration of the transmission channel as in Task 3. The delivered complex power to the load will be divided into real and imaginary power, with which the power efficiency can be calculated as:
+
+\begin{equation}
+	\eta = \frac{P}{S} \cdot 100\% = \frac{P}{P + Q} \cdot 100\%
+\end{equation}
+
+\iffalse
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/Powers.tikz}
+	\label{fig:wheel-torque-labcar}
+	\caption{Breakdown of the delivered powers.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/Efficiency.tikz}
+	\label{fig:wheel-torque-labcar}
+	\caption{Power efficiency.}
+\end{figure}
+\fi
+
+\chapter*{Appendix A}
+\includecode[matlab]{task-3.m}{C:/Users/Sander/Documents/GitHub/EV2020/docs/skill5/sander-erwin/resources/matlab/Skill_5_Assignment_1_Task_3.m}{lst:task-3.m}
 
 \end{document}
