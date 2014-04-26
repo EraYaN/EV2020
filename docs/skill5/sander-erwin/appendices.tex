@@ -1,0 +1,15 @@
+%!TEX program = xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+\begin{document}
+
+\chapter*{Appendix A}
+\includecode[matlab]{task-3.m}{resources/matlab/Skill_5_Assignment_1_Task_3.m}{lst:task-3.m}
+\newpage
+\includecode[matlab]{task-4.m}{resources/matlab/Skill_5_Assignment_1_Task_4.m}{lst:task-4.m}
+\newpage
+\includecode[matlab]{Bscanplot.m}{resources/matlab/Bscan_plot.m}{lst:Bscanplot.m}
+
+\end{document}

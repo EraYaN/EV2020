@@ -3,7 +3,6 @@
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../../library/bibliography.bib}
-\usepackage[europeanresistors,americaninductors]{circuitikz}
 \begin{document}
 
 \chapter{Assignment 1: One dimensional wave propagation - the transmission channel model}
@@ -26,7 +25,7 @@
 \label{fig:circuit}
 \end{figure}
 
-The transmission channel used in this task has a series impedance $Z_s$ of $\frac{1}{j \omega C}$ and a parallel impedance $Z_p$ of $j \omega L$. A cuircuit that fits that parameters is displayed in Figure \ref{fig:circuit}. The equivalent impedance of the circuit in Figure \ref{fig:circuit} must be $Z_0$:
+The transmission channel used in this task has a series impedance $Z_s$ of $\frac{1}{j \omega C}$ and a parallel impedance $Z_p$ of $j \omega L$. A cuircuit that fits that parameters is displayed in Figure \ref{fig:circuit}. The equivalent impedance of the circuit in Figure \ref{fig:circuit} must be equal to $Z_0$:
 
 \begin{equation}
 	Z_0 = Z_s + \frac{Z_p Z_0}{Z_p + Z_0}
@@ -130,14 +129,15 @@ The Matlab script task-3.m generates a V(x,t) and I(x,t) 3D plot with x $\epsilo
 \end{figure}
 \fi
 
-The characteristic impedance of 
-
 \section{Task 4}
 The load impedance $Z_l$ is changed to $50 + j50 \Omega$, while keeping the configuration of the transmission channel as in Task 3. The delivered complex power to the load will be divided into real and imaginary power, with which the power efficiency can be calculated as:
 
 \begin{equation}
 	\eta = \frac{P}{S} \cdot 100\% = \frac{P}{P + Q} \cdot 100\%
+	\label{eq:efficiency}
 \end{equation}
+
+The breakdown of the power was calculated using the Matlab script task-4.m, which is given in Appendix A. This breakdown of power delivered to the load impedance is displayed in Figure \ref{fig:breakdown}. From this figure, the power efficiency can be calculated using Eq. \ref{eq:efficiency}, which is displayed in Figure \ref{fig:efficiency}. In both figures there are two peaks, the first is the primary pulse and the second is the first reflection of this primary pulse. The reflection has less power than the primary since it had a longer route through the network and thus more losses. The imaginary part of this reflection is however smaller than the imaginary part of the primary pulse. For this reason, the efficiency of the second peak, which is the reflection, has a higher power efficiency of 98\% to the 71\% of the primary pulse.
 
 \iffalse
 \begin{figure}[H]
@@ -145,7 +145,7 @@ The load impedance $Z_l$ is changed to $50 + j50 \Omega$, while keeping the conf
 	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
 	\input{resources/Powers.tikz}
-	\label{fig:wheel-torque-labcar}
+	\label{fig:breakdown}
 	\caption{Breakdown of the delivered powers.}
 \end{figure}
 
@@ -154,12 +154,9 @@ The load impedance $Z_l$ is changed to $50 + j50 \Omega$, while keeping the conf
 	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
 	\input{resources/Efficiency.tikz}
-	\label{fig:wheel-torque-labcar}
+	\label{fig:efficiency}
 	\caption{Power efficiency.}
 \end{figure}
 \fi
-
-\chapter*{Appendix A}
-\includecode[matlab]{task-3.m}{C:/Users/Sander/Documents/GitHub/EV2020/docs/skill5/sander-erwin/resources/matlab/Skill_5_Assignment_1_Task_3.m}{lst:task-3.m}
 
 \end{document}
