@@ -3,6 +3,7 @@
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../../library/bibliography.bib}
+
 \begin{document}
 
 \chapter{Assignment 1: One dimensional wave propagation - the transmission channel model}
@@ -43,7 +44,7 @@ The first term, $1 / (2j \omega C)$, is set to be in the power source at the sta
 
 When $\omega^2 < \frac{1}{4CL}$, the characterisic impedance $Z_0$ is entirely real, otherwise it is entirely imaginary. When $Z_0$ is equal to zero, the cutoff frequency is reached, which is at $\omega = \sqrt{\frac{1}{4CL}}$.
 
-The voltage drop across one section of the transmission line will be $I_n Z_s$ with $I_n$ the current through the transmission channel which equals $V_n / Z_0$ with $Z_n$ the voltage across all previous sections of the transmision channel section. According to this, the voltage before and after one section of the transmision line are proportional to each other anywhere on the transmission channel. This proportional factor is:
+The voltage drop across one section of the transmission line will be $I_n Z_s$ with $I_n$ the current through the transmission channel which equals $V_n / Z_0$ with $Z_n$ the voltage across all previous sections of the transmision channel. According to this, the voltage before and after one section of the transmision line are equally proportional to each other anywhere on the transmission channel. This proportional factor is:
 
 %\begin{equation}
 %	\gamma = 1 - \frac{Z_s}{Z_0} = \frac{\sqrt{\frac{1}{4 \omega^2 C^2} - \frac{L}{C}} + \frac{1}{2 \omega C}}{\sqrt{\frac{1}{4 \omega^2 C^2} - \frac{L}{C}} - \frac{1}{2 \omega C}}
@@ -67,7 +68,7 @@ The reflection coefficient is given by:
 Which is used in the calculation of the voltage on a certain location on the channel $z$ at time $t$:
 
 \begin{equation}
-	V(z,t) = U(t - \gamma z) + \Gamma U(t + \gamma(z - 2l)) - \Gamma U(t - \gamma(z - 2l)) - \Gamma^2 U(t + \gamma(z - 4l)) ...
+	V(z,t) = U(t - \gamma z) + \Gamma U(t + \gamma(z - 2l)) - \Gamma U(t - \gamma(z - 2l)) - \Gamma^2 U(t + \gamma(z - 4l)) ~ ...
 \label{eq:v}
 \end{equation}
 
@@ -77,10 +78,10 @@ When the channel terminal is an open circuit, $Z_l$ will be infinitily high. Usi
 	\Gamma = \lim_{Z_l \to \infty} \frac{Z_l - Z_0}{Z_l + Z_0} = \lim_{Z_l \to \infty} \frac{1}{1} = 1
 \end{equation}
 
-Using this $\Gamma$ in Eq. \ref{eq:v} of 1 at $z = l$ gives:
+Using this $\Gamma$ of 1 in Eq. \ref{eq:v} at $z = l$ gives:
 
 \begin{equation}
-	V(z,t) = 2U(t - \gamma z) + 2U(t + \gamma(z - 3l)) - 2U(t - \gamma(z + 5l)) ...
+	V(z,t) = 2U(t - \gamma z) - 2U(t + \gamma(z - 3l)) + 2U(t - \gamma(z - 5l)) ~ ...
 \label{eq:v}
 \end{equation}
 
@@ -105,29 +106,23 @@ A lossless tranmission line with $L_0 = 0.5 \mu H$ in series, $C_0 = 2 pF$ in pa
 	Z_0 = \sqrt{\frac{L_0}{C_0}} = 500 \Omega
 \end{equation}
 
-The propagation of a rectangular signal U(t) through this transmission line can be calculated by using the Matlab script task-3.m, which can be found in Appendix A. The Matlab plotting script Bscan\_plot.m was provided, which can be found in Appendix A as well.
+The propagation of a rectangular signal U(t) through this transmission line can be calculated by using the Matlab script \emph{task-3.m}, which can be found in Appendix A. The Matlab plotting script Bscan\_plot.m was provided, which can be found in Appendix A as well.
+\\ \\
+The Matlab script \emph{task-3.m} generates a V(x,t) and I(x,t) 3D plot with x $\epsilon$ [0,1.2] m and t $\epsilon$ [0,5] ns as shown below in Figures \ref{fig:voltage} and \ref{fig:current}.
 
-The Matlab script task-3.m generates a V(x,t) and I(x,t) 3D plot with x $\epsilon$ [0,1.2] m and t $\epsilon$ [0,5] ns as shown below.
-
-\iffalse
 \begin{figure}[H]
 	\centering
-	\setlength\figureheight{0.8\linewidth}
-    	\setlength\figurewidth{0.8\linewidth}
-	\input{resources/Voltage100Ohm.tikz}
-	\label{fig:wheel-torque-labcar}
-	\caption{Voltage on the transmission channel with rectangular pulse.}
+	\includegraphics[width=\linewidth]{resources/Voltage100Ohm.png}
+	\caption{Voltage on the transmission channel with rectangular input pulse.}
+	\label{fig:voltage}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\setlength\figureheight{0.8\linewidth}
-    	\setlength\figurewidth{0.8\linewidth}
-	\input{resources/Current100Ohm.tikz}
-	\label{fig:wheel-torque-labcar}
-	\caption{Current through the transmission channel with rectangular pulse.}
+	\includegraphics[width=\linewidth]{resources/Current100Ohm.png}
+	\caption{Current through the transmission channel with rectangular input pulse.}
+	\label{fig:current}
 \end{figure}
-\fi
 
 \section{Task 4}
 The load impedance $Z_l$ is changed to $50 + j50 \Omega$, while keeping the configuration of the transmission channel as in Task 3. The delivered complex power to the load will be divided into real and imaginary power, with which the power efficiency can be calculated as:
@@ -137,15 +132,15 @@ The load impedance $Z_l$ is changed to $50 + j50 \Omega$, while keeping the conf
 	\label{eq:efficiency}
 \end{equation}
 
-The breakdown of the power was calculated using the Matlab script task-4.m, which is given in Appendix A. This breakdown of power delivered to the load impedance is displayed in Figure \ref{fig:breakdown}. From this figure, the power efficiency can be calculated using Eq. \ref{eq:efficiency}, which is displayed in Figure \ref{fig:efficiency}. In both figures there are two peaks, the first is the primary pulse and the second is the first reflection of this primary pulse. The reflection has less power than the primary since it had a longer route through the network and thus more losses. The imaginary part of this reflection is however smaller than the imaginary part of the primary pulse. For this reason, the efficiency of the second peak, which is the reflection, has a higher power efficiency of 98\% to the 71\% of the primary pulse.
+The breakdown of the power was calculated using the Matlab script \emph{task-4.m}, which is given in Appendix A. This breakdown of power delivered to the load impedance is displayed in Figure \ref{fig:breakdown}. From this figure, the power efficiency can be calculated using Eq. \ref{eq:efficiency}, which is displayed in Figure \ref{fig:efficiency}. In both figures there are two peaks, the first is the primary pulse and the second is the first reflection of this primary pulse. The reflection has less power than the primary since it had a longer route through the network and thus more losses. The imaginary part of this reflection is however smaller than the imaginary part of the primary pulse. For this reason, the efficiency of the second peak, which is the reflection, has a higher power efficiency of 98\% to the 71\% of the primary pulse.
 
 \begin{figure}[H]
 	\centering
 	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
 	\input{resources/Powers.tikz}
-	\label{fig:breakdown}
 	\caption{Breakdown of the delivered powers.}
+	\label{fig:breakdown}
 \end{figure}
 
 \begin{figure}[H]
@@ -153,8 +148,8 @@ The breakdown of the power was calculated using the Matlab script task-4.m, whic
 	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
 	\input{resources/Efficiency.tikz}
-	\label{fig:efficiency}
 	\caption{Power efficiency.}
+	\label{fig:efficiency}
 \end{figure}
 
 \end{document}
