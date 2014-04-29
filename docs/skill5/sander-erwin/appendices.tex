@@ -4,12 +4,18 @@
 \input{../../library/style.tex}
 \addbibresource{../../library/bibliography.bib}
 \begin{document}
-
-\chapter*{Appendix A}
+\begin{appendices}
+\renewcommand{\chapternumber}{\appendixname\space\thechapter} 
+\chapter{Source code}
+\label{app:source}
 \includecode[matlab]{task-3.m}{resources/matlab/Skill_5_Assignment_1_Task_3.m}{lst:task-3.m}
 \newpage
 \includecode[matlab]{task-4.m}{resources/matlab/Skill_5_Assignment_1_Task_4.m}{lst:task-4.m}
 \newpage
 \includecode[matlab]{Bscanplot.m}{resources/matlab/Bscan_plot.m}{lst:Bscanplot.m}
-
+\newpage
+\includecode[matlab]{get\_distance.m}{../../../src/skills/skill5/get_distance.m}{lst:get-distance.m}
+\newpage
+\includecode[matlab]{ass2tsk1.m}{../../../src/skills/skill5/ass2tsk2.m}{lst:ass2tsk2.m}
+\end{appendices}
 \end{document}
