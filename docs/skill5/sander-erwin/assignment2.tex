@@ -9,6 +9,7 @@
 \label{ch:sk5-ass2}
 \section{Task 1}
 \label{sec:sk5-tsk1}
+Here follows the derivation of the fuction $L(Z_in)$
 \begin{equation}
 \omega_{1}=2f_1\pi
 \end{equation}
@@ -19,26 +20,31 @@
 \Gamma=\frac{Z_L-Z_0}{Z_L+Z_0}
 \end{equation}
 \begin{equation}
-{Z}_{in}(-L)=Z_0\frac{Z_L+iZ_0tan(\beta L)}{Z_0+iZ_Ltan(\beta L)}
+{Z}_{in}=Z_0\frac{Z_L+iZ_0tan(\beta L)}{Z_0+iZ_Ltan(\beta L)}
 \end{equation}
 \begin{equation}
-tan(\beta L) (Z_0 Z_L-Z_0^2) i=Z_0 Z_{in}-Z_L Z_{in}
+{Z}_{in} \left(Z_0 + i Z_L tan(\beta L)\right)=Z_0 Z_L+iZ_0^2 tan(\beta L)
 \end{equation}
 \begin{equation}
-tan(\beta L)=i\frac{Z_0 Z_{in} - Z_L Z_{in}}{Z_0Z_L - {Z_0}^2}
+tan(\beta L) (Z_L Z_{in}-Z_0^2) i=Z_0 Z_L-Z_0 Z_{in}
 \end{equation}
 \begin{equation}
-L=\frac{1}{\beta}\left[arctan\left(i\frac{Z_0 Z_{in} - Z_L Z_{in}}{Z_0 Z_L - {Z_0}^2}\right)+k\pi\right]
+tan(\beta L)=i\frac{Z_0 Z_{in} - Z_L Z_0}{Z_{in} Z_L - {Z_0}^2}
+\end{equation}
+\begin{equation}
+L=\frac{1}{\beta}\left[arctan\left(i\frac{Z_0 Z_{in} - Z_L Z_0}{Z_{in} Z_L - {Z_0}^2}\right)+k\pi\right]
 \end{equation}
 
 When you only measure the impedance in one frequency you can not determine the length of the cable.
 The unambiguous range of distances is $-\pi/\beta$ to $\pi/\beta$.
 
 When you measure the impedance with two frequencies you can determine the length of the cable.
-The lines (L-k) intersect in a point, this is the length of the cable.
+For two k's the L-k lines will have the same L value. That L is the length of the transmission channel.
 
 \section{Task 2}
 \label{sec:sk5-tsk2}
-
+The used matlab function is showed in Listing \ref{lst:get-distance.m} \& \ref{lst:ass2tsk2.m}.
+If we use the frequencies and impedances that are given in task 2 (BlackBoard version) and we set the tolerance to $0.00001$, we get a transmission channel length of 1.25 \meter.
+All futher info is included in the source.
 
 \end{document}
