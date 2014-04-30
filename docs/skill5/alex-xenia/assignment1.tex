@@ -5,7 +5,7 @@
 \addbibresource{../../library/bibliography.bib}
 \begin{document}
 
-\chapter{Assignment 1: One dimensional wave propagation - the transmission channel model}
+\chapter*{Assignment 1}
 \label{ch:sk5-ass1-task1}
 \section*{Task 1}
 \begin{center}
@@ -15,32 +15,71 @@ $Z_0 = \dfrac{Z_s}{2} + \sqrt{\dfrac{(Z_s)^2}{4} + Z_s \cdot Z_p}$
 
 $Z_0 = \dfrac{1}{2j \omega C} + \sqrt{\dfrac{(\dfrac{1}{j \omega C})^2}{4} + \dfrac{1}{j \omega C} \cdot j \omega L}$
 
-$Z_0 = \dfrac{1}{2j \omega C} + \sqrt{\dfrac{L}{C} - \dfrac{1}{\omega^2 C^2 4}}$
+\begin{equation}
+Z_0 = \dfrac{1}{2j \omega C} + \sqrt{\dfrac{L}{C} - \dfrac{1}{\omega^2 C^2 4}}
+\end{equation}
 \end{center}
-For $\lim{\Delta  L\to 0}$ the values of the series capacitance $\Delta C$ and shunt inductance $\Delta L$ decrease. The ratio $\Delta L$ and $\Delta C$ will remain constant while the fractions beneath and infront of the square root will approach zero. This results in $Z_0 = \sqrt{\dfrac{\Delta L}{\Delta C}}$.
-
-The cutoff frequency is $W_0 = \sqrt{\dfrac{1}{4LC}}$.\\
+For $\lim{\Delta  L\to 0}$ the values of the series capacitance $\Delta C$ and shunt inductance $\Delta L$ decrease. The ratio $\Delta L$ and $\Delta C$ will remain constant while the fractions beneath and infront of the square root will approach zero. 
+This results in the characteristic impedance:
+\begin{equation}
+Z_0 = \sqrt{\dfrac{\Delta L}{\Delta C}}
+\end{equation}
+The cutoff frequency is:
+\begin{equation}
+W_0 = \sqrt{\dfrac{1}{4LC}}
+\end{equation}\\
 \\
-To determine how the network behaves filter-wise we use the following equation: $V_n = \gamma^n U$. Which gives the voltage at the n-th section of the ladder network. The factor $\gamma$ is equal to $1 - \dfrac{Z_s}{Z_0}$.
-Working out this equation we end up at 
-\begin{align*}
+To determine how the network behaves filter-wise we use the following equation: $V_n = \gamma^n U$. 
+This equation gives the voltage at the n-th section of the ladder network.\\
+The factor $\gamma$ is equal to $1 - \dfrac{Z_s}{Z_0}$.
+With $Z_s = \dfrac{1}{j \omega c}$ we work out the equation to end up at:
+\begin{align}
 \gamma = \dfrac{\sqrt{\dfrac{L}{C} - \dfrac{1}{\omega^2 C^2 4}} - \dfrac{1}{2j \omega C}}{\sqrt{\dfrac{L}{C} - \dfrac{1}{\omega^2 C^2 4}} + \dfrac{1}{2j \omega C}}
-\end{align*}
-\\For $\lim{\omega \to \infty}$ $\gamma$ approaches 1 and thus the network is a high-pass filter.
+\end{align}
+\\For $\lim{\omega \to \infty}$ $\gamma$ approaches 1 and thus the network behaves as a high-pass filter.
 
 \label{ch:sk5-ass1-task2}
 \section*{Task 2}
-The space-time domain of the voltage accros the channel equals:
-\begin{align*}
+The space-time domain of the voltage across the channel equals:
+\begin{align}
+\label{eq:space-time}
 V(z,t) = U(t-\gamma z) + \Gamma U(t + \gamma(z-2l)) - \Gamma U(t-\gamma(z+2l)) - \Gamma^2U(t+\gamma(z-4l))....
-\end{align*}
-With $\Gamma = \dfrac{Z_l - Z_0}{Z_l + Z_0}$ and $z = l$. In case the terminal is open there will be an infinite load impedance i.e. $Z_l = \infty$. As a consequence $\Gamma = 1$. Thus resulting in the following space-time expression 
+\end{align}
+With $\Gamma = \dfrac{Z_l - Z_0}{Z_l + Z_0}$ and $z = l$. 
+In case the terminal is open there will be an infinite load impedance i.e. $Z_l = \infty$. 
+As a consequence $\Gamma = 1$. 
+Thus resulting in the following space-time expression 
 \begin{align*}
 V(z,t) = U(t-\gamma l) + U(t + \gamma(-l)) - U(t-\gamma(3l)) - U(t+\gamma(-3l))....
 \end{align*}
-Similarly, if the terminal is short-circuited $Z_l = 0$ and $\Gamma = -1$. Resulting in the following space-time expression:
+Similarly, if the terminal is short-circuited $Z_l = 0$ and $\Gamma = -1$. 
+Resulting in the following space-time expression:
 \begin{align*}
 V(z,t) = U(t-\gamma l) + -U(t + \gamma(-l)) + U(t-\gamma(3l)) - U(t+\gamma(-3l))....
 \end{align*}
+
+A positive reflection coefficient points to a positively reflected wave while a negative reflection coefficient points to a negatively reflected wave.
+
+\label{ch:sk5-ass1-task3}
+\section*{Task 3}
+To gain insight in the behavior of the voltage and current in a transmission line a space-time evolution is set up.
+The transmission line has the following parameters: $L_0 = 0,5 \mu H, C_0 = 2 pF, Z_l = 100 \Omega$.
+Accordingly the charactersistic impedance is equal to:
+\begin{equation}
+Z_0 = \sqrt{\dfrac{L_0}{C_0}} = 500 \Omega
+\end{equation}
+The transmission line is excited by a rectangular pulse with the following expression:
+\begin{equation}
+U(t) = V_{max} \cdot \{\epsilon(t) - \epsilon(t-t_w)\}
+\end{equation}
+For the space-time evolution equation \ref{eq:space-time} is implemented in MatLab and WORDT NOG GEFIXT. Consequently the space-time evolution can be plotted with help of the Bscan-plot file provided as seen in \ref{app:bscan} and the MatLab code written in \ref{app:task3}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{resources/space-time-voltage.png}
+	\caption{Space time evolution of the voltage.}
+	\label{fig:space-time-voltage}
+\end{figure}
+As seen in figure \ref{fig:space-time-voltage} the signal propagates through the transmission channel and reflects negatively because the reflection coefficient is a negative number. Because this coefficient is bigger than -1 the reflected signal decreases in amplitude.
 
 \end{document}
