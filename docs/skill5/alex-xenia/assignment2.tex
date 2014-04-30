@@ -3,11 +3,35 @@
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../../library/bibliography.bib}
+\documentclass{article}
+\usepackage{listings}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+
+\usepackage[numbered]{mcode}
 \begin{document}
 
-\chapter*{Assignment 2}
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+\chapter{Assignment 2}
 \label{ch:sk5-ass2}
-\section*{Task 1}
+\section{Task 1}
 Given is that the input impedance $Z_{in}$ is equal to:
 \begin{align}
 Z_{in}(-l) = Z_0 \cdot \dfrac{Z_l + jZ_0 \tan (\beta l)}{Z_0 + jZ_l \tan (\beta l)}
@@ -39,5 +63,12 @@ Thus the unambiguous range is
 \dfrac{- \pi}{2 \beta} < L < \dfrac{\pi}{2 \beta}
 \end{equation}
 
-Measuring at two frequencies ($f1 < f2$) will again yield undetermined lengths. However, the unambiguous range now changes as can be derived from equation \ref{eq:range}. In this case the shortest period determines the unambiguous range.
+Measuring at two frequencies ($f1 < f2$) will again yield ambiguous lengths. The length of the transmission line is the point where the two ambiguous lengths for the different frequencies are the same. In this case the frequency with the largest period determines the unambiguous range.
+
+
+\section{Task 2}
+
+With MatLab the lengths are calculated for different lengths. According to the manual the length of the line is estimated to be at most 3m. This will help in case some calculated lengths are greater than 3 meter. The code can be found in \ref{app:ass2task2}.
+For the frequencies and impedancse stated in the file on BlackBoard. The found lengths were: 0.0043m, -0.0012m and -0.0026m.
+
 \end{document}

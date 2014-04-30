@@ -108,6 +108,17 @@ U(t) = V_{max} \cdot \{\epsilon(t) - \epsilon(t-t_w)\}
 
 In equation \ref{eq:rectangularpulse} $U(t)$ stand for the feeding voltage pulse, $V_{max}$ for the pulse amplitude, $t_w$ for the pulse width and $\epsilon(t)$ for the Heaviside unit step function. 
 For the space-time evolution of the voltage equation \ref{eq:space-time} is implemented in MatLab. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{resources/task3.png}
+	\caption{Space time evolution of the voltage.}
+	\label{fig:space-time-voltage}
+\end{figure}
+As can be seen in figure \ref{fig:space-time-voltage} the signal propagates through the transmission channel and reflects negatively because the reflection coefficient is a negative number. Because this coefficient is bigger than -1 the reflected signal decreases in amplitude.
+
+\\
+
 For the space-time evolution of the current we had to re-write some formules to get to an eqution of the form I(z,t). 
 The differential equation of the current can be written as: 
 \begin{equation} \label{eq:partial}
@@ -148,8 +159,7 @@ By taking the inverse Laplace transform of equation \ref{eq:geom} we get the fol
 I(t,z)=\frac{u(t-\gamma z)}{Z_{0}}-\frac{\Gamma}{Z_{0}}u(t+\gamma(-2l+z))-\frac{\Gamma}{Z_{0}}u(t+\gamma(-2l-z)) + \frac{\Gamma^2}{Z_{0}}u(t+\gamma(-4l+z))
 \end{equation}
 \\
-Consequently the space-time evolution can be plotted with help of the given function \texttt{Bscan\_plot.m}. For equation \ref{eq:rectangularpulse} we made a new function, \texttt{U.m}. This function can be seen below. \\
-\lstinputlisting{Matlab/U.m}
+Consequently the space-time evolution can be plotted with help of the given function \texttt{Bscan\_plot.m}, see appendix \ref{mat:bscan}. For equation \ref{eq:rectangularpulse} we made a new function, \texttt{U.m}, see appendix \ref{mat:stap}
 \\
 Before we could write the Matlab code we first had to define the following parameters:
 \begin{itemize}
@@ -159,16 +169,9 @@ Before we could write the Matlab code we first had to define the following param
 \item x $\in$ [0,1.2] m
 \end{itemize}
 
-The written Matlab code for plotting the space-time evolution of the current I(x,t) and voltage V(x,t) can be seen below. 
-\lstinputlisting{Matlab/task3.m}
+The written Matlab code for plotting the space-time evolution of the current I(x,t) and voltage V(x,t) can be seen in the appendix \ref{mat:task3}. 
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{resources/task3.png}
-	\caption{Space time evolution of the voltage.}
-	\label{fig:space-time-voltage}
-\end{figure}
-As can be seen in figure \ref{fig:space-time-voltage} the signal propagates through the transmission channel and reflects negatively because the reflection coefficient is a negative number. Because this coefficient is bigger than -1 the reflected signal decreases in amplitude.
+
 
 The plot of the space-time evolution of the current $I(z,t)$ can be seen in figure \ref{fig:iplot}. 
 \begin{figure}[H]
@@ -178,8 +181,32 @@ The plot of the space-time evolution of the current $I(z,t)$ can be seen in figu
 \label{fig:iplot}
 \end{figure}
 
-\
+\label{ch:sk5-ass1-task4}
+\section{Task 4}
 
+For task 4 we can practically use the same transmission channel as was used in task 3 \ref{ch:sk5-ass1-task3}. The only difference between task 3and 4 is the load impedance. In task 3 we used a 100 $\ohm$ load and here in task 4 we have to use a 50+50i $\ohm$ load. We have to interpret the effectiveness of the power transfer by checking how much power is effectively transferred to the load.
+\\
 
+In order to determine the efficiency we use the formula: 
+\begin{equation}
+\eta = \frac{P}{S} \cdot 100\% = \frac{P}{P + Q} \cdot 100\%
+	\label{eq:efficiency}
+\end{equation}
+The voltage, $V$, at the end of the transmission channel of task 2 can be used, because the load impedance is at the end of the channel.
+In figure \ref{fig:task4} the power trasfer is shown with an load impedance of $Z$ = 50 + 50i $\ohm$. The power at the load is split into 3 different kind of powers:
+\begin{itemize}
+\item absolute power
+\item real power
+\item imaginary power
+\end{itemize}
+In order to determine the efficiency of the power transfer we have to look at the real and absolute power. 
+There are two peaks in the figure. The first represents the primary pulse and the second represents the reflection of that primary pulse. This reflection has less power, because it has to travel a larger distance and thus suffers more losses. 
+In the figure we however do see that the imaginay part of the primar pulse is smaller than the one of the secondary pulse. Beacause of this the power efficiency of the second peak will be higher. Our first peak has an efficiency of roughly 71\% and our second peak has the higher efficiency with 97\%.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{resources/task4.png}
+\caption{Power transfer with a load Z = 50 + 50i $\ohm$.}
+\label{fig:task4}
+\end{figure}
 \end{document}
