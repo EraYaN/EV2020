@@ -26,7 +26,7 @@
 \label{fig:circuit}
 \end{figure}
 
-The transmission channel used in this task has a series impedance $Z_s$ of $\frac{1}{j \omega C}$ and a parallel impedance $Z_p$ of $j \omega L$. A cuircuit that fits that parameters is displayed in Figure \ref{fig:circuit}. The equivalent impedance of the circuit in Figure \ref{fig:circuit} must be equal to $Z_0$:
+The transmission channel used in this task has a series impedance $Z_s$ of $\frac{1}{j \omega C}$ and a parallel impedance $Z_p$ of $j \omega L$. A circuit that fits that parameters is displayed in Figure \ref{fig:circuit}. The equivalent impedance of the circuit in Figure \ref{fig:circuit} must be equal to $Z_0$:
 
 \begin{equation}
 	Z_0 = Z_s + \frac{Z_p Z_0}{Z_p + Z_0}
@@ -42,9 +42,9 @@ The first term, $1 / (2j \omega C)$, is set to be in the power source at the sta
 	Z_0 = j \sqrt{\frac{1}{4 \omega^2 C^2} - \frac{L}{C}}
 \end{equation}
 
-When $\omega^2 < \frac{1}{4CL}$, the characterisic impedance $Z_0$ is entirely real, otherwise it is entirely imaginary. When $Z_0$ is equal to zero, the cutoff frequency is reached, which is at $\omega = \sqrt{\frac{1}{4CL}}$.
+When $\omega^2 < \frac{1}{4CL}$, the characteristic impedance $Z_0$ is entirely real, otherwise it is entirely imaginary. When $Z_0$ is equal to zero, the cutoff frequency is reached, which is at $\omega = \sqrt{\frac{1}{4CL}}$.
 
-The voltage drop across one section of the transmission line will be $I_n Z_s$ with $I_n$ the current through the transmission channel which equals $V_n / Z_0$ with $Z_n$ the voltage across all previous sections of the transmision channel. According to this, the voltage before and after one section of the transmision line are equally proportional to each other anywhere on the transmission channel. This proportional factor is:
+The voltage drop across one section of the transmission line will be $I_n Z_s$ with $I_n$ the current through the transmission channel which equals $V_n / Z_0$ with $Z_n$ the voltage across all previous sections of the transmission channel. According to this, the voltage before and after one section of the transmission line are equally proportional to each other anywhere on the transmission channel. This proportional factor is:
 
 %\begin{equation}
 %	\gamma = 1 - \frac{Z_s}{Z_0} = \frac{\sqrt{\frac{1}{4 \omega^2 C^2} - \frac{L}{C}} + \frac{1}{2 \omega C}}{\sqrt{\frac{1}{4 \omega^2 C^2} - \frac{L}{C}} - \frac{1}{2 \omega C}}
@@ -72,7 +72,7 @@ Which is used in the calculation of the voltage on a certain location on the cha
 \label{eq:v}
 \end{equation}
 
-When the channel terminal is an open circuit, $Z_l$ will be infinitily high. Using this in Eq. \ref{eq:rc} and using l'Hopital's rule:
+When the channel terminal is an open circuit, $Z_l$ will be infinitely high. Using this in Eq. \ref{eq:rc} and using l'Hopital's rule:
 
 \begin{equation}
 	\Gamma = \lim_{Z_l \to \infty} \frac{Z_l - Z_0}{Z_l + Z_0} = \lim_{Z_l \to \infty} \frac{1}{1} = 1
@@ -82,7 +82,7 @@ Using this $\Gamma$ of 1 in Eq. \ref{eq:v} at $z = l$ gives:
 
 \begin{equation}
 	V(z,t) = 2U(t - \gamma z) - 2U(t + \gamma(z - 3l)) + 2U(t - \gamma(z - 5l)) ~ ...
-\label{eq:v}
+\label{eq:v2}
 \end{equation}
 
 When the terminal is short circuited, $Z_l$ will be zero. Using this in Eq. {eq:rc}:
@@ -91,7 +91,7 @@ When the terminal is short circuited, $Z_l$ will be zero. Using this in Eq. {eq:
 	\Gamma = \frac{0 - Z_0}{0 + Z_0} = -1
 \end{equation}
 
-Using this $\Gamma$ of -1 in Eq. \ref{eq:v} at $z = l$ gives:
+Using this $\Gamma$ of -1 in Eq. \ref{eq:v2} at $z = l$ gives:
 
 \begin{equation}
 	V(l,t) = 0
@@ -100,15 +100,15 @@ Using this $\Gamma$ of -1 in Eq. \ref{eq:v} at $z = l$ gives:
 Which makes sense since no voltage could exist over a resistance of exactly zero Ohms.
 
 \section{Task 3}
-A lossless tranmission line with $L_0 = 0.5 \mu H$ in series, $C_0 = 2 pF$ in parallel and $Z_l = 100 \Omega$ as load has a characteristic impedance of:
+A lossless transmission line with $L_0 = 0.5 \mu H$ in series, $C_0 = 2 pF$ in parallel and $Z_l = 100 \Omega$ as load has a characteristic impedance of:
 
 \begin{equation}
 	Z_0 = \sqrt{\frac{L_0}{C_0}} = 500 \Omega
 \end{equation}
 
-The propagation of a rectangular signal U(t) through this transmission line can be calculated by using the Matlab script \emph{task-3.m}, which can be found in Appendix A. The Matlab plotting script Bscan\_plot.m was provided, which can be found in Appendix A as well.
+The propagation of a rectangular signal U(t) through this transmission line can be calculated by using the Matlab script \emph{task-3.m}, which can be found in Appendix A. The MATLab plotting script Bscan\_plot.m was provided, which can be found in Appendix A as well.
 \\ \\
-The Matlab script \emph{task-3.m} generates a V(x,t) and I(x,t) 3D plot with x $\epsilon$ [0,1.2] m and t $\epsilon$ [0,5] ns as shown below in Figures \ref{fig:voltage} and \ref{fig:current}.
+The MATLab script \emph{task-3.m} generates a V(x,t) and I(x,t) 3D plot with x $\epsilon$ [0,1.2] m and t $\epsilon$ [0,5] ns as shown below in Figures \ref{fig:voltage} and \ref{fig:current}.
 
 \begin{figure}[H]
 	\centering
