@@ -5,7 +5,39 @@
 \addbibresource{../../library/bibliography.bib}
 \begin{document}
 
-\chapter{Assignment 2: Basic radar concepts}
+\chapter*{Assignment 2}
 \label{ch:sk5-ass2}
+\section*{Task 1}
+Given is that the input impedance $Z_{in}$ is equal to:
+\begin{align}
+Z_{in}(-l) = Z_0 \cdot \dfrac{Z_l + jZ_0 \tan (\beta l)}{Z_0 + jZ_l \tan (\beta l)}
+\end{align}
+We now solve for $l$:
+\begin{equation}
+Z_{in} \cdot (Z_0 + jZ_l \tan (\beta l)) = Z_0 \cdot (Z_l + jZ_0 \tan (\beta l))
+\end{equation}
+\begin{equation}
+\tan( \beta l) \cdot (jZ_{in} Z_l - jZ_0^2) = Z_0(Z_l - Z_{in})
+\end{equation}
+\begin{equation}
+\tan (\beta l) = \dfrac{Z_0(Z_l - Z_{in})}{jZ_{in} Z_l - jZ_0^2}
+\end{equation}
+\begin{equation}
+\label{eq:beta}
+l = \dfrac{1}{\beta} \cdot \arctan (Z_0 \dfrac{Z_l - Z_{in}}{jZ_{in} Z_l - jZ_0^2})
+\end{equation}
+Beta denotes the wave number and reads:
+\begin{equation}
+\label{eq:range}
+\beta = \dfrac{2 \pi}{\gamma_{med}} = \dfrac{\omega}{c_{med}}
+\end{equation}
 
+Because the tangent is periodic, the measured input impedance is the same for different lengths. 
+Therefore the determined length will not be unambiguous. However $\beta L$ has period $\pi$ and if $\beta L$ is between $\dfrac{- \pi}{2}$ and $\dfrac{\pi}{2}$ the solutions for L will be unambiguous. 
+Thus the unambiguous range is
+\begin{equation}
+\dfrac{- \pi}{2 \beta} < L < \dfrac{\pi}{2 \beta}
+\end{equation}
+
+Measuring at two frequencies ($f1 < f2$) will again yield undetermined lengths. However, the unambiguous range now changes as can be derived from equation \ref{eq:range}. In this case the shortest period determines the unambiguous range.
 \end{document}
