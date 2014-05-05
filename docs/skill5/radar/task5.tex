@@ -1,0 +1,73 @@
+%!TEX program = xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+\title{Skills 5 - Report}
+\author{Alex {Misdorp} \and Sander {van Dijk}}
+\begin{document}
+
+\chapter*{Task 5}
+\section*{Theory}
+The following experiment will determine the range dependence of the received power. 
+To determine this we use a movable reference target that's positioned straight in front of the radar. 
+Subsequently we move the reference target further away multiple times and acquire the corresponding signal amplitude from the radar's display.
+We assume the signal amplitude of the signal will decrease because as we move the reference target further away, a smaller portion of the signal will be reflected.
+
+\section*{Experimental procedure}
+First off the target is placed in such a way to receive maximum power at the radar.\\
+This means shoveling the target reference around a bit until this goal is reached.\\
+Ideally, the mirror side of the reference target should be parallel to the radar.\\
+Subsequently the reference target is moved backwards along a line taped on to the ground.
+The distance is measured using a tapeline.
+
+\section*{Results}
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|c | c | c | c|}
+\hline
+Distance (m) & Voltage (mV) & Power (dB) & Increase in power (dB)\\
+%\hline
+%2 & 85,389 & -21,372 & 0\\
+%\hline
+%2,5 & 84,080 & -21.506 & \\
+\hline
+3 & 74,904 & -22,510 & 0\\
+\hline
+3,5 & 59,965 & -24.442 & -1,932\\
+\hline
+4 & 50,458 &  -25.941 & - 1,500\\
+\hline
+4,5 & 42,414 & -27.450 & - 1,508\\
+\hline
+5 & 35,624 & -28.965 & -1,515\\
+\hline
+5,5 & 30,191 & -30,403 & -1,437\\
+\hline
+6 & 25,595 & -31.837 & -1,434\\
+\hline
+6,5 & 21,312 & -33.428 & -1,591\\
+\hline
+\end{tabular}
+\caption{Measured voltages at different ranges and the corresponding power.}
+\label{tab:receivedpower}
+\end{center}
+\end{table}
+
+Judging from table \ref{tab:receivedpower}, the signal amplitude decreases as we move further away from the radar which is in line with our expectations.
+The power is calculated using \\ $20 * $log(voltage).
+In figure \ref{fig: Fitteddata} the experiment data is fitted with help of the provided 'radar\textunderscore 4 \textunderscore epo.m' file (see appendix).
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale = 1]{data/Fitteddata.png}
+\caption{Fitted data of the experiment.}
+\label{fig: Fitteddata}
+\end{center}
+\end{figure}
+
+The parameter $a$ is equal to approximately 3,2 as opposed to the theoretically \\predicted 4. The higher parameter $a$ is, the higher the decrease in signal amplitude for distances further away from the radar is. 
+Because our parameter $a$ is 3,2 instead of the predicted 4 it seems likely that parts of the signal are reflected by objects other than the reference target. 
+As a result of this the parameter $a$ will be lower than 4.
+
+\end{document}
