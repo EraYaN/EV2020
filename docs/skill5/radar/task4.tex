@@ -11,7 +11,7 @@
 The half power beamwidth is determined in this experiment. This is done by finding the -3 dB tangential distance at several distances from the radar. The two horizontal axes - the center of the beam and the tangent of this beam, parallel to the floor - are moved seperately. First the target is placed at a distance R from the radar, at a place where the beam is strongest. The strength of this beam is measured on the computer screen, which is displayed in Volts. This beam strength must be converted to decibels, substracted 3 dB's and then convert this value back to Volts to find the -3 dB voltage. The following conversion is used:
 
 \begin{equation}
-	V_{dB} = 20 \cdot \log_10 V
+	V_{dB} = 20 \cdot \log_{10} (V)
 \end{equation}
 
 \begin{equation}
@@ -38,7 +38,7 @@ The data was measured at three distances from the radar: 2.18 \unit{m}, 3.50 \un
 \begin{center}
 \begin{tabular}{ | l | l | l | }
     \hline
-    Beam center distance R (m) & Tangential distance L (cm) & Beamwidth $\beta$ \\\hline
+    Beam center distance R (m) & Tangential distance L (cm) & Beamwidth $\beta$ (\textdegree) \\\hline
     2.18 & 15.8 & 3.00 \\\hline
     3.50 & 16.3 & 3.05 \\\hline
     5.00 & 28.5 & 3.03 \\\hline
@@ -48,6 +48,6 @@ The data was measured at three distances from the radar: 2.18 \unit{m}, 3.50 \un
 \end{table}
 \label{tab:measure}
 
-With these three measurements at different distances R from the radar, three different values of tangential distances L are found at which the beam power is halved. The three resulting beamwidths $\beta$ are very close to each other, which makes the found beamwidth assumable. This result was to be expected constant at different distances R since electromagnetic pulses travel in straight lines at macro-scale.
+With these three measurements at different distances R from the radar, three different values of tangential distances L are found at which the beam power is halved. The three resulting beamwidths $\beta$ are very close to each other, which makes the found beamwidth assumable. The value of this beamwidth 3.0\textdegree ~ is rather small, which indicates a slim beam with very focussed beam strength.
 
 \end{document}

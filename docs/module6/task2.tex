@@ -1,0 +1,21 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../library/preamble.tex}
+\input{../library/style.tex}
+\addbibresource{../library/bibliography.bib}
+
+\begin{document}
+
+\chapter{Task 2}
+\label{task2}
+Unipolar NRZ has a null bandwidth equal to the bitrate $R_b$. The power spectrum contains most power on the low frequencies, with a delta peak on f = 0 Hz. After the first zero on the spectrum, a peak with much less power appears between $R_b$ and $2 R_b$.
+
+\section{ASK}
+The modulation index $\mu$ determines the signal amplitude of the carrier frequency when using ASK. The $\mu$ parameter will change the power spectrum when using ASK in shape, but not in bandwidth. When the carrier frequency is changed, the corresponding peak in the spectrum which is at the same frequency, changes with it. The higher harmonics of $f_c$ are also moved with these changes. Also, the spectrum becomes longer in the tests with the Matlab script digmod\_gui.
+
+\section{FSK}
+When using FSK, the carrier frequency is shifted $f_{\Delta}$ in positive direction to the carrier frequency as a function of the transmitted data bits. A zero is transmitted as the carrier frequency and an one is transmitted as the carrier frequency plus the delta frequency since the signal which is to be transmitted is binary. The $f_{\Delta}$ parameter affects the power spectrum since the carrier frequency is shifted in positive direction partly. When the carrier frequency is changed, the corresponding peak in the spectrum and the peak of $f_c + f_{\Delta}$ moves with it. Also, the higher harmonics move with them accordingly.
+
+\section{Difference FSK and ASK}
+ASK generates a spectrum with a lower base power and higher peaks compared to FSK. This is because the frequency remains constant with ASK, when the frequency is shifted with FSK.
+
+\end{document}

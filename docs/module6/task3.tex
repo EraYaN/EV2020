@@ -1,0 +1,65 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../library/preamble.tex}
+\input{../library/style.tex}
+\addbibresource{../library/bibliography.bib}
+
+\begin{document}
+
+\chapter{Task 3}
+\label{task3}
+The BER is defined as the chance that a bit error occors at the receiver due to noise. The decision threshold is the cutoff amplitude which is used to determine whether the incoming signal is considered a binary zero or one. The following ASK settings apply for the results in Table \ref{tab:decision}:
+
+\begin{itemize}
+    \item Carrier frequency $f_c$ = 1000 Hz,
+    \item Bit rate $R_b$ = 20 bits/s,
+    \item Number of bits N = 100,
+    \item Modulation index $\mu$ = 1,
+    \item Noise standard deviation $\sigma_n$ = 0.05.
+\end{itemize}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ | l | l | l | }
+    \hline
+    Decision threshold & BER \\\hline
+    0.00 & 0.31 \\\hline
+    0.10 & 0.23 \\\hline
+    0.20 & 0.20 \\\hline
+    0.50 & 0.21 \\\hline
+    1.00 & 0.00 \\\hline
+    1.50 & 0.25 \\\hline
+    2.00 & 0.37 \\\hline
+\end{tabular}
+\caption{BER with different values of the decision threshold to find the optimal decision threshold.}
+\end{center}
+\end{table}
+\label{tab:decision}
+
+The minimum of the BER can be found at the decision threshold of 1.00 according to Table \ref{tab:decision}. This decision threshold is used in the following tests in this task.
+
+When changing the noise standard deviation ~$\sigma_n$ with steps of 0.1 with the optimal decision threshold, the results of Table \ref{tab:ber} are found:
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{ | l | l | l | }
+    \hline
+    Noise standard deviation $\sigma_n$ & BER \\\hline
+    0.1 & 0.00 \\\hline
+    0.2 & 0.07 \\\hline
+    0.3 & 0.20 \\\hline
+    0.4 & 0.16 \\\hline
+    0.5 & 0.16 \\\hline
+    0.6 & 0.17 \\\hline
+    0.7 & 0.24 \\\hline
+    0.8 & 0.34 \\\hline
+    0.9 & 0.34 \\\hline
+    1.5 & 0.40 \\\hline
+\end{tabular}
+\caption{BERs when using decision threshold 1.00 and different values of the noise standard deviation.}
+\end{center}
+\end{table}
+\label{tab:ber}
+
+From Table \ref{tab:ber} it can be concluded that when the noise standard deviation increases, the BER increases as well. Standard deviation is the average deviation from the mean value of the signal, in this case, noise. The used noise has a mean of zero, so a higher standard deviation means more chance on high amplitudes of noise added to the desired signal. When the noise amplitudes increase, the signal to noise ratio decreases, making it harder to determine the original signal. With noise added, a zero can be interpretated as an one and vice versa when it crosses the decision threshold.
+
+\end{document}
