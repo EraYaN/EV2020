@@ -1,0 +1,49 @@
+%!TEX program = xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+
+\begin{document}
+
+\chapter{Task 3}
+\section{Experimental procedure}
+In the first experiment we had to determine the range resolution of the radar demonstrator. 
+We got two reference targets that we had to place in the radar's line of sight.
+If one target is fixed we change the position of the second target until a minimum distance is reached for which the radar's indicator still identifies two targets.
+This minimum distance is called $\Delta R$ and can be found using equation \ref{eq:1}. 
+In this equation $c_{0}$ is the speed of light and $B$ is the bandwidth of the system.
+In our experiment the bandwidth was between 0 and 26 $\giga Hz$. 
+\begin{equation} 
+\label{eq:1}
+\Delta R= \frac{c_{0}}{2B} 
+\end{equation}
+The setup of our experiment can be seen in figure \ref{fig:range}
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=\linewidth/2]{resources/meet3.png}
+	\end{center}
+	\caption{Range resolution experiment}
+	\label{fig:range}
+\end{figure}
+
+
+\section{Results}
+We did the experiment at several distances from the radar: 2.00 \unit{m}, 2.50 \unit{m}, 3.50 \unit{m} and 5.00 \unit{m}. 
+With the results found for $\Delta R$ we can calculate the Bandwidth $B$ from equation \ref{eq:1}.
+The results from the experiment are shown in Table \ref{tab:2}
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ | l | l | l | }
+    \hline
+    Distance between radar and object R (m) & Minimum distance $\Delta R$ (cm) & Bandwidth ($\giga Hz$)  \\\hline
+    2.00 & 0.50 & 30.0 \\\hline
+    2.50 & 0.50 & 30.0 \\\hline
+    3.50 & 1.00 & 20.0  \\\hline
+    5.00 & 0.75 & 15.0  \\\hline
+\end{tabular}
+\caption{Measure data range resolution experiment.}
+\label{tab:2}
+\end{center}
+\end{table}
+\end{document}
