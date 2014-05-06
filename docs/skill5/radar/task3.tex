@@ -7,11 +7,16 @@
 \begin{document}
 
 \chapter{Task 3}
+
 \section{Experimental procedure}
-In the first experiment we had to determine the range resolution of the radar demonstrator. 
+\label{sec:experimentalprocedure}
+The range resolution of the radar demonstrator is determined in this experiment.
+This can be done by finding the minimum distance for which a radar's indicator still indentifies two different targets. 
 We got two reference targets that we had to place in the radar's line of sight.
 If one target is fixed we change the position of the second target until a minimum distance is reached for which the radar's indicator still identifies two targets.
-This minimum distance is called $\Delta R$ and can be found using equation \ref{eq:1}. 
+Starting with the two targets next to each other we slowly moved the second one back a little until we saw two different waves on the monitor.
+When the second wave appears on the monitor the distance between the two targets is measured and the minimum distance is found.
+This minimum distance is called $\Delta R$ and can also be found using equation \ref{eq:1}. 
 In this equation $c_{0}$ is the speed of light and $B$ is the bandwidth of the system.
 In our experiment the bandwidth was between 0 and 26 $\giga Hz$. 
 \begin{equation} 
@@ -29,7 +34,7 @@ The setup of our experiment can be seen in figure \ref{fig:range}
 
 
 \section{Results}
-We did the experiment at several distances from the radar: 2.00 \unit{m}, 2.50 \unit{m}, 3.50 \unit{m} and 5.00 \unit{m}. 
+We did the experiment at several distances from the radar: 2.00 \unit{m}, 2.50 \unit{m}, 3.50 \unit{m}, 5.00 \unit{m} and 5.50 \unit{m}. 
 With the results found for $\Delta R$ we can calculate the Bandwidth $B$ from equation \ref{eq:1}.
 The results from the experiment are shown in Table \ref{tab:2}
 \begin{table}[h]
@@ -39,11 +44,27 @@ The results from the experiment are shown in Table \ref{tab:2}
     Distance between radar and object R (m) & Minimum distance $\Delta R$ (cm) & Bandwidth ($\giga Hz$)  \\\hline
     2.00 & 0.50 & 30.0 \\\hline
     2.50 & 0.50 & 30.0 \\\hline
-    3.50 & 1.00 & 20.0  \\\hline
-    5.00 & 0.75 & 15.0  \\\hline
+    3.50 & 0.75 & 20.0  \\\hline
+    5.00 & 1.00 & 15.0  \\\hline
+    5.50 & 1.00 & 15.0  \\\hline
 \end{tabular}
 \caption{Measure data range resolution experiment.}
 \label{tab:2}
 \end{center}
 \end{table}
+\\
+
+
+Analyzing the results we've got from the experiment we see that the minimum distance becomes just a little bigger when the distance between the radar and the targets becomes larger.
+We also see that the bandwidth at 2.00 \unit{m} and 2.50 \unit{m} is 30.0 $\giga Hz$ and exceeds the specified region in \ref{sec:experimentalprocedure}.
+This could be because:
+\begin{itemize}
+\item we did not measure $\Delta R$ correctly. 
+Due to the small distance between the two targets and due to measuring by hand ,the measured value can be off. 
+With a slightly bigger $\Delta R$, 0.60 \unit{\centi m} for example, the bandwidth becomes  25.0 $\giga Hz$,  which is in fact within the specified region.
+\item it was recommendable to locate the target at a distance of at least 5.00 \unit{m} to minimise the wave propagation effect and circumvent some equipment non-idealities.
+ So the farther is better.
+\end{itemize}
+
+
 \end{document}
