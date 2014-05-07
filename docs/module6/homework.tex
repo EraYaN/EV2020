@@ -1,0 +1,94 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../library/preamble.tex}
+\input{../library/style.tex}
+\addbibresource{../library/bibliography.bib}
+
+\begin{document}
+
+\chapter{Homework assignments}
+\label{homework}
+\section{question 1}
+Bandwidth: The width of the frequency band.
+Capacity: The amount of bits that can be send per second without an error occurring. 
+Data rate: Data transmission in bit/sec.
+The relation between the bandwidth, capacity and the data rate is that the amount of data that can be send per second, without an error accurring, is dependent on the bandwidth. See also equation \ref{eq:bandwidth}.
+\begin{equation}
+\label{eq:bandwidth}
+C= B log_{2}(1+\frac{S}{N})
+\end{equation}
+\section{question 2}
+%%%%%%%%Pros of digital modulation compared to anlog signals:
+
+\section{question 3}
+Fundamental reasons to chose digital and anlog modulated signals is that you sometimes need to send data over huge distances, but the base band is not fit to do this. Through modulation you can transform the signal to one with a higher frequentie.
+\section{question 4}
+As a term for quality one can look at the signal-to-noise ratio.
+For digital modulated signals one can also look at the carries-to-noise ratio.
+\section{question 5}
+The bit error rate (BER) is the number of bit errors divided by the total number of tranferred bits during a studied time interval.
+\section{question 6}
+The quality of the transmission channel wil become less due to signal noise. This can cause bit errors. 
+Another cause of bit errors can be interference.
+\section{question 7}
+The bit error rate can be influenced by:
+\begin{itemize}
+\item transmission channel noise
+\item interference
+\item distortion
+\item bit synchronization problems
+\item attenuation
+\end{itemize}
+\section{question 8}
+%%%%%%%%%%%%
+\section{question 9}
+%%%%%%%%%%%%%%
+\section{question 10}
+%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\chapter{Homework assignments 2}
+\section{question1}
+Modulation is the process of varying one or more properties of a periodic waveform, called the carrier signal, with a modulating signal that typically containis information to be transmitted.
+Due to noise or interference on the channel over which the modulated signal is transmitted errors may occur in the detection of the signal at the receiver. Through the use of coding (sending extra information in order to recognize errors) you can find the original signal through the received signal. 
+In short: coding of modulated signals can make the transmission more reliable because errors can be detected and corrected. 
+\section{question 2}
+Other meanings of the term coding:
+\begin{itemize}
+\item data encryption; transforming the information into codes.
+\item data conversion;  using less bits for the same amount of information.
+\item error correction; adding more information in order to make it more reliable.
+\end{itemize}
+\section{question 3}
+Classes in which occurring errors can be divided
+\begin{itemize}
+\item single-bit
+\item multiple-bit
+\item burst error
+\end{itemize}
+\section{question 4}
+The most important causes of occurring errors are:
+\begin{itemize}
+\item errors due to noise
+\item errors due to interference
+\item errors due to an incorrect synchronization between sender and receiver
+\end{itemize}
+\section{question 5}
+The difference between detection and correction of errors is that error detection is checking whether the received information differs from the send information and error correction is the reconstruction of the send signal when it differs from the received signal. 
+\section{question 6}
+There are two important techniques for reducing errors in a digital communication system:
+\begin{itemize}
+\item automatic repeat request
+\item forward error control
+\end{itemize}
+\section{question 7}
+The most important consideration when choosing a coding method for a particulare application is the extra time it takes to send the signal.
+\section{question 8}
+Interleaving is a process or methodology to make a system more efficient, fast and reliable by arranging data in a noncontiguous manner.
+Interleaving divides memory into small chuns. 
+It is used as a high-level technique to solve memory issues for motherboards and chips.
+By increasing bandwidth so dara can access chunks of memory, the overall performancse of the processor and system increases. 
+This is because the processos can fetch and send more data to and from memory in the amount of time.
+The most important purpose of this technique is to make the errors easier to detect 
+
+
+\end{document}
