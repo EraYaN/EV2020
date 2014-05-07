@@ -1,0 +1,33 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../library/preamble.tex}
+\input{../library/style.tex}
+\addbibresource{../library/bibliography.bib}
+
+\begin{document}
+
+\chapter*{Task 4}
+Runing the program with Hamming-code and a decision threshold of  1.00 $BER_{bc} = 0.114$ and $BER_{ac} = 0.04$.
+For BCH-coding $BER_{bc} = 0.347$ and $BER_{ac} = 0.32$. Hamming-code resulted in a 65\% better BER while BCH-coding only saw an 8\% improvement. THIS IS BECAUSE???\\\\
+Again using threshold 1.00 we measure the time duration of the audio signal for no coding, Hamming-coding, and BCH-coding. For this we use a stopwatch on a smartphone.
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{| c | c |}
+\hline
+Coding & Time duration (s)\\
+\hline
+No coding & 2.62\\
+\hline
+Hamming & 4.18\\
+\hline
+BCH & 6.69\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Time duration of generated audio signal for different codings.}
+\end{table}
+
+No coding does not surprisingly result in the shortest audio signal. NOG UITLEGGEN WAAROM HAMMING KORTER DUURT DAN BCH.\\\\
+Next up set $\mu = 0.66$ and $\sigma = 1.10$ to gain a BER around 0.3. Subsequently we run the program with Hamming-coding and get a $BER_{ac} = 0.286$ and $BER_{bc} = 0.36$. For BCH-coding we get $BER_{bc} =   0.367$ and $BER_{ac} = 0.36$. Apparently Hamming- and BCH-coding cannot lower the BER anymore after a certain threshold. In case the BER is already rather high coding will actually result in a worse BER or not have a lot of effect.
+
+\end{document}
