@@ -5,6 +5,23 @@
 
 \begin{document}
 
-\chapter{Task 5}
+\section{Task 5}
+As discussed in the previous sections, bit error correction is not likely to provide better results in our setup.
+The BER is too high to be corrected properly, since Hamming and BCH are not made for BER's of over 0.05.
+Therefore, our solution does not use any bit error correction.
+\\ \\
+From the findings in the previous sections, FSK performs better at the default 10 cm range when the default decision threshold of zero is set.
+At the lowest bit rate of 5 bits per second, no errors occur.
+This BER however increases when the bit rate increases, e.g. a BER of 0.05 at a bit rate of 200 bits/s.
+For this reason, we choose the lowest possible bit rate of 5 bits/s.
+\\ \\
+ASK is proven to perform well with a coherent decision threshold, but since this parameter may not be changed.
+The parameter that will be changed is the modulation index, which will be set to 1.00.
+With this setting, the ASK will operate with OOK, which has maximal difference between the binary zero and one which are to be transmitted.
+With the modulation index of 1.00 and a distance of 10 cm, a BER of 0.13 is found, which is worse than the FSK results on 10 cm.
+\\ \\
+When looking at larger distances, FSK's BER increases rapidly when ASK's BER increases at a much slower rate.
+For this reason we decided to pick FSK for smaller distances (under 50 cm) and ASK for larger distances.
+No exact measurement data was saved however at larger distances.
 
 \end{document}
