@@ -16,8 +16,17 @@ The relation between the bandwidth, capacity and the data rate is that the amoun
 C= B log_{2}(1+\frac{S}{N})
 \end{equation}
 \subsection{Question 2}
-%%%%%%%%Pros of digital modulation compared to analog signals:
 
+\begin{table}[H]
+\caption{Pro's and con's of digital modulation compared to analog signals.}
+\begin{tabular}{p{0.5\textwidth}|p{0.5\textwidth}}
+Pro's & Con's\\
+\hline
+Easier to use in digital devices. & You need more bandwidth. \\
+Possible to discover errors. & More complicated electronics.\\
+You do not need completely linear circuits in your transmitter and receiver. & \\
+\end{tabular}
+\end{table}
 \subsection{Question 3}
 Fundamental reasons to chose digital and analog modulated signals is that you sometimes need to send data over huge distances, but the base band is not fit to do this. Through modulation you can transform the signal to one with a higher frequency.
 \subsection{Question 4}
@@ -38,12 +47,16 @@ The bit error rate can be influenced by:
 \item attenuation
 \end{itemize}
 \subsection{Question 8}
-%%%%%%%%%%%%
+In the transmission channel noise is present.
+So that can result in quantization errors can happen when the signal was analog and bit-errors for digital signals.
+Noise is a factor due to the temperature of the transmission channel, cosmic background noise and/or other users.
+Coding is a way to recover from bit-errors for digital signals.
+For analog signals you could send the same signal twice and take the average of the two received signals.
 \subsection{Question 9}
-%%%%%%%%%%%%%%
+The FSK signal is a sinusoid with a frequency of $f_{min}$ or $f_{max}$ for digital source signals.
+So the single-side-spectrum consists of two delta functions, one at $f_{min}$ and one at $f_{max}$.
 \subsection{Question 10}
-%%%%%%%%%%%%%%%%%%%%%%%
-
+The second term is a sinusoid with the same amplitude and frequency as the carrier wave. When the BPSK signal and the second term are in phase the two add up and when in counter phase they cancel each other out.
 
 \section{Homework assignments 2}
 \label{sec:homework2}
@@ -54,9 +67,9 @@ In short: coding of modulated signals can make the transmission more reliable be
 \subsection{Question 2}
 Other meanings of the term coding:
 \begin{itemize}
-\item data encryption; transforming the information into codes.
-\item data conversion;  using less bits for the same amount of information.
-\item error correction; adding more information in order to make it more reliable.
+\item Data encryption; transforming the information into codes.
+\item Data conversion;  using less bits for the same amount of information.
+\item Error correction; adding more information in order to make it more reliable.
 \end{itemize}
 \subsection{Question 3}
 Classes in which occurring errors can be divided
