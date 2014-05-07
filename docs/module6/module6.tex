@@ -1,5 +1,5 @@
 %!TEX program=xelatex+makeindex+bibtex
-\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\documentclass[final]{scrartcl} %scrreprt of scrartcl
 \input{../library/preamble.tex}
 \input{../library/style.tex}
 \addbibresource{../library/bibliography.bib}
@@ -15,13 +15,14 @@
 
 \newpage
 \pagenumbering{arabic}
-\subimport{}{homework.tex}
 \subimport{}{task1.tex}
 \subimport{}{task2.tex}
 \subimport{}{task3.tex}
+\subimport{}{task4.tex}
+\subimport{}{task5.tex}
 \newpage
 \pagenumbering{Roman}
 
 \printbibliography
-%\subimport{}{appendices.tex}
+\subimport{}{appendices.tex}
 \end{document}
