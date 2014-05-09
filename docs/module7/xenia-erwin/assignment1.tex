@@ -1,0 +1,32 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+
+\begin{document}
+
+\chapter{Assignment 1}
+\label{ch:ass1}
+
+\section{General filters}
+The used matlab script is included in Appendix Listing \ref{lst:report2.m}.
+x(t) consists of the first five seconds ($44100\cdot5 \mathrm{samples}$) of the file /bin/Sound/music/interface/Noddinagushpa.mp3 from a Age of Empires III installation, this title screen theme.
+It is kind of a pompous drum roll.
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{3.5cm}
+    	\setlength\figurewidth{0.4\linewidth}
+    	\input{resources/a0.95.tikz}    	
+    	\caption{The plots with $a=0.95$}
+    	\label{fig:a0.95-plots}
+\end{figure}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{3.5cm}
+    	\setlength\figurewidth{0.4\linewidth}
+    	\input{resources/a-0.95.tikz}    	
+    	\caption{The plots with $a=-0.95$}
+    	\label{fig:a0.-95-plots}
+\end{figure}
+
+\end{document}
