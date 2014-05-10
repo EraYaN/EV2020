@@ -1,0 +1,87 @@
+﻿% This file was created by matlab2tikz v0.4.6 running on MATLAB 8.2.
+% Copyright (c) 2008--2014, Nico Schlömer <nico.schloemer@gmail.com>
+% All rights reserved.
+% Minimal pgfplots version: 1.3
+% 
+% The latest updates can be retrieved from
+%   http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz
+% where you can also make suggestions and rate matlab2tikz.
+% 
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+xmin=0.01,
+xmax=0.035,
+xlabel={time (s)},ymin=0,
+ymax=0.08
+,ylabel={received signal}]
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0104442828850381	0	\\
+0.0104442828850381	0.0793021411578113	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0139124333624039	0	\\
+0.0139124333624039	0.0446926361231556	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0127484308485471	0	\\
+0.0127484308485471	0.053226597002272	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0107035849233847	0	\\
+0.0107035849233847	0.0755063796891677	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0106646435224903	0	\\
+0.0106646435224903	0.0760588017963182	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0328686301560052	0	\\
+0.0328686301560052	0.00800716829460444	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0227073149783245	0	\\
+0.0227073149783245	0.0167768567971839	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0295845241897351	0	\\
+0.0295845241897351	0.0098835505574921	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0156153450778331	0	\\
+0.0156153450778331	0.0354763551513238	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.014220668159795	0	\\
+0.014220668159795	0.0427761960378267	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0123088257920767	0	\\
+0.0123088257920767	0.0570964248975245	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0193021030815244	0	\\
+0.0193021030815244	0.0232184329257581	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0.0208054986486501	0	\\
+0.0208054986486501	0.0199841604438821	\\
+};
+\end{axis}
+\end{tikzpicture}%

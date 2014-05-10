@@ -1,0 +1,24 @@
+%!TEX program=xelatex+makeindex+bibtex
+\documentclass[final]{scrartcl} %scrreprt of scrartcl
+\input{../library/preamble.tex}
+\input{../library/style.tex}
+\addbibresource{../library/bibliography.bib}
+\begin{document}
+\pagenumbering{roman}
+
+%----intro
+\subimport{title/}{title.tex}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+\pagenumbering{arabic}
+\subimport{}{report1.tex}
+\newpage
+\pagenumbering{Roman}
+
+\printbibliography
+\subimport{}{appendices.tex}
+\end{document}

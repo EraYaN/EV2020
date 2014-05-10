@@ -1,0 +1,78 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../library/preamble.tex}
+\input{../library/style.tex}
+\addbibresource{../library/bibliography.bib}
+
+\begin{document}
+
+\section{Report 1: Channel inpulse response}
+In a 2-dimentional room of 4x4 m, a transmitter and a receiver are placed at (1.2, 0.3) and (3.1, 3.3) resp.
+The progation of a delta impulse from TX to RX is being investagated with the use of the following equation:
+
+\begin{equation}
+	\alpha (r) = \frac{\beta}{r^2}
+\label{eq:damping}
+\end{equation}
+
+where $\beta$ is the damping over a reference distance of 1 meter.
+\\ \\
+The direct path is fastest and strongest at the RX point and can be calculated directly.
+The indirect paths, as a result of reflections, can be calculated by looking at the mirror images of the TX and RX over the edges of the room.
+For the first order reflections, only one mirror image is needed of either the RX or TX.
+We choose to mirror the RX.
+The mirrored image of the TX and the original RX are connected, which always results in an intersection with a wall.
+Since there are four walls, four virtual sources are created this way when looking at first order reflections.
+This location at the wall is the point where the single bounce is made, connecting this point with both the RX and TX will be the total path.
+\\ \\
+Second order reflections are calculated by mirroring both the TX and RX as displayed in Figure \ref{fig:mirror}.
+Note that also the first order reflections are displayed in this figure since the TX is also present as non-mirrored version.
+The connection between the mirror images might intersect with the room.
+The connection either intersects with two walls or none, since both mirror images are outside the room.
+When there are intersections, the two points on the two different walls are the two points via which the delta impulse bounces exactly to the RX from the TX.
+The TX and RX are mirrored over all walls in all 16 combinations, but not all of them intersect with the room, which states that it is not possible to bounce via this two walls.
+By inspecting Figure \ref{fig:connected}, it is clear that only 8 paths of the total 16 are possible, making 8 virtual sources from second order reflections.
+\\ \\
+The second order reflection paths are drawn by connecting the two wall intersections, the RX with the intersection at the wall it was reflected over and the TX with the intersection at its wall.
+When the length of all direct and reflected paths are measured and using the speed of sound, the delay of each path can be calculated.
+Also, using Eq. \ref{eq:damping}, the resulting amplitude can be calculated.
+We used a $\beta$ of 1.00 since the outcome of all amplitudes would give the total received signal compared to a infinitely large room with the TX and RX 1 meter from each other.
+The resulting delta impluse response over time is displayed in Figure \ref{fig:response}.
+Using the Matlab script from Appendix A, a resulting total amplitude of 0.5420, which equals the sum of all delta impluse response amplitudes from Figure \ref{fig:response}.
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{6cm}
+	\input{resources/Skill_7_Assignment_1_report_1_1.tikz}
+	\caption{Mirror images of the TX and RX.}
+	\label{fig:mirror}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{6cm}
+	\input{resources/Skill_7_Assignment_1_report_1_2.tikz}
+	\caption{Connected mirror images of the TX and RX.}
+	\label{fig:connected}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{6cm}
+	\input{resources/Skill_7_Assignment_1_report_1_3.tikz}
+	\caption{All path within two reflections from TX to RX.}
+	\label{fig:reflections}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/Skill_7_Assignment_1_report_1_4.tikz}
+	\caption{Response at RX point.}
+	\label{fig:response}
+\end{figure}
+
+\end{document}

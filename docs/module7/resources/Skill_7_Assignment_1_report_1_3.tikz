@@ -1,0 +1,335 @@
+% This file was created by matlab2tikz v0.4.6 running on MATLAB 8.2.
+% Copyright (c) 2008--2014, Nico Schlömer <nico.schloemer@gmail.com>
+% All rights reserved.
+% Minimal pgfplots version: 1.3
+% 
+% The latest updates can be retrieved from
+%   http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz
+% where you can also make suggestions and rate matlab2tikz.
+% 
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=\figurewidth,
+height=\figureheight,
+scale only axis,
+xmin=0,
+xmax=4,
+xlabel={x location (m)},
+ymin=0,
+ymax=4,
+ylabel={y location (m)},
+axis x line*=bottom,
+axis y line*=left
+]
+\addplot [color=blue,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+};
+\addplot [color=blue,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+3.1	3.3	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+0	0	\\
+0	4	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+4	4	\\
+0	4	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+4	0	\\
+0	0	\\
+};
+\addplot [color=blue,solid,forget plot]
+  table[row sep=crcr]{
+4	4	\\
+4	0	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+2.79772727272727	4	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+1.2	0.3	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+2.79772727272727	4	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+2.79772727272727	4	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+4	2.57027027027027	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+1.2	0.3	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+4	2.57027027027027	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+4	2.57027027027027	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+1.35833333333333	0	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+1.2	0.3	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+1.35833333333333	0	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+1.35833333333333	0	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+0	1.13720930232558	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+1.2	0.3	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+0	1.13720930232558	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+0	1.13720930232558	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+1.83909090909091	4	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+2.53	0	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+1.83909090909091	4	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+2.53	0	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.83909090909091	4	\\
+2.53	0	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+4	3.62972972972973	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+3.68863636363636	4	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+4	3.62972972972973	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+3.68863636363636	4	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+4	3.62972972972973	\\
+3.68863636363636	4	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+4	1.14848484848485	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+0	2.36060606060606	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+4	1.14848484848485	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+0	2.36060606060606	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+4	1.14848484848485	\\
+0	2.36060606060606	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+1.314	0	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+2.834	4	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+1.314	0	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+2.834	4	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.314	0	\\
+2.834	4	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+1.50833333333333	0	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+4	2.42432432432432	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+1.50833333333333	0	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+4	2.42432432432432	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.50833333333333	0	\\
+4	2.42432432432432	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+0.841666666666667	0	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+0	0.704651162790698	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+0.841666666666667	0	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+0	0.704651162790698	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+0.841666666666667	0	\\
+0	0.704651162790698	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+0	1.52790697674419	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+2.41590909090909	4	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+0	1.52790697674419	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+2.41590909090909	4	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+0	1.52790697674419	\\
+2.41590909090909	4	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+0	0.89016393442623	\\
+};
+\addplot [color=red,only marks,mark=asterisk,mark options={solid},forget plot]
+  table[row sep=crcr]{
+4	2.85737704918033	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+1.2	0.3	\\
+0	0.89016393442623	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+3.1	3.3	\\
+4	2.85737704918033	\\
+};
+\addplot [color=red,solid,forget plot]
+  table[row sep=crcr]{
+0	0.89016393442623	\\
+4	2.85737704918033	\\
+};
+\end{axis}
+\end{tikzpicture}%
