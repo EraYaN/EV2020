@@ -1,0 +1,13 @@
+%!TEX program = xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+\begin{document}
+\begin{appendices}
+\renewcommand{\chapternumber}{\appendixname\space\thechapter} 
+\chapter{Source code}
+\label{app:source}
+\includecode[matlab]{report1.m}{resources/matlab/report1.m}{lst:report1.m}
+\end{appendices}
+\end{document}
