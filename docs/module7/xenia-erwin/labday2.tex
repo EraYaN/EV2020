@@ -1,0 +1,40 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+
+\begin{document}
+
+\chapter{Labday 2: Channel Estimation}
+\label{ch:ass1}
+
+\section{Channel estimation using a training sequence}
+
+We have to look at four different test signals:
+
+\begin{itemize}
+\item 	A "minimium-phase" sequence,
+\begin{equation}
+X_1(z) = 1 - \dfrac{1}{2}Z^{-1} \leftrightarrow x_1 = [1, -\dfrac{1}{2}, 0, 0,  \dots]^T
+\end{equation}
+\item A "maximum-phase" sequence,
+\begin{equation}
+X_2(z) = 1 - 2z^{-1} \leftrightarrow x_2 = [1, -2, 0, 0, \dots]^T
+\end{equation}
+\item A sinusoidal signal (N samples) followed by zeros,
+\[ x_3[n] = \left\{ 
+  \begin{array}{l l}
+    \cos(\omega n), & \quad n = 0, \dots ,N - 1\\
+    0, & \quad \textrm{elsewhere}
+  \end{array} \right.\]
+\item A random BPSK sequence (i.e., with entries randomly selected from {-1,1}: in Matlab),
+\begin{equation}
+x_4 = sign(randn(N,1))
+\end{equation}
+\end{itemize}
+
+
+
+
+
+\end{document} 
