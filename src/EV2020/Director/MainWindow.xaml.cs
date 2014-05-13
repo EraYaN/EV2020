@@ -11,6 +11,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.Distributions;
 using System.Diagnostics;
 using MathNet.Numerics.Algorithms.LinearAlgebra.Mkl;
+using BlueWave.Interop.Asio;
 
 namespace EV2020.Director
 {

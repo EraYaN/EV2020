@@ -9,7 +9,15 @@
 			<ColumnDefinition/>
 			<ColumnDefinition Width="272"/>
 		</Grid.ColumnDefinitions>
-		<StackPanel Margin="10,0,2,31" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1">
+		<Menu HorizontalAlignment="Stretch" Height="23" VerticalAlignment="Top" Grid.ColumnSpan="2">
+			<MenuItem Header="Tools">
+				<MenuItem Header="Settings..." Name="SettingsMenuItem"/>
+			</MenuItem>
+			<MenuItem Header="Help">
+				<MenuItem Header="About..." Name="AboutMenuItem"/>
+			</MenuItem>
+		</Menu>
+		<StackPanel Margin="10,28,2,31" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1">
 			<GroupBox Header="Serial Interface">
 				<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 					<Label Target="{Binding ElementName=comPortsComboBox}" Content="COM Port:" Height="16" Padding="0" Margin="0,0,0.2,0"/>
@@ -93,10 +101,8 @@
 			<StatusBarItem x:Name="statusBarFixedInputSequence" Width="120" Content="{Binding FixedInputSequence, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 			<StatusBarItem x:Name="statusBarLastPing" Width="80" Content="{Binding EmergencyStop, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
 		</StatusBar>
-		<Canvas x:Name="visCanvas" Margin="0,0,0,31" Background="White">
+		<Canvas x:Name="visCanvas" Margin="0,28,0,31" Background="White">
 			<TextBlock Canvas.Left="10" TextWrapping="Wrap" Text="{Binding ModelDebugInfo, Mode=OneWay}" Canvas.Top="10" Height="230" Width="500"/>
 		</Canvas>
-
-
 	</Grid>
 </Window>
