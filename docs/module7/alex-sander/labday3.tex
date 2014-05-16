@@ -6,8 +6,9 @@
 \begin{document}
 
 \section{Labday 3: audio channel measurements}
-Using the default values of Rx\_TX = 22050 and Fs\_RX = 22050, the inpulse response of Figure \ref{fig:response_1} was found.
-The time reponse is not an ideal delta pulse since the loudspeaker, the microphone and the channel act as filters which distort the signal.
+\subsection{Report 11}
+Using the default values of Rx\_TX = 22.050 and Fs\_RX = 22.050, the inpulse response of Figure \ref{fig:response_1} was found.
+The time response is not an ideal delta pulse since the loudspeaker, the microphone and the channel act as filters which distort the signal.
 The rising edge is rather steep, but the falling edge oscillates towards the amplitude of zero.
 The spectrum of this signal is shown below the time-domain impulse response.
 The distortion is also visible in this spectrum since a lot of noise peaks are also present.
@@ -16,23 +17,23 @@ In the ideal case of flat spectral transfer functions, the following spectrum wo
 \begin{equation}
 	\delta(t) \xrightarrow{\mathfrak{F}} 1
 \end{equation}
-\\ \\
+
 The plots of Figure \ref{fig:response_2} and \ref{fig:response_3} show the effect of varying the Fs\_RX and Fs\_TX.
 When using a high Fs\_RX compared to the Fs\_TX, the spectrum will become flatter and thus more ideal as seen in Figure \ref{fig:response_2}.
 Vice versa, when the Fs\_TX is high compared to the Fs\_RX, the spectrum will become less flat and thus less ideal as seen in Figure \ref{fig:response_3}.
 This can be explained by looking at the transfer functions of the loudspeaker and the microphone, which are both non-linear bandpass filters causing high frequencies to be damped drastically.
 \\ \\
 When the Fs\_RX is relatively low compared to the Fs\_TX, aliasing might occur since the delta function contains all frequencies ideally.
-Using the default setting of Fs\_RX of 22.050 Hz and varying the Fs\_TX, the spectums were analysed for aliasing.
+Using the default setting of Fs\_RX of 22.050 Hz and varying the Fs\_TX, the spectrums were analyzed for aliasing.
 However, no aliasing seemed to occur, even at a Fs\_TX of 176.4 kHz, which is the highest supported frequency, aliasing could not be found as seen in Figure \ref{fig:highest_freq}.
 It seems that the sound card removes these aliasings from the input signal.
-This information is good to know for when analysing the data from the audio beacon later on.
+This information is good to know for when analyzing the data from the audio beacon later on.
 
 \begin{figure}[H]
 	\centering
 	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
-	\input{resources/Skill_7_report_11_1.tikz}
+	\input{resources/Skill_7_report_11_1_reduced.tikz}
 	\caption{Impulse response at Fs\_TX = 22.050 Hz and Fs\_RX = 22.050 Hz.}
 	\label{fig:response_1}
 \end{figure}
@@ -41,7 +42,7 @@ This information is good to know for when analysing the data from the audio beac
 	\centering
 	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
-	\input{resources/Skill_7_report_11_2.tikz}
+	\input{resources/Skill_7_report_11_2_reduced.tikz}
 	\caption{Impulse response at Fs\_TX = 4.000 Hz and Fs\_RX = 22.050 Hz.}
 	\label{fig:response_2}
 \end{figure}
@@ -50,7 +51,7 @@ This information is good to know for when analysing the data from the audio beac
 	\centering
 	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
-	\input{resources/Skill_7_report_11_3.tikz}
+	\input{resources/Skill_7_report_11_3_reduced.tikz}
 	\caption{Impulse response at Fs\_TX = 22.050 Hz and Fs\_RX = 8.000 Hz.}
 	\label{fig:response_3}
 \end{figure}
@@ -59,9 +60,78 @@ This information is good to know for when analysing the data from the audio beac
 	\centering
 	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
-	\input{resources/Skill_7_report_11_4.tikz}
+	\input{resources/Skill_7_report_11_4_reduced.tikz}
 	\caption{Impulse response at Fs\_TX = 176.400 Hz and Fs\_RX = 22.050 Hz.}
 	\label{fig:highest_freq}
 \end{figure}
+
+\subsection{Report 12}
+Due to propagation delay through the air, the impulse is not instantly from the loudspeaker to the microphone.
+This propagation is with the speed of sound, 340 m/s.
+Theoretically, the sample frequency to achieve a accuracy of 1 cm must be $2 ~[cm] ~/~ 340 ~[m/s] = 17.000 ~ Hz$.
+Since this exact sample frequency is not available, the next frequency of 22.050 Hz is used.
+Using three test points, 1, 50 and 100 cm, the delay is measured of which the results are shown in Figures \ref{fig:1cm}, \ref{fig:50cm} and \ref{fig:100cm} Table \ref{tab:distances}.
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/Skill_7_report_12_1cm.tikz}
+	\caption{Impulse response at 1 cm between the loudspeaker and the microphone.}
+	\label{fig:1cm}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/Skill_7_report_12_50cm.tikz}
+	\caption{Impulse response at 50 cm between the loudspeaker and the microphone.}
+	\label{fig:1cm}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/Skill_7_report_12_100cm.tikz}
+	\caption{Impulse response at 100 cm between the loudspeaker and the microphone.}
+	\label{fig:1cm}
+\end{figure}
+
+\iffalse
+\begin{table}[H]
+\begin{tabular}{  c | c | c | c }
+    Distance (cm) & Sample number & Delay to 1 cm (ms) & Corresponding distance (cm) \\\hline
+    1 & 14.311 & 0 & 1 \\
+    50 & 14.352 & 1.86 & 64 \\
+    100 & 14.425 & 5.17 & 177 \\
+\end{tabular}
+\caption{Sample number of delta response peak and time delay relative to reference distance 1 cm.}
+\label{tab:distances}
+\end{table}
+\fi
+
+\begin{table}[H]
+\begin{tabular}{  c | c | c | c }
+    Distance (cm) & Delay (ms) & Corresponding distance (cm) \\\hline
+    1 & 327.828828 &  \\
+    25 && 327.695654 \\
+    50 & 330.270342 \\
+    75 & 330.803036
+    100 & 332.179163 \\
+\end{tabular}
+\caption{Sample number of delta response peak and time delay relative to reference distance 1 cm.}
+\label{tab:distances}
+\end{table}
+
+From the sample number at which the delta impulse is detected from the microphone at distance 1 cm, it is clear that there is a large delay which is not due to the propagation through the air.
+It takes 14.311 samples at 22.050 Hz to be detected at the microphone, which equals to 649 ms.
+This delay is caused by the software latency in Matlab, hardware delays in the sound card, hardware delays in the microphone and again delays in the sound card and Matlab.
+These delays add up to a serious amount, which might be variable as well.
+Looking at the test data, and the fact of having a theoretical accuracy of less than 1 cm, it can be concluded that the delays other than the air delay are variable and disturbing the measurement.
+
+\subsection{Report 13}
+
 
 \end{document}
