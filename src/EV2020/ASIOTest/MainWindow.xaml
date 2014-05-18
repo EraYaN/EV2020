@@ -8,17 +8,7 @@
 			<ComboBox Margin="10,10,10,0" VerticalAlignment="Top" Name="ASIODriverComboBox"/>
 			<Button x:Name="ASIOTest" Content="ASIOTest" Margin="10,10,10,0" VerticalAlignment="Top" Click="ASIOTest_Click" IsEnabled="False"/>
 			<Button x:Name="ASIOShowControlPanel" Content="ASIOCP" Margin="10,10,10,0" VerticalAlignment="Top" Click="ASIOShowControlPanel_Click" IsEnabled="False"/>
-			<Button x:Name="ASIORecord" Content="ASIORecord" Margin="10,10,10,0" VerticalAlignment="Top" IsEnabled="False" Click="ASIORecord_Click" />
 			<Button x:Name="ASIOGetData" Content="ASIOGetData" Margin="10,10,10,0" VerticalAlignment="Top" IsEnabled="False" Click="ASIOGetData_Click" />
-			<oxy:Plot Title="Recording" Height="220" PlotMargins="10" Padding="0" TitleFontSize="10" TitlePadding="0">
-				<oxy:Plot.Axes>
-					<oxy:LinearAxis Name="LinePlotAxisX" Position="Bottom" Minimum="0" FontSize="8"/>
-					<oxy:LinearAxis Position="Left" Minimum="-1" Maximum="1" FontSize="8" MajorStep="1" MinorStep="0.1" />
-				</oxy:Plot.Axes>
-				<oxy:Plot.Series>
-					<oxy:LineSeries Name="LinePlot" Color="Black" XAxisKey="t" YAxisKey="V"/>
-				</oxy:Plot.Series>
-			</oxy:Plot>
 		</StackPanel>
 	</Grid>
 </Window>

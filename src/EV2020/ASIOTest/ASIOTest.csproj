@@ -192,8 +192,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libiomp5md.dll" />
-    <Content Include="MathNet.Numerics.MKL.dll" />
+    <Content Include="libiomp5md.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MathNet.Numerics.MKL.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

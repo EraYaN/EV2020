@@ -45,7 +45,7 @@ namespace EV2020.LocationSystem
 			Repeat9Hz = 9,
 			Repeat10Hz = 10,
 		}
-		static public float[] refsignal(Timer0Freq Timer0, Timer1Freq Timer1, Timer3Freq Timer3, string code, double Fs)
+		static public Matrix<double> refsignal(Timer0Freq Timer0, Timer1Freq Timer1, Timer3Freq Timer3, string code, double Fs)
 		{
 			double f0 = Convert.ToDouble(Timer0);
 			double f1 = Convert.ToDouble(Timer1);
@@ -53,7 +53,7 @@ namespace EV2020.LocationSystem
 			double T = 1 / Fs;
 			int samplesperbit = Convert.ToInt32(Math.Round(Fs / f1));
 			int samples = (int)Math.Ceiling(Fs / f3);
-			float[] signal = new float[samples];
+			Matrix<double> signal = new DenseMatrix(samples,1);
 
 			string bincodestring = Convert.ToString(Convert.ToInt32(code, 16), 2);// Convert.ToString(code, 2); //string.Join("",code.Reverse().Select(x => Convert.ToString(x, 2).PadLeft(8, '0')));
 			int bitnumber = 0;
@@ -67,13 +67,13 @@ namespace EV2020.LocationSystem
 					int indexto = bitnumber * samplesperbit;
 					for (int sample = indexfrom; sample <= indexto; sample++)
 					{
-						signal[sample] = 1.0f;
+						signal[sample,0] = 1.0f;
 					}
 				}
 			}
-			for(int i = 0; i<samples; i++){				
-				float carrier = Convert.ToSingle(Math.Round(Math.Cos(2 * Math.PI * f0 / Fs * i)/2 + 0.5));
-				signal[i] *= carrier;
+			for(int i = 0; i<samples; i++){
+				double carrier = Math.Round(Math.Cos(2 * Math.PI * f0 / Fs * i) / 2 + 0.5);
+				signal[i,0] *= carrier;
 			}
 			return signal;
 		}
@@ -81,7 +81,7 @@ namespace EV2020.LocationSystem
 		{
 			return 0;
 		};
-		static Matrix<double> Toep(Matrix<double> x0, int N, int L)
+		static public Matrix<double> Toep(Matrix<double> x0, int N, int L)
 		{
 			if (x0.ColumnCount != 1)
 			{
@@ -90,23 +90,27 @@ namespace EV2020.LocationSystem
 			int N0 = x0.RowCount;
 			if (N0 > N)
 			{
-				throw new ArgumentException("x0's lenght should be equal or less than N.", "x0");
+				throw new ArgumentException("x0's length should be equal or less than N.", "x0");
 			}
 			Matrix<double> X = DenseMatrix.Create(N, L, initZero);
 			for (int i = 0; i < N; i++)
 			{
 				for (int j = 0; j < L; j++)
 				{
-					int index = ((i + 1) - (j + 1)) % N + 1;
-					if (index <= N0)
+					int index = (i + 1) - (j + 1);
+					//weirdo matlab modulo
+					while (index < 0)
+						index += N;
+					index = index % N;					
+					if (index < N0)
 					{
-						X[i, j] = x0[index - 1, 1];
+						X[i, j] = x0[index, 0];
 					}
 				}
 			}
 			return X;
 		}
-		static Matrix<double> Toep(Matrix<double> x0, int N)
+		static public Matrix<double> Toep(Matrix<double> x0, int N)
 		{
 			int N0 = x0.RowCount;
 			return Toep(x0, N, N - N0 + 1);

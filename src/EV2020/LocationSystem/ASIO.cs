@@ -1,5 +1,7 @@
 ﻿using BlueWave.Interop.Asio;
 using CircularBuffer;
+using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Numerics.LinearAlgebra.Generic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,19 +14,18 @@ namespace EV2020.LocationSystem
 {
     public class ASIO : IDisposable
     {
-		const double Fs = 48000;
-		const int ASIOBufferSize = 512;
-		const int MaxSampleBufferSize = (int)Fs * 10;
+		public const double Fs = 48000;		
+		const int DefaultQueueDepth = (int)Fs * 10;
 		List<long> times = new List<long>();
-		List<CircularBuffer<float>> sampleBuffersOut = new List<CircularBuffer<float>>();
-		List<CircularBuffer<float>> sampleBuffersIn = new List<CircularBuffer<float>>();
+		List<CircularBuffer<double>> sampleBuffersOut = new List<CircularBuffer<double>>();
+		List<CircularBuffer<double>> sampleBuffersIn = new List<CircularBuffer<double>>();
 		List<Channel> inputChannels = new List<Channel>();
 		List<Channel> outputChannels = new List<Channel>();
 		public bool IsOutputEnabled = true;
 		public bool IsInputEnabled = false;
 		AsioDriver driver;
 		bool _disposed;
-		public ASIO(int DriverIndex, int[] InputChannels, int[] OutputChannels, int QueueDepth = MaxSampleBufferSize)
+		public ASIO(int DriverIndex, int[] InputChannels, int[] OutputChannels, int QueueDepth = DefaultQueueDepth)
 		{
 			InstalledDriver instdriver;
 			if (DriverIndex >= 0 && DriverIndex < AsioDriver.InstalledDrivers.Length)
@@ -47,7 +48,7 @@ namespace EV2020.LocationSystem
 				if (ch_ind < driver.NumberInputChannels && ch_ind >= 0)
 				{
 					inputChannels.Add(driver.InputChannels[ch_ind]);
-					sampleBuffersIn.Add(new CircularBuffer<float>(QueueDepth,true));
+					sampleBuffersIn.Add(new CircularBuffer<double>(QueueDepth,true));
 				}
 			}
 			foreach (int ch_ind in OutputChannels)
@@ -55,11 +56,9 @@ namespace EV2020.LocationSystem
 				if (ch_ind < driver.NumberOutputChannels && ch_ind >= 0)
 				{
 					outputChannels.Add(driver.OutputChannels[ch_ind]);
-					sampleBuffersOut.Add(new CircularBuffer<float>(QueueDepth, true));
+					sampleBuffersOut.Add(new CircularBuffer<double>(QueueDepth, true));
 				}
-			}
-			driver.UpdateLatencies();
-			Debug.WriteLine(String.Format("Latencies {0} {1}", driver.InputLatency, driver.OutputLatency));
+			}			
 		}
 		~ASIO()
 		{
@@ -125,7 +124,7 @@ namespace EV2020.LocationSystem
 					int count2 = Math.Max(0, outputChannels[ch].BufferSize - count1);
 					for (int i = 0; i < count1; i++)
 					{
-						outputChannels[ch][i] = sampleBuffersOut[ch].Get();
+						outputChannels[ch][i] = Convert.ToSingle(sampleBuffersOut[ch].Get());
 					}
 					if (count2 > 0)
 					{
@@ -138,9 +137,9 @@ namespace EV2020.LocationSystem
 			}
 		}
 		[STAThread]
-		public float[] getInputSamples(int _size, int channel = 0)
+		public double[] getInputSamples(int _size, int channel = 0)
 		{
-			float[] inputSamples = new float[_size];
+			double[] inputSamples = new double[_size];
 			for(int i = 0; i<_size;i++){
 				while (sampleBuffersIn[channel].Size == 0)
 				{
@@ -151,21 +150,43 @@ namespace EV2020.LocationSystem
 			return inputSamples;
 		}
 		[STAThread]
-		public float[] getAllInputSamples(int channel = 0)
+		public Matrix<double> getAllInputSamplesMatrix(int numSamples)
 		{
-			float[] inputSamples = sampleBuffersIn[channel].Get(sampleBuffersIn[channel].Size);
-			sampleBuffersIn[channel].Clear();
+			Matrix<double> inputSamplesMatrix = new DenseMatrix(numSamples, sampleBuffersIn.Count);
+			for (int i = 0; i < inputChannels.Count; i++)
+			{
+				double[] inputSamples = sampleBuffersIn[i].Get(sampleBuffersIn[i].Size);
+				for (int j = 0; j < numSamples; j++)
+				{
+					if (j < inputSamples.Length)
+						inputSamplesMatrix[j, i] = inputSamples[j];
+					else
+						inputSamplesMatrix[j, i] = 0;
+				}
+				sampleBuffersIn[i].Clear();
+			}
+			return inputSamplesMatrix;
+		}
+		[STAThread]
+		public double[][] getAllInputSamples()
+		{
+			double[][] inputSamples = new double[inputChannels.Count][];
+			for (int i = 0; i < inputChannels.Count; i++)
+			{
+				inputSamples[i] = sampleBuffersIn[i].Get(sampleBuffersIn[i].Size);
+				sampleBuffersIn[i].Clear();
+			}
 			return inputSamples;
 		}
 		[STAThread]
-		public float[] getAllOutputSamples(int channel = 0)
+		public double[] getAllOutputSamples(int channel = 0)
 		{
-			float[] inputSamples = sampleBuffersOut[channel].Get(sampleBuffersOut[channel].Size);
+			double[] inputSamples = sampleBuffersOut[channel].Get(sampleBuffersOut[channel].Size);
 			sampleBuffersOut[channel].Clear();
 			return inputSamples;
 		}
 		[STAThread]
-		public void putOutputSamples(float[] OutputSamples, int channel = 0)
+		public void putOutputSamples(double[] OutputSamples, int channel = 0)
 		{
 			sampleBuffersOut[channel].Put(OutputSamples);		
 
@@ -186,16 +207,17 @@ namespace EV2020.LocationSystem
 			sampleBuffersOut[0].Clear();
 		}
 		[STAThread]
-		public double getBufferTime()
+		public ASIOLatencies GetLatencies()
 		{
-			double avg = 0;
-			if (times.Count>0)
-			{
-				avg = times.Average();
-				times.Clear();
-			}
-			return avg;
+			driver.UpdateLatencies();
+			return new ASIOLatencies { Input = driver.InputLatency, Output = driver.OutputLatency };
 		}
 
+
     }
+	public struct ASIOLatencies
+	{
+		public long Input;
+		public long Output;
+	}
 }
