@@ -16,10 +16,6 @@ namespace EV2020.Director
 			//constructor			
 		}
 
-		~StandardNavigation()
-		{
-			//destructor
-		}
 		public void Init() {  }
 		public double Tick(double Distance, double Target) { throw new NotImplementedException(); }
 		public string GetDebugInfo() { throw new NotImplementedException(); }

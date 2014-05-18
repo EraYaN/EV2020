@@ -65,9 +65,9 @@ namespace CircularBuffer
         {
         }
 
-        public override void Write(byte[] buffer, int offset, int count)
+        public override void Write(byte[] inBuffer, int offset, int count)
         {
-            this.buffer.Put(buffer, offset, count);
+			this.buffer.Put(inBuffer, offset, count);
         }
 
         public override void WriteByte(byte value)
@@ -75,9 +75,9 @@ namespace CircularBuffer
             this.buffer.Put(value);
         }
         
-        public override int Read(byte[] buffer, int offset, int count)
+        public override int Read(byte[] outBuffer, int offset, int count)
         {
-            return this.buffer.Get(buffer, offset, count);
+			return this.buffer.Get(outBuffer, offset, count);
         }
 
         public override int ReadByte()

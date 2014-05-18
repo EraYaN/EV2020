@@ -111,6 +111,5 @@ namespace EV2020.LocationSystem
 			int N0 = x0.RowCount;
 			return Toep(x0, N, N - N0 + 1);
 		}
-
 	}
 }

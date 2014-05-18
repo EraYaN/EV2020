@@ -105,12 +105,12 @@ namespace EV2020.LocationSystem
 		[STAThread]
 		private void AsioDriver_BufferUpdate(object sender, EventArgs e)
 		{
-			//Thread.CurrentThread.Priority = ThreadPriority.Highest;
+			Thread.CurrentThread.Priority = ThreadPriority.Highest;
 			if (IsInputEnabled)
 			{
 				for (int ch = 0; ch < inputChannels.Count; ch++)
 				{
-					//sampleBuffersIn[ch].Put(inputChannels[ch], 0, inputChannels[ch].BufferSize);
+					
 					for (int i = 0; i < inputChannels[ch].BufferSize; i++)
 					{
 						sampleBuffersIn[ch].Put(inputChannels[ch][i]);

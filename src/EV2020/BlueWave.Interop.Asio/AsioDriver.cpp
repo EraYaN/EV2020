@@ -75,50 +75,60 @@ namespace BlueWave
 #endif
 
 				// initialize COM lib
-				CoInitialize(0);
-				
-				long inputs, outputs;
+				HRESULT CIResult = CoInitialize(0);
+				if (SUCCEEDED(CIResult)){
 
-				// class and interface id for Asio driver
-				CLSID m_clsid;
+					long inputs, outputs;
 
-				// convert from managed string to unmanaged chaos string
-				pin_ptr<const wchar_t> clsid = PtrToStringChars(installedDriver->ClsId);
+					// class and interface id for Asio driver
+					CLSID m_clsid;
 
-				// convert string from registry to CLSID
-				CLSIDFromString((LPOLESTR)clsid, &m_clsid);
+					// convert from managed string to unmanaged chaos string
+					pin_ptr<const wchar_t> clsid = PtrToStringChars(installedDriver->ClsId);
 
-				// and actually create the object and return its interface (clsid used twice)
-				LPVOID pAsio = NULL;
-				HRESULT rc = CoCreateInstance(m_clsid, NULL, CLSCTX_INPROC_SERVER, m_clsid, &pAsio);
+					// convert string from registry to CLSID
+					HRESULT CLSIDResult = CLSIDFromString((LPOLESTR)clsid, &m_clsid);
+					if (SUCCEEDED(CLSIDResult)){
+						// and actually create the object and return its interface (clsid used twice)
+						LPVOID pAsio = NULL;
+						HRESULT rc = CoCreateInstance(m_clsid, NULL, CLSCTX_INPROC_SERVER, m_clsid, &pAsio);
 
-				// cast the result back to our ASIO interface
-				_pDriver = (IAsio*) pAsio;
+						// cast the result back to our ASIO interface
+						_pDriver = (IAsio*)pAsio;
 
-				// and we're ready to use it
-				if (_pDriver->init(0) == ASIOTrue)
-				{
-					// get the number of inputs and outputs supported by the driver
-					_pDriver->getChannels(&inputs, &outputs);
+						// and we're ready to use it
+						if (_pDriver->init(0) == ASIOTrue)
+						{
+							// get the number of inputs and outputs supported by the driver
+							_pDriver->getChannels(&inputs, &outputs);
 
-					// and remember these (with a host specified ceiling)
-					_nInputs = inputs;
-					_nOutputs = outputs;
+							// and remember these (with a host specified ceiling)
+							_nInputs = inputs;
+							_nOutputs = outputs;
 
-					// create the ASIO callback struct
-					_pCallbacks = new ASIOCallbacks();
+							// create the ASIO callback struct
+							_pCallbacks = new ASIOCallbacks();
 
-					// and convert our delegates to unmanaged typedefs
-					_pCallbacks->bufferSwitch = BufferSwitch; 
-					_pCallbacks->asioMessage = AsioMessage;
-					_pCallbacks->bufferSwitchTimeInfo = BufferSwitchTimeInfo;
-					_pCallbacks->sampleRateDidChange = SampleRateDidChange;
+							// and convert our delegates to unmanaged typedefs
+							_pCallbacks->bufferSwitch = BufferSwitch;
+							_pCallbacks->asioMessage = AsioMessage;
+							_pCallbacks->bufferSwitchTimeInfo = BufferSwitchTimeInfo;
+							_pCallbacks->sampleRateDidChange = SampleRateDidChange;
+						}
+						else
+						{
+							throw gcnew ApplicationException("Driver did not initialise properly");
+						}
+					}
+					else {
+						throw gcnew ApplicationException(String::Format("CLSIDFromString on the GUID string failed. HRESULT: {0}", CIResult.ToString()));
+					}
 				}
-				else
-				{
-					throw gcnew ApplicationException("Driver did not initialise properly");
+				else {
+					throw gcnew ApplicationException(String::Format("CoInitialize of the COM object failed. HRESULT: {0}", CIResult.ToString()));
 				}
 			}
+ 
 
 			// return the singleton instance
 			AsioDriver^ AsioDriver::Instance::get()

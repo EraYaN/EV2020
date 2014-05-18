@@ -91,12 +91,12 @@ namespace CircularBuffer
             tail = 0;
         }
 
-        public int Put(T[] src)
+        public int Put(T[] source)
         {
-            return Put(src, 0, src.Length);
+            return Put(source, 0, source.Length);
         }
 
-        public int Put(T[] src, int offset, int count)
+        public int Put(T[] source, int offset, int count)
         {
             if (!AllowOverflow &&  count > capacity - size)
                 throw new InvalidOperationException(Properties.Resources.MessageBufferOverflow);
@@ -106,7 +106,7 @@ namespace CircularBuffer
             {
                 if (tail == capacity)
                     tail = 0;
-                buffer[tail] = src[srcIndex];
+                buffer[tail] = source[srcIndex];
             }
             size = Math.Min(size + count, capacity);
             return count;
@@ -137,12 +137,12 @@ namespace CircularBuffer
             return dst;
         }
 
-        public int Get(T[] dst)
+        public int Get(T[] destination)
         {
-            return Get(dst, 0, dst.Length);
+            return Get(destination, 0, destination.Length);
         }
 
-        public int Get(T[] dst, int offset, int count)
+        public int Get(T[] destination, int offset, int count)
         {
             int realCount = Math.Min(count, size);
             int dstIndex = offset;
@@ -150,7 +150,7 @@ namespace CircularBuffer
             {
                 if (head == capacity)
                     head = 0;
-                dst[dstIndex] = buffer[head];
+                destination[dstIndex] = buffer[head];
             }
             size -= realCount;
             return realCount;
@@ -175,16 +175,16 @@ namespace CircularBuffer
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            CopyTo(0, array, arrayIndex, size);
+            CopyTo(array, arrayIndex, size);
         }
 
-        public void CopyTo(int index, T[] array, int arrayIndex, int count)
+        public void CopyTo(T[] array, int arrayIndex, int count)
         {
             if (count > size)
                 throw new ArgumentOutOfRangeException("count", Properties.Resources.MessageReadCountTooLarge);
 
             int bufferIndex = head;
-            for (int i = 0; i < count; i++, bufferIndex++, arrayIndex++)
+			for (int i = 0; i < count; i++, bufferIndex++, arrayIndex++)
             {
                 if (bufferIndex == capacity)
                     bufferIndex = 0;
