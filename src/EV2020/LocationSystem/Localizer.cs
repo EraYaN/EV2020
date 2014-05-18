@@ -1,13 +1,16 @@
 ﻿using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.IntegralTransforms;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Numerics;
 
 namespace EV2020.LocationSystem
 {
@@ -21,22 +24,22 @@ namespace EV2020.LocationSystem
 		List<Microphone> Microphones;
 		System.Timers.Timer timer;
 		Matrix<double> beaconsignal;
-		Matrix<double> responses;
 		object _posistionLock;
 		public Localizer(List<Microphone> mics, int DriverIndex, int[] InputChannels, int[] OutputChannels)			
 		{
 			Stopwatch sw = Stopwatch.StartNew();
 			Debug.WriteLine("Generating beaconsignal.");
 			beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code1000Hz, Tools.Timer3Freq.Repeat10Hz, "92340f0f", ASIO.Fs);
-			Debug.WriteLine("Generating Toeplitz matrix.");
+			//Debug.WriteLine("Generating Toeplitz matrix.");
 			
 			//Figure out corrent matchedfilter matrix
-			Matrix<double> X = Tools.Toep(beaconsignal, beaconsignal.RowCount, beaconsignal.RowCount);
-			Debug.WriteLine("Generating matched filter matrix.");
+			//Matrix<double> X = Tools.Toep(beaconsignal, beaconsignal.RowCount, beaconsignal.RowCount);
+			//Debug.WriteLine("Generating matched filter matrix.");
+			//X is a circulant matrix.
+			//matchedfilter = X;
+
 			//Debug.WriteLine("Transposing...");
 			//Matrix<double> Xt = X.Transpose();
-			Matrix<double> Alpha = beaconsignal.Transpose() * beaconsignal;
-			matchedfilter = (1/Alpha[0,0])*X.Transpose();
 			//Debug.WriteLine("Multiplying...");
 			//Matrix<double> XtX = Xt * X;
 			//X = null;
@@ -54,7 +57,7 @@ namespace EV2020.LocationSystem
 			asio = new ASIO(DriverIndex, InputChannels, OutputChannels, Convert.ToInt32(ASIO.Fs));
 			Microphones = mics;			
 			Debug.WriteLine("Starting timer.");
-			timer = new System.Timers.Timer(1000);
+			timer = new System.Timers.Timer(2500);
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
 		}
@@ -73,7 +76,9 @@ namespace EV2020.LocationSystem
 			GC.SuppressFinalize(this);
 		}
 		void performMeasurement()
-		{			
+		{
+			if (asio == null)
+				return;
 			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			asio.ClearOutput();
 			asio.ClearInput();
@@ -87,28 +92,86 @@ namespace EV2020.LocationSystem
 
 			asio.IsInputEnabled = true;
 			asio.IsOutputEnabled = true;
-			Thread.Sleep(200);
+			Thread.Sleep(500);
 			//get all channels in a matrix (every column is a channel)
-			responses = asio.getAllInputSamplesMatrix(matchedfilter.ColumnCount);
+			if (asio == null)
+				return;
+			//Matrix<double> responses = asio.getAllInputSamplesMatrix();
+			double[][] responses = asio.getAllInputSamples();
 			asio.IsInputEnabled = false;
 			asio.IsOutputEnabled = false;
+			int[] samplemaxes = new int[responses.Length];
+			double[] maxes = new double[responses.Length];
+			Complex[] workingarrayY;
+			Complex[] workingarrayX;
+			Complex[] workingarrayH;
+			//FFT way
+			using (StreamWriter sw = new StreamWriter("FilteredData.csv",true))
+			{
+				for (int i = 0; i < responses.Length; i++)
+				{
+					workingarrayY = new Complex[responses[i].Length];
+					workingarrayX = new Complex[responses[i].Length];
+					for (int k = 0; k < responses[i].Length; k++)
+					{
+						workingarrayY[k] = responses[i][k];
+						if (k < beaconsignal.RowCount)
+							workingarrayX[k] = beaconsignal[k, 0];
+						else
+							workingarrayX[k] = 0;
+					}
+					Transform.FourierForward(workingarrayX, FourierOptions.Matlab);
+					Transform.FourierForward(workingarrayY, FourierOptions.Matlab);
+					workingarrayH = new Complex[responses[i].Length];
+					for (int k = 0; k < responses[i].Length; k++)
+						workingarrayH[k] = workingarrayY[k] / workingarrayX[k];
+					Transform.FourierInverse(workingarrayH,FourierOptions.Matlab);
+					//TODO figure out why H is now a sinus kinda.
+					int L = workingarrayY.Length - beaconsignal.RowCount + 1;
+					for (int sample = 0; sample < L; sample++)
+					{
+						sw.Write("{0};", workingarrayH[sample].Magnitude);
+						if (workingarrayH[sample].Magnitude > maxes[i])
+						{
+							maxes[i] = workingarrayH[sample].Magnitude;
+							samplemaxes[i] = sample;
+						}
+					}
+					sw.WriteLine();
+				}
+			}
+			/*
+			 //Matrix multiply way
 			int[] samplemaxes = new int[responses.ColumnCount];
 			double[] maxes = new double[responses.ColumnCount];
 			//Filter that shit.
 			Matrix<double> filteredResponses = matchedfilter * responses;
-			//loop over channels
+			//loop over channels			
 			for (int i = 0; i < filteredResponses.ColumnCount; i++)
-			{			
+			{
 				//loop over samples in channel i	
 				for (int sample = 0; sample < filteredResponses.RowCount; sample++)
-				{
-					if (filteredResponses[sample,0] > maxes[i])
+				{						
+					if (filteredResponses[sample, 0] > maxes[i])
 					{
 						maxes[i] = filteredResponses[sample, i];
 						samplemaxes[i] = sample;
 					}
 				}
 			}
+			using (StreamWriter sw = new StreamWriter("FilteredData.csv"))
+			{
+				sw.WriteLine("x1;x2;");
+				for (int i = 0; i < filteredResponses.RowCount; i++)
+				{
+					//loop over samples in channel i	
+					for (int j = 0; j < filteredResponses.ColumnCount; j++)
+					{
+						sw.Write("{0};",filteredResponses[i, j]);						
+					}
+					sw.WriteLine();
+				}
+			}*/
 			Debug.WriteLine("Delta: {0}",Math.Abs(samplemaxes[0]-samplemaxes[1])*1/ASIO.Fs);
 			//TODO multilaterate posistion			
 		}

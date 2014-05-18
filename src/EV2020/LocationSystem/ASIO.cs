@@ -150,18 +150,21 @@ namespace EV2020.LocationSystem
 			return inputSamples;
 		}
 		[STAThread]
-		public Matrix<double> getAllInputSamplesMatrix(int numSamples)
+		public Matrix<double> getAllInputSamplesMatrix()
 		{
-			Matrix<double> inputSamplesMatrix = new DenseMatrix(numSamples, sampleBuffersIn.Count);
-			for (int i = 0; i < inputChannels.Count; i++)
+			int maxsize = 0;
+			for (int i = 0; i < sampleBuffersIn.Count; i++)
+			{
+				if (sampleBuffersIn[i].Size > maxsize)
+					maxsize = sampleBuffersIn[i].Size;
+			}
+			Matrix<double> inputSamplesMatrix = new DenseMatrix(maxsize, sampleBuffersIn.Count);
+			for (int i = 0; i < sampleBuffersIn.Count; i++)
 			{
 				double[] inputSamples = sampleBuffersIn[i].Get(sampleBuffersIn[i].Size);
-				for (int j = 0; j < numSamples; j++)
+				for (int j = 0; j < inputSamples.Length; j++)
 				{
-					if (j < inputSamples.Length)
-						inputSamplesMatrix[j, i] = inputSamples[j];
-					else
-						inputSamplesMatrix[j, i] = 0;
+					inputSamplesMatrix[j, i] = inputSamples[j];					
 				}
 				sampleBuffersIn[i].Clear();
 			}
