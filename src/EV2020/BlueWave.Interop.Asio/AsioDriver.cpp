@@ -157,6 +157,25 @@ namespace BlueWave
 				return gcnew String(errorMessage);
 			}
 
+			long AsioDriver::InputLatency::get()
+			{
+				// make sure a driver has been engaged
+				CheckInitialised();
+
+				// refer to driver
+				
+				return _lInput;
+			}
+			long AsioDriver::OutputLatency::get()
+			{
+				// make sure a driver has been engaged
+				CheckInitialised();
+
+				// refer to driver
+
+				return _lOutput;
+			}
+
 			int AsioDriver::NumberInputChannels::get()
 			{
 				// make sure a driver has been engaged
@@ -264,6 +283,19 @@ namespace BlueWave
 						bufferSize);
 				}
 				_outputReadySupport = _pDriver->outputReady();
+				long iL;
+				long oL;
+
+				_pDriver->getLatencies(&iL, &oL);
+				if (iL != NULL)
+					_lInput = iL;
+				else
+					_lInput = -1;
+				if (oL != NULL)
+					_lOutput = oL;
+				else
+					_lOutput = -1;
+
 #if ENABLETRACE
 				Trace::WriteLine(String::Format("outputReady(): {0}", _outputReadySupport));
 #endif
@@ -334,6 +366,25 @@ namespace BlueWave
 				CheckInitialised();
 
 				_pDriver->controlPanel();
+			}
+
+			void AsioDriver::UpdateLatencies()
+			{
+				// make sure a driver has been engaged
+				CheckInitialised();
+
+				long iL;
+				long oL;
+
+				_pDriver->getLatencies(&iL, &oL);
+				if (iL != NULL)
+					_lInput = iL;
+				else
+					_lInput = -1;
+				if (oL != NULL)
+					_lOutput = oL;
+				else
+					_lOutput = -1;
 			}
 
 			void AsioDriver::OnBufferSwitch(long doubleBufferIndex, ASIOBool directProcess)

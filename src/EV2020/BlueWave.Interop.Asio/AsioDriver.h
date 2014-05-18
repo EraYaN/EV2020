@@ -40,6 +40,12 @@ namespace BlueWave
 					// and the number of output channels
 					int _nOutputs;
 
+					// the input latency
+					long _lInput;
+
+					// the output latency
+					long _lOutput;
+
 					// is it usefull to call outputReady each time we have updated the outputbuffers 
 					ASIOError _outputReadySupport;
 
@@ -87,10 +93,13 @@ namespace BlueWave
 					property double					SampleRate				{ double get();}
 					property array<Channel^>^		InputChannels			{ array<Channel^>^ get(); }
 					property array<Channel^>^		OutputChannels			{ array<Channel^>^ get(); }
+					property long					InputLatency			{ long get(); }
+					property long					OutputLatency			{ long get(); }
 
 					// basic methods
 					void Start();
 					void Stop();
+					void UpdateLatencies();
 					void ShowControlPanel();
 					void CreateBuffers(bool useMaxBufferSize);
 					void DisposeBuffers();

@@ -1,17 +1,24 @@
 ﻿<Window x:Class="ASIOTest.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525" Closed="Window_Closed">
+		xmlns:oxy="http://oxyplot.codeplex.com"
+        Title="MainWindow" Height="500" Width="500" Closed="Window_Closed">
 	<Grid>
 		<StackPanel>
-		
-		<Button x:Name="ASIODiscover" Content="ASIODiscover" Margin="10,10,10,0" VerticalAlignment="Top" Click="ASIODiscover_Click"/>
-		<ComboBox Margin="10,10,10,0" VerticalAlignment="Top" Name="ASIODriverComboBox"/>
+			<ComboBox Margin="10,10,10,0" VerticalAlignment="Top" Name="ASIODriverComboBox"/>
 			<Button x:Name="ASIOTest" Content="ASIOTest" Margin="10,10,10,0" VerticalAlignment="Top" Click="ASIOTest_Click" IsEnabled="False"/>
 			<Button x:Name="ASIOShowControlPanel" Content="ASIOCP" Margin="10,10,10,0" VerticalAlignment="Top" Click="ASIOShowControlPanel_Click" IsEnabled="False"/>
-			<Button x:Name="ASIOStart" Content="ASIOStart" Margin="10,10,10,0" VerticalAlignment="Top" IsEnabled="False" Click="ASIOStart_Click"/>
 			<Button x:Name="ASIORecord" Content="ASIORecord" Margin="10,10,10,0" VerticalAlignment="Top" IsEnabled="False" Click="ASIORecord_Click" />
 			<Button x:Name="ASIOGetData" Content="ASIOGetData" Margin="10,10,10,0" VerticalAlignment="Top" IsEnabled="False" Click="ASIOGetData_Click" />
+			<oxy:Plot Title="Recording" Height="220" PlotMargins="10" Padding="0" TitleFontSize="10" TitlePadding="0">
+				<oxy:Plot.Axes>
+					<oxy:LinearAxis Name="LinePlotAxisX" Position="Bottom" Minimum="0" FontSize="8"/>
+					<oxy:LinearAxis Position="Left" Minimum="-1" Maximum="1" FontSize="8" MajorStep="1" MinorStep="0.1" />
+				</oxy:Plot.Axes>
+				<oxy:Plot.Series>
+					<oxy:LineSeries Name="LinePlot" Color="Black" XAxisKey="t" YAxisKey="V"/>
+				</oxy:Plot.Series>
+			</oxy:Plot>
 		</StackPanel>
 	</Grid>
 </Window>
