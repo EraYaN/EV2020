@@ -32,8 +32,7 @@ namespace ASIOTest
 	{
 		Localizer localizer;
 		bool nodrivers, discovered, tested, recording;
-		
-		int a = 1;		
+		PlotWindow pw;
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -95,9 +94,27 @@ namespace ASIOTest
 			List<Microphone> mics = new List<Microphone>();
 			mics.Add(new Microphone { Position = new Position3D { X = 0.02, Y = 0, Z = 0 }, ChannelIndex = 1 });
 			mics.Add(new Microphone { Position = new Position3D { X = 0.35, Y = 0, Z = 0 }, ChannelIndex = 0 });
-			localizer = new Localizer(mics,ASIODriverComboBox.SelectedIndex, new int[] { 0, 1 }, new int[] { 1 });
+			localizer = new Localizer(mics,ASIODriverComboBox.SelectedIndex, new int[] { 0, 1 }, new int[] { 0 });
+			localizer.OnLocationUpdated += localizer_OnLocationUpdated;
 			ASIOShowControlPanel.IsEnabled = true;
 			ASIOTest.IsEnabled = false;
+		}
+		void localizer_OnLocationUpdated(object sender, LocationUpdatedEventArgs e)
+		{
+
+			App.Current.Dispatcher.Invoke((Action)delegate
+			{
+				if (pw != null)
+				{
+					pw.Close();
+				}
+				if (localizer.lastData != null)
+				{
+					pw = new PlotWindow("Data", localizer.lastData, new List<string>() { "Channel 1", "Channel 2", "Channel 1 Filtered", "Channel 2 Filtered" }, ASIO.T);
+					pw.Show();
+				}
+			});			
+			
 		}
 		[STAThread]
 		private void ASIOShowControlPanel_Click(object sender, RoutedEventArgs e)
@@ -110,6 +127,13 @@ namespace ASIOTest
 
 		private void Window_Closed(object sender, EventArgs e)
 		{
+			App.Current.Dispatcher.Invoke((Action)delegate
+			{
+				if (pw != null)
+				{
+					pw.Close();
+				}
+			});
 			if (localizer != null)
 			{
 				localizer.Dispose();

@@ -14,7 +14,11 @@ namespace EV2020.LocationSystem
 {
     public class ASIO : IDisposable
     {
-		public const double Fs = 48000;		
+		public const double Fs = 48000;
+		public static double T
+		{
+			get { return 1 / Fs; }
+		}
 		const int DefaultQueueDepth = (int)Fs * 10;
 		List<long> times = new List<long>();
 		List<CircularBuffer<double>> sampleBuffersOut = new List<CircularBuffer<double>>();
@@ -150,19 +154,25 @@ namespace EV2020.LocationSystem
 			return inputSamples;
 		}
 		[STAThread]
-		public Matrix<double> getAllInputSamplesMatrix()
+		public Matrix<double> getAllInputSamplesMatrix(int nSamples = 0)
 		{
 			int maxsize = 0;
-			for (int i = 0; i < sampleBuffersIn.Count; i++)
+			Matrix<double> inputSamplesMatrix;
+			if (nSamples == 0)
 			{
-				if (sampleBuffersIn[i].Size > maxsize)
-					maxsize = sampleBuffersIn[i].Size;
+				for (int i = 0; i < sampleBuffersIn.Count; i++)
+				{
+					if (sampleBuffersIn[i].Size > maxsize)
+						maxsize = sampleBuffersIn[i].Size;
+				}
+				nSamples = maxsize;				
 			}
-			Matrix<double> inputSamplesMatrix = new DenseMatrix(maxsize, sampleBuffersIn.Count);
+
+			inputSamplesMatrix = new DenseMatrix(nSamples, sampleBuffersIn.Count);			
 			for (int i = 0; i < sampleBuffersIn.Count; i++)
 			{
 				double[] inputSamples = sampleBuffersIn[i].Get(sampleBuffersIn[i].Size);
-				for (int j = 0; j < inputSamples.Length; j++)
+				for (int j = 0; j < nSamples; j++)
 				{
 					inputSamplesMatrix[j, i] = inputSamples[j];					
 				}

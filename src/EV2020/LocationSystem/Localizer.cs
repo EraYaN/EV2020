@@ -23,6 +23,7 @@ namespace EV2020.LocationSystem
 		public event LocationUpdatedHandler OnLocationUpdated;
 		List<Microphone> Microphones;
 		System.Timers.Timer timer;
+		public Matrix<double> lastData;
 		Matrix<double> beaconsignal;
 		object _posistionLock;
 		public Localizer(List<Microphone> mics, int DriverIndex, int[] InputChannels, int[] OutputChannels)			
@@ -30,13 +31,13 @@ namespace EV2020.LocationSystem
 			Stopwatch sw = Stopwatch.StartNew();
 			Debug.WriteLine("Generating beaconsignal.");
 			beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code1000Hz, Tools.Timer3Freq.Repeat10Hz, "92340f0f", ASIO.Fs);
-			//Debug.WriteLine("Generating Toeplitz matrix.");
+			Debug.WriteLine("Generating Toeplitz matrix.");
 			
 			//Figure out corrent matchedfilter matrix
-			//Matrix<double> X = Tools.Toep(beaconsignal, beaconsignal.RowCount, beaconsignal.RowCount);
-			//Debug.WriteLine("Generating matched filter matrix.");
+			Matrix<double> X = Tools.Toep(beaconsignal, beaconsignal.RowCount, beaconsignal.RowCount);
+			Debug.WriteLine("Generating matched filter matrix.");
 			//X is a circulant matrix.
-			//matchedfilter = X;
+			matchedfilter = X;
 
 			//Debug.WriteLine("Transposing...");
 			//Matrix<double> Xt = X.Transpose();
@@ -57,11 +58,10 @@ namespace EV2020.LocationSystem
 			asio = new ASIO(DriverIndex, InputChannels, OutputChannels, Convert.ToInt32(ASIO.Fs));
 			Microphones = mics;			
 			Debug.WriteLine("Starting timer.");
-			timer = new System.Timers.Timer(2500);
+			timer = new System.Timers.Timer(1000);
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
 		}
-
 		void timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
 			performMeasurement();
@@ -92,20 +92,24 @@ namespace EV2020.LocationSystem
 
 			asio.IsInputEnabled = true;
 			asio.IsOutputEnabled = true;
-			Thread.Sleep(500);
+			ASIOLatencies lat = GetASIOLatencies();
+			Debug.WriteLine("Latencies; IN: {0}, OUT: {1}",lat.Input,lat.Output);
+			Thread.Sleep(new TimeSpan(Convert.ToInt64((lat.Input*ASIO.T+0.1)*TimeSpan.TicksPerSecond)));
 			//get all channels in a matrix (every column is a channel)
 			if (asio == null)
 				return;
-			//Matrix<double> responses = asio.getAllInputSamplesMatrix();
-			double[][] responses = asio.getAllInputSamples();
+			Matrix<double> responses = asio.getAllInputSamplesMatrix(matchedfilter.ColumnCount); //MATCHED Filter way
+			//double[][] responses = asio.getAllInputSamples(); //FFT way
 			asio.IsInputEnabled = false;
 			asio.IsOutputEnabled = false;
+			//FFT way
+			/*
 			int[] samplemaxes = new int[responses.Length];
 			double[] maxes = new double[responses.Length];
 			Complex[] workingarrayY;
 			Complex[] workingarrayX;
 			Complex[] workingarrayH;
-			//FFT way
+			
 			using (StreamWriter sw = new StreamWriter("FilteredData.csv",true))
 			{
 				for (int i = 0; i < responses.Length; i++)
@@ -139,8 +143,8 @@ namespace EV2020.LocationSystem
 					}
 					sw.WriteLine();
 				}
-			}
-			/*
+			}*/
+			
 			 //Matrix multiply way
 			int[] samplemaxes = new int[responses.ColumnCount];
 			double[] maxes = new double[responses.ColumnCount];
@@ -171,9 +175,13 @@ namespace EV2020.LocationSystem
 					}
 					sw.WriteLine();
 				}
-			}*/
-			Debug.WriteLine("Delta: {0}",Math.Abs(samplemaxes[0]-samplemaxes[1])*1/ASIO.Fs);
-			//TODO multilaterate posistion			
+			}
+			Debug.WriteLine("Delta: {0}",Math.Abs(samplemaxes[0]-samplemaxes[1])*ASIO.T);
+			//TODO multilaterate posistion	
+			//lastData = responses.Append(filteredResponses);
+			lastData = responses;
+
+			OnLocationUpdated(this, new LocationUpdatedEventArgs(new Position3D() { X = 0, Y = 0, Z = 0 }));
 		}
 		protected virtual void Dispose(bool disposing)
 		{
