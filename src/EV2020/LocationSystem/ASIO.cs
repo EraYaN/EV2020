@@ -225,8 +225,6 @@ namespace EV2020.LocationSystem
 			driver.UpdateLatencies();
 			return new ASIOLatencies { Input = driver.InputLatency, Output = driver.OutputLatency };
 		}
-
-
     }
 	public struct ASIOLatencies
 	{

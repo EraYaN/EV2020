@@ -104,16 +104,27 @@ namespace ASIOTest
 
 			App.Current.Dispatcher.Invoke((Action)delegate
 			{
-				if (pw != null)
-				{
-					pw.Close();
-				}
+				
 				if (localizer != null)
 				{
 					if (localizer.lastData != null)
 					{
-						pw = new PlotWindow("Data", localizer.lastData, new List<string>() { "Channel 1", "Channel 2", "Channel 1 Filtered", "Channel 2 Filtered" }, ASIO.T);
-						pw.Show();
+						List<string> legend = new List<string>();
+						for (int i = 0; i < localizer.lastData.ColumnCount; i++)
+						{
+							legend.Add(String.Format("Channel {0}",i+1));
+						}
+						if (pw != null)
+						{
+							if(pw.IsLoaded)
+								pw.Update("Data", localizer.lastData, legend, ASIO.T);
+						}
+						else
+						{
+							pw = new PlotWindow("Data", localizer.lastData, legend, ASIO.T);
+							pw.Show();
+						}	
+						
 					}
 				}
 			});			

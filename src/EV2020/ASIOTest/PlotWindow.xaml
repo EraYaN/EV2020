@@ -7,7 +7,7 @@
 	<Window.DataContext>
 		<local:Presenter/>
 	</Window.DataContext>
-	<Grid>		
-		<oxy:Plot Model="{Binding PlotModel, UpdateSourceTrigger=PropertyChanged}"></oxy:Plot>
+	<Grid>
+		<oxy:Plot Name="plot" Model="{Binding Path=PlotModel, Mode=OneWay}"></oxy:Plot>
 	</Grid>
 </Window>

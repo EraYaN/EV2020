@@ -31,7 +31,7 @@ namespace EV2020.LocationSystem
 			Stopwatch sw = Stopwatch.StartNew();
 			Debug.WriteLine("Generating beaconsignal.");
 			//Default
-			beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier20kHz, Tools.Timer1Freq.Code5000Hz, Tools.Timer3Freq.Repeat5Hz, "92340f0f", ASIO.Fs);
+			beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier20kHz, Tools.Timer1Freq.Code5000Hz, Tools.Timer3Freq.Repeat10Hz, "92340f0f", ASIO.Fs);
 			//Own
 			//beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat10Hz, "e65a20e2b37ac60c", ASIO.Fs);
 			//Circulant Convolution
@@ -197,7 +197,11 @@ namespace EV2020.LocationSystem
 			{
 				Debug.WriteLine("Cound not write file.");
 			}*/
-			Debug.WriteLine("Delta: {0}",Math.Abs(samplemaxes[0]-samplemaxes[1])*ASIO.T);
+			Debug.WriteLine("Channel 0 is the 'zero' at @ {0} samples.", samplemaxes[0]);
+			for (int i = 1; i < samplemaxes.Length; i++)
+			{
+			Debug.WriteLine("Channel {2} delta is {0:f2} ms at @ {1} samples.", Math.Abs(samplemaxes[0] - samplemaxes[1]) * ASIO.T * 1000, samplemaxes[i], i);
+			}
 			//TODO multilaterate posistion	
 			//lastData = responses.Append(filteredResponses);
 			//lastData = responses;

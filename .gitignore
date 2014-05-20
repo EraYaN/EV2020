@@ -247,3 +247,4 @@ pip-log.txt
 slprj
 *.mexw64
 *.autosave
+*.res

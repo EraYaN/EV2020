@@ -2,6 +2,7 @@
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,10 +78,6 @@ namespace EV2020.LocationSystem
 			}
 			return signal;
 		}
-		static Func<int, int, double> initZero = delegate(int x, int y)
-		{
-			return 0;
-		};
 		static public Matrix<double> Toep(Vector<double> x0, int N, int L, bool circulant = true)
 		{
 			int N0 = x0.Count;
@@ -88,7 +85,19 @@ namespace EV2020.LocationSystem
 			{
 				throw new ArgumentException("x0's length should be equal or less than N.", "x0");
 			}
-			Matrix<double> X = SparseMatrix.Create(N, L, initZero);
+			Matrix<double> X;
+			try
+			{
+				//faster
+				X = DenseMatrix.Create(N, L, 0);
+				Debug.WriteLine("Used DenseMatrix for Toeplitz matrix.");
+			}
+			catch(OutOfMemoryException)
+			{
+				//slower
+				X = SparseMatrix.Create(N, L, 0);
+				Debug.WriteLine("Used SparseMatrix for Toeplitz matrix.");
+			}
 			for (int i = 0; i < N; i++)
 			{
 				for (int j = 0; j < L; j++)

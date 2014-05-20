@@ -27,30 +27,20 @@ namespace ASIOTest
 	{
 		//List<LinePlotData> lineplots = new List<LinePlotData>();
 		Presenter p;
+		public PlotWindow()
+		{
+			InitializeComponent();
+		}
 		public PlotWindow(String title, Matrix<double> plotdata, List<string> legend, double timestep)
 		{
 			InitializeComponent();
 			p = (Presenter)this.DataContext;
-			p.InitializePlot(title);
-			if (plotdata.ColumnCount > 20)
-			{
-				throw new ArgumentException("Plotdata can contain at most 20 columns.","plotdata");
-			}
-			for (int line = 0; line < plotdata.ColumnCount; line++)
-			{
-				LineSeries ls = new LineSeries();
-				List<DataPoint> list = new List<DataPoint>();
-				for (int i = 0; i < plotdata.RowCount; i++)
-				{					
-					list.Add(new DataPoint(timestep * i, plotdata[i,line]));
-				}
-				ls.ItemsSource = list;
-				ls.Smooth = false;
-				ls.StrokeThickness = 0.5;
-				ls.Title = legend[line];
-				p.PlotModel.Series.Add(ls);
-			}
-			p.PlotModel.IsLegendVisible = true;
+			p.Update(title, plotdata, legend, timestep);
+		}
+		public void Update(String title, Matrix<double> plotdata, List<string> legend, double timestep)
+		{			
+			p = (Presenter)this.DataContext;
+			p.Update(title, plotdata, legend, timestep);
 		}
 	}
 	public class ObservableObject : INotifyPropertyChanged
@@ -69,19 +59,44 @@ namespace ASIOTest
 		private PlotModel _plotModel;
 		
 		public PlotModel PlotModel{
-			get { return _plotModel; }
-			set
-			{
-				_plotModel = value;
-				RaisePropertyChangedEvent("PlotModel");
-			}
+			get { return _plotModel; }			
 		}
 
 		public void InitializePlot(string title = null, string subtitle = null)
 		{
 			_plotModel = new PlotModel(title, subtitle);
 			RaisePropertyChangedEvent("PlotModel");
+		}
 
+		public void Update(String title, Matrix<double> plotdata, List<string> legend, double timestep)
+		{
+			if (_plotModel == null)
+			{
+				InitializePlot(title);
+			}
+			if (plotdata.ColumnCount > 20)
+			{
+				throw new ArgumentException("Plotdata can contain at most 20 columns.", "plotdata");
+			}
+			_plotModel.Series.Clear();
+			for (int line = 0; line < plotdata.ColumnCount; line++)
+			{
+				LineSeries ls = new LineSeries();
+				List<DataPoint> list = new List<DataPoint>();
+				for (int i = 0; i < plotdata.RowCount; i++)
+				{
+					list.Add(new DataPoint(timestep * i, plotdata[i, line]));
+				}
+				ls.ItemsSource = list;
+				ls.Smooth = false;
+				ls.StrokeThickness = 0.5;
+				ls.Title = legend[line];
+				_plotModel.Series.Add(ls);
+			}
+			_plotModel.IsLegendVisible = true;
+			_plotModel.RefreshPlot(true);
+			RaisePropertyChangedEvent("PlotModel");
+			//plot.Model = new Binding();
 		}
 
 		
