@@ -45,7 +45,7 @@ namespace EV2020.LocationSystem
 			Repeat9Hz = 9,
 			Repeat10Hz = 10,
 		}
-		static public Matrix<double> refsignal(Timer0Freq Timer0, Timer1Freq Timer1, Timer3Freq Timer3, string code, double Fs)
+		static public Vector<double> refsignal(Timer0Freq Timer0, Timer1Freq Timer1, Timer3Freq Timer3, string code, double Fs)
 		{
 			double f0 = Convert.ToDouble(Timer0);
 			double f1 = Convert.ToDouble(Timer1);
@@ -53,9 +53,9 @@ namespace EV2020.LocationSystem
 			double T = 1 / Fs;
 			int samplesperbit = Convert.ToInt32(Math.Round(Fs / f1));
 			int samples = (int)Math.Ceiling(Fs / f3);
-			Matrix<double> signal = new DenseMatrix(samples,1);
+			Vector<double> signal = new DenseVector(samples);
 
-			string bincodestring = Convert.ToString(Convert.ToInt32(code, 16), 2);// Convert.ToString(code, 2); //string.Join("",code.Reverse().Select(x => Convert.ToString(x, 2).PadLeft(8, '0')));
+			string bincodestring = Convert.ToString(Convert.ToInt64(code, 16), 2);// Convert.ToString(code, 2); //string.Join("",code.Reverse().Select(x => Convert.ToString(x, 2).PadLeft(8, '0')));
 			int bitnumber = 0;
 			for (int ind = 0; ind < bincodestring.Length; ind++)
 			{
@@ -67,13 +67,13 @@ namespace EV2020.LocationSystem
 					int indexto = bitnumber * samplesperbit;
 					for (int sample = indexfrom; sample <= indexto; sample++)
 					{
-						signal[sample,0] = 1.0f;
+						signal[sample] = 1.0f;
 					}
 				}
 			}
 			for(int i = 0; i<samples; i++){
 				double carrier = Math.Round(Math.Cos(2 * Math.PI * f0 / Fs * i) / 2 + 0.5);
-				signal[i,0] *= carrier;
+				signal[i] *= carrier;
 			}
 			return signal;
 		}
@@ -81,13 +81,9 @@ namespace EV2020.LocationSystem
 		{
 			return 0;
 		};
-		static public Matrix<double> Toep(Matrix<double> x0, int N, int L)
+		static public Matrix<double> Toep(Vector<double> x0, int N, int L, bool circulant = true)
 		{
-			if (x0.ColumnCount != 1)
-			{
-				throw new ArgumentException("x0 needs to be a column vector.", "x0");
-			}
-			int N0 = x0.RowCount;
+			int N0 = x0.Count;
 			if (N0 > N)
 			{
 				throw new ArgumentException("x0's length should be equal or less than N.", "x0");
@@ -98,22 +94,30 @@ namespace EV2020.LocationSystem
 				for (int j = 0; j < L; j++)
 				{
 					int index = (i + 1) - (j + 1);
-					//weirdo matlab modulo
-					while (index < 0)
-						index += N;
-					index = index % N;					
-					if (index < N0)
+					
+					if (circulant)
 					{
-						X[i, j] = x0[index, 0];
+						//weirdo matlab modulo
+						while (index < 0)
+							index += N;
+						index = index % N;
+					}
+					else
+					{
+						index = index % N;
+					}					
+					if (index>=0 && index < N0)
+					{
+						X[i, j] = x0[index];
 					}
 				}
 			}
 			return X;
 		}
-		static public Matrix<double> Toep(Matrix<double> x0, int N)
+		static public Matrix<double> Toep(Vector<double> x0, int N, bool circulant = true)
 		{
-			int N0 = x0.RowCount;
-			return Toep(x0, N, N - N0 + 1);
+			int N0 = x0.Count;
+			return Toep(x0, N, N - N0 + 1, circulant);
 		}
 	}
 }

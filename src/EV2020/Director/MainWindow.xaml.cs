@@ -238,6 +238,11 @@ namespace EV2020.Director
             s.Stop();
             MessageBox.Show(s.ElapsedMilliseconds.ToString());
             MessageBox.Show(D.ToString());
-        }				
+        }
+
+		private void ToggleAudioBeaconMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			Data.ctr.ToggleAudio();
+		}				
 	}
 }

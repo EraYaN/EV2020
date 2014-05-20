@@ -46,9 +46,9 @@ namespace ASIOTest
 			//beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier5kHz, Tools.Timer1Freq.Code1000Hz, Tools.Timer3Freq.Repeat10Hz, "92340f0f", 48000);
 			//beaconsignal = new float[]{1,0};
 
-			//Matrix<double> x0 = DenseMatrix.OfArray(new double[,] { { 1 }, { 0 }, { 1 }, { 0 }, { 1 } });
-			//Matrix<double> X = Tools.Toep(x0, x0.RowCount, x0.RowCount);
-			/*for (int row = 0; row < X.RowCount; row++)
+			/*Vector<double> x0 = DenseVector.OfEnumerable(new double[]{1 , 2, 3, 4, 5});
+			Matrix<double> X = Tools.Toep(x0, x0.Count*2-1, x0.Count,false);
+			for (int row = 0; row < X.RowCount; row++)
 			{
 				StringBuilder line = new StringBuilder();
 				for (int col = 0; col < X.ColumnCount; col++)
@@ -57,7 +57,7 @@ namespace ASIOTest
 					line.Append(" ");
 				}
 				Debug.WriteLine(line.ToString());
-			}*/				
+			}*/	
 
 			if (AsioDriver.InstalledDrivers.Length == 0)
 			{
@@ -108,10 +108,13 @@ namespace ASIOTest
 				{
 					pw.Close();
 				}
-				if (localizer.lastData != null)
+				if (localizer != null)
 				{
-					pw = new PlotWindow("Data", localizer.lastData, new List<string>() { "Channel 1", "Channel 2", "Channel 1 Filtered", "Channel 2 Filtered" }, ASIO.T);
-					pw.Show();
+					if (localizer.lastData != null)
+					{
+						pw = new PlotWindow("Data", localizer.lastData, new List<string>() { "Channel 1", "Channel 2", "Channel 1 Filtered", "Channel 2 Filtered" }, ASIO.T);
+						pw.Show();
+					}
 				}
 			});			
 			

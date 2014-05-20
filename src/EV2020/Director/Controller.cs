@@ -432,6 +432,17 @@ namespace EV2020.Director
 		#endregion
 
 		#region Public command methods
+		public void ToggleAudio()
+		{
+			if (audioState == 0)
+			{
+				enableAudio();
+			}
+			else
+			{
+				disableAudio();
+			}
+		}
 		public void SetDrivingSteering(int d, int s){
 			if (!_fixedInputSequenceExecuting)
 			{
