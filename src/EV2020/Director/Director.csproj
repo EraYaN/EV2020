@@ -35,16 +35,6 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Remote Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Remote Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>bin\Debug\EV2020Director.XML</DocumentationFile>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
@@ -61,16 +51,6 @@
     <DocumentationFile>bin\Release\EV2020Director.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Remote Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Remote Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>bin\Debug\EV2020Director.XML</DocumentationFile>
-    <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -165,6 +145,14 @@
     <ProjectReference Include="..\..\..\..\MLE4WCSharp\MLE4WCSharp\MLE4WCSharp.csproj">
       <Project>{6a3b3fe4-8b03-4b34-9b4d-cace5dcc8294}</Project>
       <Name>MLE4WCSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\mathnet\src\NativeProviders\Windows\MKL\MKLWrapper.vcxproj">
+      <Project>{c0b0dba9-7fb0-4c87-bdb1-3eed19dc2b8f}</Project>
+      <Name>MKL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\mathnet\src\Numerics\Numerics.csproj">
+      <Project>{b7cae5f4-a23f-4438-b5be-41226618b695}</Project>
+      <Name>Numerics</Name>
     </ProjectReference>
     <ProjectReference Include="..\BlueWave.Interop.Asio\Bluewave.Interop.Asio.vcxproj">
       <Project>{6db00ba8-efde-4d3a-8983-f01857a36c1a}</Project>
