@@ -146,10 +146,6 @@
       <Project>{6a3b3fe4-8b03-4b34-9b4d-cace5dcc8294}</Project>
       <Name>MLE4WCSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\mathnet\src\NativeProviders\Windows\MKL\MKLWrapper.vcxproj">
-      <Project>{c0b0dba9-7fb0-4c87-bdb1-3eed19dc2b8f}</Project>
-      <Name>MKL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\mathnet\src\Numerics\Numerics.csproj">
       <Project>{b7cae5f4-a23f-4438-b5be-41226618b695}</Project>
       <Name>Numerics</Name>
@@ -164,6 +160,9 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(SolutionDir)..\mathnet\out\MKL\Windows\$(PlatformName)\*.dll" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -19,9 +19,9 @@ using OxyPlot;
 using System.Globalization;
 using BlueWave.Interop.Asio;
 using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using System.Diagnostics;
-using MathNet.Numerics.Algorithms.LinearAlgebra.Mkl;
+using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
 
 namespace ASIOTest
 {

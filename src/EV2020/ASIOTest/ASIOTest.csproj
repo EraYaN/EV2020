@@ -161,10 +161,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\mathnet\src\NativeProviders\Windows\MKL\MKLWrapper.vcxproj">
-      <Project>{c0b0dba9-7fb0-4c87-bdb1-3eed19dc2b8f}</Project>
-      <Name>MKL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\mathnet\src\Numerics\Numerics.csproj">
       <Project>{b7cae5f4-a23f-4438-b5be-41226618b695}</Project>
       <Name>Numerics</Name>
@@ -205,7 +201,20 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\mathnet\out\MKL\Windows\x86\libiomp5md.dll">
+      <Link>libiomp5md.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\mathnet\out\MKL\Windows\x86\MathNet.Numerics.MKL.dll">
+      <Link>MathNet.Numerics.MKL.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(SolutionDir)..\mathnet\out\MKL\Windows\$(PlatformName)\*.dll" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

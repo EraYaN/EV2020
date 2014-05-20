@@ -1,5 +1,5 @@
-﻿using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
+﻿using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +88,7 @@ namespace EV2020.LocationSystem
 			{
 				throw new ArgumentException("x0's length should be equal or less than N.", "x0");
 			}
-			Matrix<double> X = DenseMatrix.Create(N, L, initZero);
+			Matrix<double> X = SparseMatrix.Create(N, L, initZero);
 			for (int i = 0; i < N; i++)
 			{
 				for (int j = 0; j < L; j++)

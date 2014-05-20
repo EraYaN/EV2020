@@ -1,5 +1,5 @@
 ﻿using EV2020.LocationSystem;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using OxyPlot;
 using OxyPlot.Series;
 using System;

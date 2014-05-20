@@ -65,10 +65,6 @@
     <Compile Include="Tools.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\mathnet\src\NativeProviders\Windows\MKL\MKLWrapper.vcxproj">
-      <Project>{c0b0dba9-7fb0-4c87-bdb1-3eed19dc2b8f}</Project>
-      <Name>MKL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\mathnet\src\Numerics\Numerics.csproj">
       <Project>{b7cae5f4-a23f-4438-b5be-41226618b695}</Project>
       <Name>Numerics</Name>
