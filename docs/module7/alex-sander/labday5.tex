@@ -1,0 +1,188 @@
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+
+\begin{document}
+
+\section{Labday 5: Localization using TDOA information}
+\subsection{Report 6}
+\subsubsection{Basic localization}
+Before going into TDOA estimation, it was assumed that the time it took for the sound to travel from the beacon to all microphones was known.
+This made the calculation a lot easier since it can be solved using two microphones only.
+\\ \\
+Figure \ref{fig:location} shows how the location of the car can be found when the locations of the microphones (and thus the distance between them, $a_1 + a_2$) and the time between transmission and arrivals at the two microphones $t_1$ and $t_2$, which can be converted into a distance using the speed of sound $c = 340~m/s$.
+Using this information, two possible locations can be found, the real location of the car and its mirrored version over the line between the two microphones as shown in Figure \ref{fig:location} as the dotted lines.
+
+\begin{figure} [H]
+\centering
+	\begin{tikzpicture}	
+		\node [anchor=east] at (0,0) (mic1) {Mic 1};
+		\node [anchor=west] at (9,0) (mic2) {Mic 2};
+		\node [anchor=south] at (6,3) (car) {Beacon};
+		\node [anchor=north] at (4.5,-0.25) (a) {$a$};
+
+		\draw (0,0) -- node[below]{$a_1$} (6,0)
+			-- node[left]{$x$} (6,3)
+			-- node[above, sloped]{$t_1 c$} (0,0);
+
+		\draw (6,0) -- node[below]{$a_2$} (9,0)
+			--  node[above, sloped]{$t_2 c$} (6,3);
+
+		\draw [dotted] (0,0) -- (6,0)
+			-- (6,-3)
+			-- (0,0);
+
+		\draw [dotted] (6,0) -- (9,0)
+			--  (6,-3);
+	\end{tikzpicture}
+	\caption{Location determination.}
+	\label{fig:location}
+\end{figure}
+
+From Figure \ref{fig:location}, the following equations can be formulated:
+\begin{equation}
+	a_1 = \frac{t_1^2 c^2 - t_2^2 c^2 + a^2}{2 a}
+\label{eq:a1}
+\end{equation}
+
+\begin{equation}
+	x = \sqrt{t_1^2 c^2 - a_1^2}
+\end{equation}
+
+To find the absolute location of the beacon on the field when Mic 1 and Mic 2 are not necessarily on the same y-coordinate, an angular translation is needed as illustrated in Figure \ref{fig:angular-translation}.
+
+\begin{figure} [H]
+\centering
+	\begin{tikzpicture}	
+		\node [anchor=east] at (0,0) (mic1) {Mic 1};
+		\node [anchor=south east] at (2.1213,6.3439) (car) {Beacon};
+		\node [anchor=south west] at (1,0.15) {$\theta$};
+
+		\draw [-*] (0,0) -- node[below]{$a_1$} (6,0)
+			-- node[left]{$x$} (6,3);
+
+		\draw [dashed, -*] (0,0) -- (4.2426,4.2426)
+			-- (2.1213,6.3439);
+
+		\draw [->] (1,0) arc (0:45:1);
+	\end{tikzpicture}
+	\caption{Angular translation.}
+	\label{fig:angular-translation}
+\end{figure}
+
+With $\theta$ the angle between Mic 1 and Mic 2:
+
+\begin{equation}
+	\theta = -\arctan{\frac{\text{Mic 2}_y - \text{Mic 1}_y}{\text{Mic 2}_x - \text{Mic 1}_x}}
+\end{equation}
+
+The beacon location in x- and y-coordinates are found by adding the point ($a_1$, $x$) with angular translation of $\theta$ to the location of Mic 1.
+\\ \\
+Since five microphones will be used instead of just two, the mirrored versions can be filtered out, leaving only the real location of the car as a solution.
+By using only two microphones per location estimation instead of all five at once, wrong arrival times can be filtered out easily.
+However, when the arrival times are all poorly defined due to errors, it might not be possible to filter the mirror images out of the solution sets.
+
+\subsubsection{Height correction}
+The height difference between the audio beacon and the microphones causes a larger time delay than expected when only looking at the 2D plane only.
+However, this time delay can be corrected using Pythagoras' theorem:
+
+\begin{equation}
+	t_{2D} = \sqrt{t_{3D}^2 - \Delta h^2}
+\end{equation}
+
+With $\Delta h$ the height difference between the beacon and the microphone.
+The resulting $t_{2D}$ can be used in the basic localization to exactly calculate the beacon location, independent of the height difference.
+
+\subsubsection{TDOA to arrival times}
+In order to use the TDOA data in the algorithm mentioned above, the time delays between the transmission and reception of the signal per microphone must be calculated from the TDOA data.
+For this, it is known that this transition from TDOA to time delays is accomplished by adding a the same time constant time difference per microphone.
+This constant is defined as the time difference between the absolute time of transmission and the absolute start time of the sample data, e.g. the absolute time of sample number one.
+\\ \\
+To find this constant, an orthogonal base of three microphones is used as in Figure \ref{fig:constant}.
+
+\begin{figure} [H]
+\centering
+	\begin{tikzpicture}	
+		\node [anchor=east] at (0,0) (mic1) {Mic 1};
+		\node [anchor=west] at (9,0) (mic2) {Mic 2};
+		\node [anchor=east] at (0,5) (mic1) {Mic 3};
+		\node [anchor=south west] at (6,3) (car) {Beacon};
+
+		\draw (0,0) -- node[below]{$x$} (6,0)
+			-- node[left]{$y$} (6,3)
+			-- node[above, sloped]{$t_1 c$} (0,0);
+
+		\draw (6,0) -- node[below]{$B - x$} (9,0)
+			--  node[above, sloped]{$t_2 c$} (6,3);
+
+		\draw (0,0) -- node[left]{$y$} (0,3);
+
+		\draw (0,3) -- node[left]{$H - y$} (0,5)
+			-- node[above]{$t_3 c$} (6,3)
+			-- node[below]{$x$} (0,3);
+
+		\draw (0.5,0) -- (0.5,0.5) -- (0,0.5);
+		\draw (5.5,0) -- (5.5,0.5) -- (6,0.5);
+		\draw (0,2.5) -- (0.5,2.5) -- (0.5,3);
+	\end{tikzpicture}
+	\caption{Model used for determination of the constant time error.}
+	\label{fig:constant}
+\end{figure}
+
+Using the formula of the altitude of a triangle, e.g. $y$ in triangle (Mic 1, Mic 2, Beacon), the altitude is defined as:
+
+\begin{equation}
+	y = \frac{2 \sqrt{s(s - B)(s - D_1)(s - D_2)}}{B}
+\label{eq:y1}
+\end{equation}
+
+With $B$ the base of the triangle, $D_1$ and $D_2$ the other two sides of the triangle and $s$ half of the perimeter of the triangle, $s = (B + D_1 + D_2) / 2$.
+In the case of triangle (Mic 1, Mic 2, Car) with altitude line $y$, the base $B = \lVert Mic 1 - Mic 2 \rVert$ and the other two sides as $D_1 = t_1 c$ and $D_2 = t_2 c$ or vice versa.
+\\ \\
+For triangle (Mic 1, Mic 3, Car), $y$ is defined by:
+
+\begin{equation}
+	y = \frac{t_1^2 c^2 - t_3^2 c^2 + H^2}{2 B}
+\label{eq:y2}
+\end{equation}
+
+The parameters $t_1$, $t_2$ and $t_3$ are defined with an offset of the constant we wish to find.
+Using Equation \ref{eq:y1} and \ref{eq:y2}, which are defined to the same $y$ since the three microphone form an orthogonal basis, and having an additive constant to $t_1$, $t_2$ and $t_3$, Matlab calculated the formula of the constant using the script report6-2.m from Appendix A.
+\\ \\
+Now that the constant is known, the algorithm using two microphones and the arrival times can be applied.
+It must however be noted that the height difference between the microphones and the beacon is not applied to the calculation of the constant time.
+Matlab could not find an explicit solution for the 3D situation, hence it was not included.
+This will lead to an error in the resulting location.
+However, the error will be very small when the beacon is not closeby the microphone, hence only one microphone can be compromised at once.
+For that, the base of orthogonal microphones shift to all four possible combinations and check for the best basis with the least standard deviation between the subresulting locations.
+\\ \\
+The final Matlab script can be found in Appendix A: location.m, which implements everything discussed so far in this chapter.
+
+\subsubsection{Testing}
+The test script location-errors.m as found in Appendix A was used to find the error mean, standard deviation and maximum.
+The first test was in 2D mode; all microphones and the beacon were on the same height.
+\\ \\
+The other tests were with the four surrounding microphones 10 cm higher than the beacon and the last microphone 65 cm higher than the beacon.
+The five microphones were set up as in the five microphone test setting from Labday 5.
+All tests were done by calculating 2.500 points linearly spread on the 2.9m x 2.9m field.
+The results are displayed in Table \ref{tab:errors}.
+
+\begin{table} [H]
+\centering
+	\begin{tabular}{ c | c | c | c }
+  	Setup & Error mean (mm) & Error standard deviation (mm) & Max error (mm) \\ \hline
+  	2D & 0 & 0 & 0 \\
+  	3D without height correction & 31.2 & 10.9 & 61.8 \\
+	3D with height correction & 3.4 & 2.4 & 13.6 \\
+	\end{tabular}
+\caption{Location error details for different setups.}
+\label{tab:errors}
+\end{table}
+
+It can be concluded that the algorithm works with sufficient accuracy since the error mean and maximum are low enough for accurate location estimation.
+More than 1 cm accuracy is indeed not needed for the purpose of the project.
+The height correction definitely adds accuracy to the location estimation as expected, hence it will be used later on.
+This is however when the TDOA information is nearly infinitely accurate, which will not be the case.
+
+\end{document}
