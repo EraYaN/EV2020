@@ -45,6 +45,16 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
 
 \subsection{Autocorrelation of the input signals}
 
+With the help of a 'Matched Filter' we were able to check how the autocorrelation plots of all the four signals were correlated with themself.
+The Matched Filter, $r[n]=x[n]*x[-n]$, is implemented in Matlab as folllows: \texttt{r = conv(x, flipud(x))}.
+The plots of the autocorrelation can be seen in Figure \ref{fig:auto1}, Figure \ref{fig:auto2}, Figure \ref{fig:auto3} and Figure \ref{auto4}.
+As has been said above, the autocorrelation shows how a signal is correlated with itself. 
+When a signal contains a certain values, then it will also have an autocorrelation that shows that the signal repeats itself.
+In this way we can, for example, take the beat out of the signal with an algorithm.
+When, however, the signal is completely uncorrelated we will not find any 'interesting' values.
+This happens when, for example, the signal (after a certain value) remains zero in Figure \ref{fig:auto1}.
+
+
 \begin{figure}[H]
 	\centering
     	\setlength\figureheight{6cm}
@@ -79,6 +89,16 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
 \end{figure}
 
 \subsection{Singular values of the input signals}
+For each of the four given signals we needed to make plots of the singular values for various values of the channel length $L$. 
+The plots can be found in Figures \ref{fig:svd1}, \ref{fig:svd2}, \ref{fig:svd3} and \ref{fig:svd4}. 
+Since we invert \texttt{X}, we want the singular values not to be to close to 0, because the noise will get magnified otherwise and the results will get unstable. 
+\\
+When looking closely at the figures we see that we get more singular values that point away from 0 when the channel length increases. 
+The only exception is \texttt{x3} (see Figure \ref{fig:svd3}).
+Here it is the other way around, the singular value approach 0 when the channel length increases. 
+The Matlab code used for the calculations of the singular values can be found in Appendix \ref{lst:svd.m}.
+
+
 
 \begin{figure}[H]
 	\centering
@@ -86,7 +106,7 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
     	\setlength\figurewidth{10cm}
     	\input{resources/svd1.tikz}    	
     	\caption{Singular values of \texttt{x1}}
-    	\label{fig:auto1}
+    	\label{fig:svd1}
 \end{figure}
 
 \begin{figure}[H]
@@ -95,7 +115,7 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
     	\setlength\figurewidth{10cm}
     	\input{resources/svd2.tikz}    	
     	\caption{Singular values of \texttt{x2}}
-    	\label{fig:auto1}
+    	\label{fig:svd2}
 \end{figure}
 
 \begin{figure}[H]
@@ -104,7 +124,7 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
     	\setlength\figurewidth{10cm}
     	\input{resources/svd3.tikz}    	
     	\caption{Singular values of \texttt{x3}}
-    	\label{fig:auto1}
+    	\label{fig:svd3}
 \end{figure}
 
 \begin{figure}[H]
@@ -113,10 +133,12 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
     	\setlength\figurewidth{10cm}
     	\input{resources/svd4.tikz}    	
     	\caption{Singular values of \texttt{x4}}
-    	\label{fig:auto1}
+    	\label{fig:svd4}
 \end{figure}
 
 \subsection{Error criterion}
+
+
 
 \begin{figure}[H]
 	\centering
@@ -124,7 +146,7 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
     	\setlength\figurewidth{10cm}
     	\input{resources/error_0.01.tikz}    	
     	\caption{Singular values of \texttt{x3}}
-    	\label{fig:auto1}
+    	\label{fig:error1}
 \end{figure}
 
 \begin{figure}[H]
@@ -133,18 +155,28 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
     	\setlength\figurewidth{10cm}
     	\input{resources/error_0.01_2.tikz}    	
     	\caption{Singular values of \texttt{x4}}
-    	\label{fig:auto1}
+    	\label{fig:error2}
 \end{figure}
 
 
 \subsection{Cross-correlation}
+Next we had to look at the cross-correlation of the different signals. 
+What happens if we have an interfering signal from a neighboring car?
+In order to find out how big the influence of an interfering signal is, we plotted the cross-correlation of different signals with each other in Figure \ref{fig:cross1}, \ref{fig:cross2}, \ref{fig:cross3} and \ref{fig:cross4}.
+The Matlab script can again be found in Appendix \ref{lst:crosscorrelation.m}.
+In an ideal situation you want the cross-correlation between the different signals to be zero. 
+In this way you are able to prevent most errors that occur when we have interfering signals. 
+From our figures we see that only the signals in Figure \ref{fig:cross1} and Figure \ref{fig:cross2} go to zero at a certain moment, so the signals \texttt{x1} and \texttt{x2} are the most suitable.
+
+
+
 \begin{figure}[H]
 	\centering
     	\setlength\figureheight{6cm}
     	\setlength\figurewidth{10cm}
     	\input{resources/crossx1.tikz}    	
     	\caption{The cross-correlation of \texttt{x1} with other signals.}
-    	\label{fig:auto1}
+    	\label{fig:cross1}
 \end{figure}
 
 \begin{figure}[H]
@@ -153,7 +185,7 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
     	\setlength\figurewidth{10cm}
     	\input{resources/crossx2.tikz}    	
     	\caption{The cross-correlation of \texttt{x2} with other signals.}
-    	\label{fig:auto1}
+    	\label{fig:cross2}
 \end{figure}
 
 \begin{figure}[H]
@@ -162,7 +194,7 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
     	\setlength\figurewidth{10cm}
     	\input{resources/crossx3.tikz}    	
     	\caption{The cross-correlation of \texttt{x3} with other signals.}
-    	\label{fig:auto1}
+    	\label{fig:cross3}
 \end{figure}
 
 \begin{figure}[H]
@@ -171,6 +203,21 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
     	\setlength\figurewidth{10cm}
     	\input{resources/crossx4.tikz}    	
     	\caption{The cross-correlation of \texttt{x4} with other signals.}
-    	\label{fig:auto1}
+    	\label{fig:cross4}
 \end{figure}
+\\
+\\
+\\
+\\
+\\
+Lastely we had to discuss how the training  sequence and its length $N_x$ should be designed and how $\hat{L}$ should be chosen in the estimation algorithm.
+$N_x$ is a known value that was given to us at the beginning of this labday. 
+$N_y$ can be chosen by looking at the length of the recieved signal.
+When we know $N_x$ and $N_y$, we can easily find $\hat{L}$ by using Equation \ref{eq:channellength}.
+
+\begin{equation}
+\hat{L}=N_y - N_x +1
+\label{eq:channellength}
+\end{equation}
+
 \end{document} 
