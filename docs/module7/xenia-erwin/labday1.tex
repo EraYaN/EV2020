@@ -20,7 +20,7 @@ For the attenuation $\alpha$(r) of the signal can be found with the use of the f
 \label{eq:damping}
 \end{equation}
 
-In eqaution \ref{eq:damping} $\beta$ is the damping over a reference distance of 1 meter. 
+In Eqaution \ref{eq:damping} $\beta$ is the damping over a reference distance of 1 meter. 
 \\
 \\
 The direct path to the RX point is the fastest and the strongest and can easily be calculated.
@@ -52,7 +52,7 @@ With the help of Equation \ref{eq:damping} we are able to calculate the resultin
 We used a $\beta$ of 1.00 since the outcome of all amplitudes would give us the total received signal compared to a infinitely large room with the TX and RX 1 meter away from each other.
 In Figure \ref{fig:response} we displayed the resulting delta impulse response over time. 
 With the Matlab script in Appendix \ref{lst:report1.m}, we got a resulting amplitude of 0.5420. 
-This is equal to the sum of all delta impulse response amplitudes in Figure \reg{fig:response}.
+This is equal to the sum of all delta impulse response amplitudes in Figure \ref{fig:response}.
 
 \begin{figure}[H]
 	\centering
@@ -91,9 +91,45 @@ This is equal to the sum of all delta impulse response amplitudes in Figure \reg
 \end{figure}
 
 \section{More general filters}
-The used matlab script is included in Appendix Listing \ref{lst:report2.m}.
+We now have to look at a filter that can damp different frequencies. 
+An example of such a filter can be seen in Equation \ref{eq:filters}.
+
+\begin{equation}
+H(z) = \dfrac{1}{1 + az^{-1}}, \quad (|a| < 1)
+\label{eq:filters}
+\end{equation}
+
+The Matlab scripts we used to plot the figures are included in Appendix Listing \ref{lst:report2.m}.
+\\
 x(t) consists of the first five seconds ($44100\cdot5 ~\mathrm{samples}$) of the file /bin/Sound/music/interface/Noddinagushpa.mp3 from a Age of Empires III installation, this title screen theme.
 It is kind of a pompous drum roll.
+\\
+\\
+
+In Figure \ref{fig:a0.95-plots} the impulse response of the filter in Equation \ref{eq:filters} is plotted for a = 0.95. 
+In Figure \ref{fig:a0.-95-plots} shows the impulse response of the filter for a value of a = -0.95.
+From the figures we can clearly see that for a value of a = 0.95 the filter enhanceses the signal at frequencies $\omega = \pi + 2n \pi$ and for a = -0.95 the signals are enhanced for the frequencies $\omega = 2n \pi$. 
+When we give the input a different, more general signal, than this signal will also be enhanced at the previously named frequencies. 
+\\
+\\
+For the question why there is no Matlab function "FT" or "DTFT" to compute a (discrete-time) Fourier transform, we can best look at Equation \ref{eq:DTFT} and \ref{eq:DFT}.
+Matlab uses numeric calculations, so when assuming we have an infinite amount of frequencies, which is the case with the "DTFT", this can cause problems. 
+In the formula for the "DFT", however, we use a finite amount of frequencies, Matlab does support this, so that is why Matlab does have a function that can do the DFT, but not the "FT" or "DTFT".
+
+
+\begin{equation}
+X_{DFT} = \sum_{N} x_N[n]e^{-j2\pi \dfrac{kn}{N}} \quad \quad k = 0, 1, \dots, N - 1 \quad \text{DFT}\\
+\label{eq:DFT}
+\end{equation}
+
+\begin{equation}
+X(\omega) = \sum_{n= -\infty}^{\infty} x[n]e^{-j2\pi fn} \quad \text{DTFT}\\
+\label{eq:DTFT}
+\end{equation}
+
+
+
+
 \begin{figure}[H]
 	\centering
     	\setlength\figureheight{3.5cm}
@@ -203,13 +239,21 @@ From the figure we can conclude that we have obtained interpolation, because eve
 
 \section{The convolution property}
 Here in this chapter the convolution property is demonstrated. 
-
+This can be done by showing that Equation \ref{eq:convprop}
 
 
 
 \begin{equation}
 y[n] = x[n]\star h[n] \quad \Leftrightarrow \quad Y(\omega) = X(\omega)H(\omega) 
-\label{equ:convprop}
+\label{eq:convprop}
 \end{equation}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = 0.5]{resources/labday1/theconvolutionproperty.png}
+\caption{Time-frequency plot.}
+\label{fig:convpro}
+\end{figure}
 
 \end{document} 

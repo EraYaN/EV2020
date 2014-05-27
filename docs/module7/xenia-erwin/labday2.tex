@@ -36,9 +36,46 @@ x_4 = sign(randn(N,1))
 These four signals ..
 
 Two Matlab functions, \texttt{ch1.m} and \texttt{ch2.m} respectively, are written. 
-\texttt{Ch1.m} implements the time-domain channel estimation using inversion and \texttt{ch2.m} implements a matched filter.
+\texttt{ch1.m} implements the time-domain channel estimation using inversion and \texttt{ch2.m} implements a matched filter.
+The scripts for these functions can be found in Appendix \ref{lst:ch1.m} and Appendix \ref{lst:ch2.m}.
+With the help of the input $x[n]$, the output $y[n]$ and the channel length $L$ these two functions approach the $\hat{h}[n]$ filter. 
+For the implementation of these two functions we also need the Toeplitz-matrix. 
+We can call upon the Toeplitz matrix by using \texttt{toep.m}. 
+The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
 
+\subsection{Autocorrelation of the input signal}
 
-
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{10cm}
+    	\input{resources/autocorrelatie1.tikz}    	
+    	\caption{The plots with $a=0.95$}
+    	\label{fig:a0.95-plots}
+\end{figure}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{10cm}
+    	\input{resources/autocorrelatie2.tikz}    	
+    	\caption{The plots with $a=0.95$}
+    	\label{fig:a0.95-plots}
+\end{figure}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{10cm}
+    	\input{resources/autocorrelatie3_3.tikz}    	
+    	\caption{The plots with $a=0.95$}
+    	\label{fig:a0.95-plots}
+\end{figure}
+\begin{figure}[H]
+	\centering
+    	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{10cm}
+    	\input{resources/autocorrelatie4_3.tikz}    	
+    	\caption{The plots with $a=0.95$}
+    	\label{fig:a0.95-plots}
+\end{figure}
 
 \end{document} 
