@@ -1,27 +1,17 @@
-﻿using System;
+﻿using BlueWave.Interop.Asio;
+using EV2020.LocationSystem;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Threading;
-using System.IO;
-using EV2020.LocationSystem;
-using OxyPlot;
-using System.Globalization;
-using BlueWave.Interop.Asio;
-using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra;
-using System.Diagnostics;
-using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
 
 namespace ASIOTest
 {
@@ -31,15 +21,16 @@ namespace ASIOTest
 	public partial class MainWindow : Window
 	{
 		Localizer localizer;
-		bool nodrivers, discovered, tested, recording;
+		bool nodrivers, discovered, tested;
 		PlotWindow pw;
+
+		BackgroundWorker bw_generate = new BackgroundWorker();
 		public MainWindow()
 		{
 			InitializeComponent();
 			MathNet.Numerics.Control.LinearAlgebraProvider = new MklLinearAlgebraProvider();
 			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			Thread.CurrentThread.Priority = ThreadPriority.Highest;
-			recording = false;
 			nodrivers = false;
 			discovered = false;
 			tested = false;
@@ -75,7 +66,13 @@ namespace ASIOTest
 					ASIODriverComboBox.Items.Add(coi);
 				}
 				discovered = true;
+				ASIODriverComboBox.SelectedIndex = 0;
 			}
+			bw_generate.DoWork += bw_generate_DoWork;
+			bw_generate.WorkerReportsProgress = true;
+			bw_generate.ProgressChanged += bw_generate_ProgressChanged;
+			bw_generate.RunWorkerCompleted += bw_generate_RunWorkerCompleted;
+			
 			ASIOTest.IsEnabled = true;
 		}
 		
@@ -91,17 +88,32 @@ namespace ASIOTest
 				return;
 			}
 			tested = true;
+			ASIOTest.IsEnabled = false;
+			bw_generate.RunWorkerAsync(ASIODriverComboBox.SelectedIndex);			
+		}
+		[STAThread]
+		void bw_generate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			localizer.InitializeDriver();
+			localizer.OnLocationUpdated += localizer_OnLocationUpdated;
+			ASIOShowControlPanel.IsEnabled = true;			
+		}
+		[STAThread]
+		void bw_generate_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			//throw new NotImplementedException();
+		}
+
+		void bw_generate_DoWork(object sender, DoWorkEventArgs e)
+		{
 			List<Microphone> mics = new List<Microphone>();
 			mics.Add(new Microphone { Position = new Position3D { X = 0.02, Y = 0, Z = 0 }, ChannelIndex = 1 });
 			mics.Add(new Microphone { Position = new Position3D { X = 0.35, Y = 0, Z = 0 }, ChannelIndex = 0 });
-			localizer = new Localizer(mics,ASIODriverComboBox.SelectedIndex, new int[] { 0, 1, 2, 3, 4 }, new int[] { });
-			localizer.OnLocationUpdated += localizer_OnLocationUpdated;
-			ASIOShowControlPanel.IsEnabled = true;
-			ASIOTest.IsEnabled = false;
+			localizer = new Localizer(mics,(int) e.Argument, new int[] { 0, 1, 2, 3, 4 }, new int[] { });
+			localizer.GenerateFilterMatrix();			
 		}
 		void localizer_OnLocationUpdated(object sender, LocationUpdatedEventArgs e)
 		{
-
 			App.Current.Dispatcher.Invoke((Action)delegate
 			{
 				
@@ -127,6 +139,7 @@ namespace ASIOTest
 						
 					}
 				}
+				Debug.WriteLine(e.Position);
 			});			
 			
 		}
