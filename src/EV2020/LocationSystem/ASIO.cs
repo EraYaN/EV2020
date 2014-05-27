@@ -52,7 +52,7 @@ namespace EV2020.LocationSystem
 				if (ch_ind < driver.NumberInputChannels && ch_ind >= 0)
 				{
 					inputChannels.Add(driver.InputChannels[ch_ind]);
-					sampleBuffersIn.Add(new CircularBuffer<double>(QueueDepth,true));
+					sampleBuffersIn.Add(new CircularBuffer<double>(QueueDepth, true));
 				}
 			}
 			foreach (int ch_ind in OutputChannels)
@@ -201,8 +201,7 @@ namespace EV2020.LocationSystem
 		[STAThread]
 		public void putOutputSamples(double[] OutputSamples, int channel = 0)
 		{
-			sampleBuffersOut[channel].Put(OutputSamples);		
-
+			sampleBuffersOut[channel].Put(OutputSamples);
 		}
 		[STAThread]
 		public void ShowControlPanel()
@@ -212,12 +211,14 @@ namespace EV2020.LocationSystem
 		[STAThread]
 		public void ClearInput()
 		{
-			sampleBuffersIn[0].Clear();
+			foreach (CircularBuffer<double> buff in sampleBuffersIn)
+				buff.Clear();
 		}
 		[STAThread]
 		public void ClearOutput()
 		{
-			sampleBuffersOut[0].Clear();
+			foreach(CircularBuffer<double> buff in sampleBuffersOut)
+				buff.Clear();
 		}
 		[STAThread]
 		public ASIOLatencies GetLatencies()

@@ -1,4 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra.Generic;
+﻿using MathNet.Numerics.LinearAlgebra;
 using System;
 using System.Collections.Generic;
 using System.Linq;

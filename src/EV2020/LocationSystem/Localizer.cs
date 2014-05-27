@@ -31,9 +31,9 @@ namespace EV2020.LocationSystem
 			Stopwatch sw = Stopwatch.StartNew();
 			Debug.WriteLine("Generating beaconsignal.");
 			//Default
-			beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier20kHz, Tools.Timer1Freq.Code5000Hz, Tools.Timer3Freq.Repeat10Hz, "92340f0f", ASIO.Fs);
-			//Own
-			//beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat10Hz, "e65a20e2b37ac60c", ASIO.Fs);
+			//beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier20kHz, Tools.Timer1Freq.Code5000Hz, Tools.Timer3Freq.Repeat10Hz, "92340f0f", ASIO.Fs);
+			//Own Code: e65a20e5b37ac60d
+			beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat10Hz, "e65a20e5", ASIO.Fs);
 			//Circulant Convolution
 			Debug.WriteLine("Generating Toeplitz matrix.");
 			

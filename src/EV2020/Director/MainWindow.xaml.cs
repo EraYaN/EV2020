@@ -6,12 +6,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using OxyPlot;
 using System.IO;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.Distributions;
 using System.Diagnostics;
-using MathNet.Numerics.Algorithms.LinearAlgebra.Mkl;
 using BlueWave.Interop.Asio;
+using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
 
 namespace EV2020.Director
 {

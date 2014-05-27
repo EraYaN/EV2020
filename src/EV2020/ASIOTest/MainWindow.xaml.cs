@@ -94,7 +94,7 @@ namespace ASIOTest
 			List<Microphone> mics = new List<Microphone>();
 			mics.Add(new Microphone { Position = new Position3D { X = 0.02, Y = 0, Z = 0 }, ChannelIndex = 1 });
 			mics.Add(new Microphone { Position = new Position3D { X = 0.35, Y = 0, Z = 0 }, ChannelIndex = 0 });
-			localizer = new Localizer(mics,ASIODriverComboBox.SelectedIndex, new int[] { 0, 1 }, new int[] { 0 });
+			localizer = new Localizer(mics,ASIODriverComboBox.SelectedIndex, new int[] { 0, 1, 2, 3, 4 }, new int[] { });
 			localizer.OnLocationUpdated += localizer_OnLocationUpdated;
 			ASIOShowControlPanel.IsEnabled = true;
 			ASIOTest.IsEnabled = false;

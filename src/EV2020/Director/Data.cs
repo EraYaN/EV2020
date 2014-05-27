@@ -1,6 +1,6 @@
 ﻿using EV2020.Communication;
 using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using MLE4WCSharp;
 using System;
 using System.Collections.Generic;
