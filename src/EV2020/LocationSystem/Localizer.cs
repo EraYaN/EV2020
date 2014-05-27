@@ -222,8 +222,8 @@ namespace EV2020.LocationSystem
 				{
 					t[i] = lat.Input / ASIO.Fs + C.Real + samplemaxes[i] / ASIO.Fs;
 				}
-				
-				Laterate(t, h,c, out new_loc, out new_points, out new_points_std);
+
+				Laterate(t, h, c, out new_loc, out new_points, out new_points_std);
 				if (new_points > points || (new_points == points && new_points_std < points_std))
 				{
 					loc = new_loc;
@@ -277,6 +277,10 @@ namespace EV2020.LocationSystem
 		protected List<Position3D> RemoveOutliers(List<Position3D> x)
 		{
 			List<Position3D> result = new List<Position3D>();
+			if (x.Count <= 1)
+			{
+				return x;
+			}
 			for (int i = 0; i < x.Count; i++)
 			{
 				List<Position3D> y = new List<Position3D>();
@@ -286,7 +290,7 @@ namespace EV2020.LocationSystem
 					{// Max 20 cm from the rest
 						// Pick the beacon location instead of its mirror image
 						bool firstBest = false;
-						int index = (int)Math.Floor((double)(j - 1) / 2) * 2;
+						int index = (int)Math.Floor((double)(j) / 2) * 2;
 						if (index >= 0 && index+1<x.Count)
 						{
 							if (Position3D.Magnitude(x[index + 1] - x[i]) > Position3D.Magnitude(x[index] - x[i]))
