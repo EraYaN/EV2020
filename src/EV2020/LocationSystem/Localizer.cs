@@ -1,16 +1,12 @@
-﻿using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.IntegralTransforms;
+﻿using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Numerics;
+using System.Threading;
+using System.Timers;
 
 namespace EV2020.LocationSystem
 {
@@ -26,21 +22,35 @@ namespace EV2020.LocationSystem
 		public Matrix<double> lastData;
 		Vector<double> beaconsignal;
 		object _posistionLock;
+		Stopwatch sw;
+		int _driverIndex;
+		int[] _inputChannels;
+		int[] _outputChannels;
+		double samplewindow = ASIO.Fs / 5;
 		public Localizer(List<Microphone> mics, int DriverIndex, int[] InputChannels, int[] OutputChannels)			
+		{			
+			Microphones = mics;
+			_driverIndex = DriverIndex;
+			_inputChannels = InputChannels;
+			_outputChannels = OutputChannels;
+		}
+
+		public bool GenerateFilterMatrix()
 		{
-			Stopwatch sw = Stopwatch.StartNew();
 			Debug.WriteLine("Generating beaconsignal.");
+
 			//Default
 			//beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier20kHz, Tools.Timer1Freq.Code5000Hz, Tools.Timer3Freq.Repeat10Hz, "92340f0f", ASIO.Fs);
 			//Own Code: e65a20e5b37ac60d
-			beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat10Hz, "e65a20e5", ASIO.Fs);
+			beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat5Hz, "e65a20e5", ASIO.Fs);
 			//Circulant Convolution
 			Debug.WriteLine("Generating Toeplitz matrix.");
-			
+
 			//Figure out corrent matchedfilter matrix
-			Vector<double> bsreverse = new DenseVector(beaconsignal.Count);
+			Vector<double> bsreverse = new DenseVector(Convert.ToInt32(Math.Round((double)beaconsignal.Count * 1)));
 			int i = 0;
-			foreach(double d in beaconsignal.Reverse()){
+			foreach (double d in beaconsignal.Reverse())
+			{
 				bsreverse[i] = d;
 				i++;
 			}
@@ -52,30 +62,21 @@ namespace EV2020.LocationSystem
 			Debug.WriteLine("Generating matched filter matrix.");
 			//X is a circulant matrix.
 			matchedfilter = X;
+			return true;
+		}
 
-			//Debug.WriteLine("Transposing...");
-			//Matrix<double> Xt = X.Transpose();
-			//Debug.WriteLine("Multiplying...");
-			//Matrix<double> XtX = Xt * X;
-			//X = null;
-			//Debug.WriteLine("Inverting...");
-			//Matrix<double> XtXI = XtX.Inverse();
-			//XtX = null;
-			//Debug.WriteLine("Multiplying...");
-			//matchedfilter = XtXI * Xt;			
-			//Xt = null;
-			//XtXI = null;
-			//matchedfilter = X.TransposeThisAndMultiply(X).QR().Solve(X.Transpose());
-			sw.Stop();
-			Debug.WriteLine("Generation took {0:f2} seconds",sw.Elapsed.TotalSeconds);
-			Debug.WriteLine("Starting ASIO interface.");
-			asio = new ASIO(DriverIndex, InputChannels, OutputChannels, Convert.ToInt32(ASIO.Fs));
-			Microphones = mics;			
+		public bool InitializeDriver()
+		{
+			if (matchedfilter == null)
+				return false;
+			asio = new ASIO(_driverIndex, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
 			timer = new System.Timers.Timer(1000);
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
+			return true;
 		}
+
 		void timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
 			performMeasurement();
@@ -94,18 +95,8 @@ namespace EV2020.LocationSystem
 			if (asio == null)
 				return;
 			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-			asio.ClearOutput();
-			asio.ClearInput();
-			//TODO make obsolete
-			double[] outsig = new double[beaconsignal.Count];
-			for (int row = 0; row < beaconsignal.Count; row++)
-			{
-				outsig[row] = beaconsignal[row];
-			}
-			//asio.putOutputSamples(outsig);
-
+			asio.ClearInput();		
 			asio.IsInputEnabled = true;
-			//asio.IsOutputEnabled = true;
 			ASIOLatencies lat = GetASIOLatencies();
 			Debug.WriteLine("Latencies; IN: {0}, OUT: {1}",lat.Input,lat.Output);
 			Thread.Sleep(new TimeSpan(Convert.ToInt64((lat.Input*ASIO.T+0.5)*TimeSpan.TicksPerSecond)));
@@ -113,62 +104,20 @@ namespace EV2020.LocationSystem
 			if (asio == null)
 				return;
 			Matrix<double> responses = asio.getAllInputSamplesMatrix(matchedfilter.ColumnCount); //MATCHED Filter way
-			//double[][] responses = asio.getAllInputSamples(); //FFT way
-			asio.IsInputEnabled = false;
-			//asio.IsOutputEnabled = false;
-			//FFT way
-			/*
-			int[] samplemaxes = new int[responses.Length];
-			double[] maxes = new double[responses.Length];
-			Complex[] workingarrayY;
-			Complex[] workingarrayX;
-			Complex[] workingarrayH;
-			
-			using (StreamWriter sw = new StreamWriter("FilteredData.csv",true))
-			{
-				for (int i = 0; i < responses.Length; i++)
-				{
-					workingarrayY = new Complex[responses[i].Length];
-					workingarrayX = new Complex[responses[i].Length];
-					for (int k = 0; k < responses[i].Length; k++)
-					{
-						workingarrayY[k] = responses[i][k];
-						if (k < beaconsignal.RowCount)
-							workingarrayX[k] = beaconsignal[k, 0];
-						else
-							workingarrayX[k] = 0;
-					}
-					Transform.FourierForward(workingarrayX, FourierOptions.Matlab);
-					Transform.FourierForward(workingarrayY, FourierOptions.Matlab);
-					workingarrayH = new Complex[responses[i].Length];
-					for (int k = 0; k < responses[i].Length; k++)
-						workingarrayH[k] = workingarrayY[k] / workingarrayX[k];
-					Transform.FourierInverse(workingarrayH,FourierOptions.Matlab);
-					//TODO figure out why H is now a sinus kinda.
-					int L = workingarrayY.Length - beaconsignal.RowCount + 1;
-					for (int sample = 0; sample < L; sample++)
-					{
-						sw.Write("{0};", workingarrayH[sample].Magnitude);
-						if (workingarrayH[sample].Magnitude > maxes[i])
-						{
-							maxes[i] = workingarrayH[sample].Magnitude;
-							samplemaxes[i] = sample;
-						}
-					}
-					sw.WriteLine();
-				}
-			}*/
-			
+			asio.IsInputEnabled = false;						
 			 //Matrix multiply way
 			int[] samplemaxes = new int[responses.ColumnCount];
 			double[] maxes = new double[responses.ColumnCount];
 			//Filter that shit.
 			Matrix<double> filteredResponses = matchedfilter * responses;
-			//loop over channels			
+			//loop over channels	
+			double windowStart = 0;
+			double windowEnd = filteredResponses.RowCount;
 			for (int i = 0; i < filteredResponses.ColumnCount; i++)
 			{
+				
 				//loop over samples in channel i	
-				for (int sample = 0; sample < filteredResponses.RowCount; sample++)
+				for (int sample = (int)Math.Floor(windowStart); sample < Math.Ceiling(windowEnd); sample++)
 				{						
 					if (Math.Abs(filteredResponses[sample, i]) > maxes[i])
 					{
@@ -176,38 +125,197 @@ namespace EV2020.LocationSystem
 						samplemaxes[i] = sample;
 					}
 				}
-			}
-			/*try
-			{
-				using (StreamWriter sw = new StreamWriter("FilteredData.csv"))
+				if (i == 0)
 				{
-					sw.WriteLine("x1;x2;");
-					for (int i = 0; i < filteredResponses.RowCount; i++)
-					{
-						//loop over samples in channel i	
-						for (int j = 0; j < filteredResponses.ColumnCount; j++)
-						{
-							sw.Write("{0};", filteredResponses[i, j]);
-						}
-						sw.WriteLine();
-					}
+					windowStart = Math.Max(0, samplemaxes[i] - samplewindow / 2);
+					windowEnd = Math.Min(filteredResponses.RowCount, samplemaxes[i] + samplewindow / 2); 
 				}
 			}
-			catch
-			{
-				Debug.WriteLine("Cound not write file.");
-			}*/
 			Debug.WriteLine("Channel 0 is the 'zero' at @ {0} samples.", samplemaxes[0]);
 			for (int i = 1; i < samplemaxes.Length; i++)
 			{
-			Debug.WriteLine("Channel {2} delta is {0:f2} ms at @ {1} samples.", Math.Abs(samplemaxes[0] - samplemaxes[1]) * ASIO.T * 1000, samplemaxes[i], i);
+				Debug.WriteLine("Channel {2} delta is {0:f2} ms at @ {1} samples.", Math.Abs(samplemaxes[0] - samplemaxes[1]) * ASIO.T * 1000, samplemaxes[i], i);
 			}
 			//TODO multilaterate posistion	
 			//lastData = responses.Append(filteredResponses);
 			//lastData = responses;
+			Position3D lpos = Localize(samplemaxes,lat);
 			lastData = filteredResponses;
+			OnLocationUpdated(this, new LocationUpdatedEventArgs(lpos));
+		}
 
-			OnLocationUpdated(this, new LocationUpdatedEventArgs(new Position3D() { X = 0, Y = 0, Z = 0 }));
+		protected Position3D Localize(int[] samplemaxes, ASIOLatencies lat)
+		{
+			//Width and Height of the rectangle field
+			double H = 2.9;
+			double B = 2.9;
+			//Height of beacon
+			double h = 0.28;
+			//speed of sound
+			double c = 343.2;
+			Complex d1 = 0, d2 = 0, d3 = 0;
+			//Working vars
+			Position3D new_loc, loc = new Position3D();
+			int new_points = 0, points = 0;
+			double new_points_std = 0, points_std = 0;
+			
+			for (int k = 0; k < 4; k++)
+			{
+				Complex C;
+				if (samplemaxes.Length >= 4)
+				{
+					if (k == 1)
+					{
+						d1 = samplemaxes[0] * c / ASIO.Fs; // Base point (0,0)
+						d2 = samplemaxes[3] * c / ASIO.Fs; // Y-direction
+						d3 = samplemaxes[1] * c / ASIO.Fs; // X-direction
+					}
+					else if (k == 2)
+					{
+						d1 = samplemaxes[2] * c / ASIO.Fs; // Base point (0,0)
+						d2 = samplemaxes[3] * c / ASIO.Fs; // Y-direction
+						d3 = samplemaxes[1] * c / ASIO.Fs; // X-direction
+					}
+					else if (k == 3)
+					{
+						d1 = samplemaxes[1] * c / ASIO.Fs; // Base point (0,0)
+						d2 = samplemaxes[0] * c / ASIO.Fs; // Y-direction
+						d3 = samplemaxes[2] * c / ASIO.Fs; // X-direction
+					}
+					else if (k == 4)
+					{
+						d1 = samplemaxes[3] * c / ASIO.Fs; // Base point (0,0)
+						d2 = samplemaxes[2] * c / ASIO.Fs; // Y-direction
+						d3 = samplemaxes[0] * c / ASIO.Fs; // X-direction
+					}
+
+					C =
+					(
+						(B * Complex.Pow(d1, 3) - Complex.Pow(B, 3) * d1 + Complex.Pow(B, 3) * d2 - H * Complex.Pow(d1, 3) + 2 * d1 *
+						Complex.Sqrt(
+							((B + d1 - d3) * (B - d1 + d3) * (Complex.Pow(B, 4) - 2 * Complex.Pow(B, 3) * d1 + 2 * Complex.Pow(B, 3) * d2 + Complex.Pow(B, 2) * Complex.Pow(H, 2) + 2 * Complex.Pow(B, 2) * H * d1 - 2 * Complex.Pow(B, 2) * H * d2 + Complex.Pow(B, 2) * Complex.Pow(d1, 2) - 2 * Complex.Pow(B, 2) * d1 * d3 - Complex.Pow(B, 2) * Complex.Pow(d2, 2) + 2 * Complex.Pow(B, 2) * d2 * d3 - 2 * B * H * Complex.Pow(d1, 2) + 4 * B * H * d1 * d2 - 2 * B * H * Complex.Pow(d2, 2) - 2 * B * Complex.Pow(d1, 2) * d2 + 2 * B * Complex.Pow(d1, 2) * d3 + 4 * B * d1 * Complex.Pow(d2, 2) - 4 * B * d1 * d2 * d3 - 2 * B * Complex.Pow(d2, 3) + 2 * B * Complex.Pow(d2, 2) * d3 - Complex.Pow(H, 2) * Complex.Pow(d1, 2) + 2 * Complex.Pow(H, 2) * d1 * d3 - Complex.Pow(H, 2) * Complex.Pow(d3, 2) + 2 * H * Complex.Pow(d1, 2) * d2 - 2 * H * Complex.Pow(d1, 2) * d3 - 4 * H * d1 * Complex.Pow(d2, 2) + 4 * H * d1 * d2 * d3 + 2 * H * Complex.Pow(d2, 3) - 2 * H * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * d2 * d3 + Complex.Pow(d1, 2) * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 3) + 4 * d1 * Complex.Pow(d2, 2) * d3 - 2 * d1 * d2 * Complex.Pow(d3, 2) + Complex.Pow(d2, 4) - 2 * Complex.Pow(d2, 3) * d3 + Complex.Pow(d2, 2) * Complex.Pow(d3, 2))) / 4
+						)
+						-
+						2 * d2 *
+						Complex.Sqrt(
+							(
+								(B + d1 - d3) * (B - d1 + d3) * (Complex.Pow(B, 4) - 2 * Complex.Pow(B, 3) * d1 + 2 * Complex.Pow(B, 3) * d2 + Complex.Pow(B, 2) * Complex.Pow(H, 2) + 2 * Complex.Pow(B, 2) * H * d1 - 2 * Complex.Pow(B, 2) * H * d2 + Complex.Pow(B, 2) * Complex.Pow(d1, 2) - 2 * Complex.Pow(B, 2) * d1 * d3 - Complex.Pow(B, 2) * Complex.Pow(d2, 2) + 2 * Complex.Pow(B, 2) * d2 * d3 - 2 * B * H * Complex.Pow(d1, 2) + 4 * B * H * d1 * d2 - 2 * B * H * Complex.Pow(d2, 2) - 2 * B * Complex.Pow(d1, 2) * d2 + 2 * B * Complex.Pow(d1, 2) * d3 + 4 * B * d1 * Complex.Pow(d2, 2) - 4 * B * d1 * d2 * d3 - 2 * B * Complex.Pow(d2, 3) + 2 * B * Complex.Pow(d2, 2) * d3 - Complex.Pow(H, 2) * Complex.Pow(d1, 2) + 2 * Complex.Pow(H, 2) * d1 * d3 - Complex.Pow(H, 2) * Complex.Pow(d3, 2) + 2 * H * Complex.Pow(d1, 2) * d2 - 2 * H * Complex.Pow(d1, 2) * d3 - 4 * H * d1 * Complex.Pow(d2, 2) + 4 * H * d1 * d2 * d3 + 2 * H * Complex.Pow(d2, 3) - 2 * H * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * d2 * d3 + Complex.Pow(d1, 2) * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 3) + 4 * d1 * Complex.Pow(d2, 2) * d3 - 2 * d1 * d2 * Complex.Pow(d3, 2) + Complex.Pow(d2, 4) - 2 * Complex.Pow(d2, 3) * d3 + Complex.Pow(d2, 2) * Complex.Pow(d3, 2))
+							)
+							/
+							4
+						)
+						- Complex.Pow(d1, 3) * d2 + d1 * Complex.Pow(d3, 3) + Complex.Pow(d1, 3) * d3 - d2 * Complex.Pow(d3, 3) + Complex.Pow(B, 4) - Complex.Pow(B, 2) * Complex.Pow(d1, 2) - Complex.Pow(B, 2) * Complex.Pow(d2, 2) - Complex.Pow(B, 2) * Complex.Pow(d3, 2) + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * Complex.Pow(d3, 2) + Complex.Pow(d2, 2) * Complex.Pow(d3, 2) + Complex.Pow(B, 2) * H * d1 - Complex.Pow(B, 2) * H * d2 - B * Complex.Pow(d1, 2) * d2 + Complex.Pow(B, 2) * d1 * d2 + B * d1 * Complex.Pow(d3, 2) - 2 * B * Complex.Pow(d1, 2) * d3 + Complex.Pow(B, 2) * d1 * d3 - B * d2 * Complex.Pow(d3, 2) + Complex.Pow(B, 2) * d2 * d3 + H * Complex.Pow(d1, 2) * d2 - H * d1 * Complex.Pow(d3, 2) + 2 * H * Complex.Pow(d1, 2) * d3 + H * d2 * Complex.Pow(d3, 2) + d1 * d2 * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * d2 * d3 + 2 * B * d1 * d2 * d3 - 2 * H * d1 * d2 * d3) / (Complex.Pow(B, 2) - 2 * Complex.Pow(d1, 2) + 2 * d1 * d2 + 2 * d1 * d3 - Complex.Pow(d2, 2) - Complex.Pow(d3, 2)) - Complex.Pow(B, 2) - Complex.Pow(d1, 2) + Complex.Pow(d2, 2)
+					)
+					/
+					(
+					2 * d1 - 2 * d2
+					);
+				}
+				else
+				{
+					C = 0;
+				}
+				//Make it a time.
+				C = C / c;
+				double[] t = new double[samplemaxes.Length];
+				for (int i = 0; i < t.Length; i++)
+				{
+					t[i] = lat.Input / ASIO.Fs + C.Real + samplemaxes[i] / ASIO.Fs;
+				}
+				
+				Laterate(t, h,c, out new_loc, out new_points, out new_points_std);
+				if (new_points > points || (new_points == points && new_points_std < points_std))
+				{
+					loc = new_loc;
+					points = new_points;
+					points_std = new_points_std;
+				}
+			}
+			return loc;
+		}
+		protected void Laterate(double[] t, double h, double c, out Position3D loc, out int points, out double points_std)
+		{
+			/*loc = new Position3D() { X = 0, Y = 0, Z = h };
+			points = 5;
+			points_std = 0;*/
+			List<Position3D> y = new List<Position3D>();
+			for (int i = 0; i < Microphones.Count; i++)
+			{
+				for (int j = 0; j < Microphones.Count; j++){
+					if (i == j || i < j)
+					{
+						continue; // Do not compare with own time or twice thesame
+					}
+					double d = Math.Sqrt(Math.Pow(Microphones[i].Position.X - Microphones[j].Position.X,2) + Math.Pow(Microphones[i].Position.Y - Microphones[j].Position.Y,2));
+					double h1 = Microphones[i].Position.X-h;
+					double h2 = Microphones[j].Position.X-h;
+
+					double t1_ = (Complex.Sqrt(Math.Pow(t[i] * c,2) - Math.Pow(h1,2))).Real / c;
+					double t2_ = (Complex.Sqrt(Math.Pow(t[j] * c,2) - Math.Pow(h2,2))).Real / c;
+
+					double d1 = (Math.Pow(t1_ * c,2) - Math.Pow(t2_ * c,2) + Math.Pow(d,2)) / (2 * d);
+					double x = (Complex.Sqrt((Math.Pow(t1_ * c,2) - Math.Pow(d1,2)))).Real;
+					double mx = d1/d * (Microphones[j].Position.X - Microphones[i].Position.X);
+					double my = d1/d * (Microphones[j].Position.Y - Microphones[i].Position.Y);
+
+					
+					Vector<double> r = DenseVector.OfArray(new double[]{Math.Sqrt(Math.Pow(mx,2) + Math.Pow(my,2)),x});
+					double angle = -Math.Atan2(my, mx);
+					Matrix<double> rot = DenseMatrix.OfArray(new double[,]{{Math.Cos(angle), -Math.Sin(angle)},{Math.Sin(angle), Math.Cos(angle)}});
+					Vector<double> disp = DenseVector.OfArray(new double[]{Microphones[i].Position.X, Microphones[i].Position.Y});
+					Vector<double> coord = r * rot + disp;
+					y.Add(new Position3D(){X=coord[0], Y=coord[1], Z=h});
+
+				}
+			}
+			
+			y = RemoveOutliers(y); // Remove the mirror images and other outliers due to input data errors
+			loc = GetAveragePosition(y);
+			points = y.Count;
+			points_std = y.Select(o => o.X).StdDev() + y.Select(o => o.Y).StdDev();    
+		}
+		protected List<Position3D> RemoveOutliers(List<Position3D> x)
+		{
+			List<Position3D> result = new List<Position3D>();
+			for (int i = 0; i < x.Count; i++)
+			{
+				List<Position3D> y = new List<Position3D>();
+				for (int j = 0; j < x.Count; j++)
+				{
+					if (Position3D.Magnitude(x[j] - x[i]) < 0.20)
+					{// Max 20 cm from the rest
+						// Pick the beacon location instead of its mirror image
+						bool firstBest = false;
+						int index = (int)Math.Floor((double)(j - 1) / 2) * 2;
+						if (index >= 0 && index+1<x.Count)
+						{
+							if (Position3D.Magnitude(x[index + 1] - x[i]) > Position3D.Magnitude(x[index] - x[i]))
+							{
+								firstBest = true;
+							}
+						}
+						// Only get one per two results
+						if ((j % 2 == 0 && firstBest) || (j % 2 == 1 && !firstBest))
+						{
+							y.Add(x[j]);
+						}
+					}
+				}
+				if (y.Count > result.Count)
+				{
+					result = y;
+				}
+			}
+			return result;
+		}
+		protected Position3D GetAveragePosition(List<Position3D> x)
+		{
+			if (x.Count > 0)
+			{
+				return new Position3D() { X = x.Average(p => p.X), Y = x.Average(p => p.Y), Z = x.Average(p => p.Z) };
+			}
+			else { return new Position3D(); }
+
 		}
 		protected virtual void Dispose(bool disposing)
 		{
@@ -242,7 +350,7 @@ namespace EV2020.LocationSystem
 	}
 	public class LocationUpdatedEventArgs : EventArgs
 	{
-		Position3D Position;
+		public readonly Position3D Position;
 		public LocationUpdatedEventArgs(Position3D _pos)
 		{
 			Position = _pos;
@@ -253,6 +361,28 @@ namespace EV2020.LocationSystem
 		public double X;
 		public double Y;
 		public double Z;
+		public static Position3D operator -(Position3D x, Position3D y)
+		{
+			x.X -= y.X;
+			x.Y -= y.Y;
+			x.Z -= y.Z;
+			return x;
+		}
+		public static Position3D operator +(Position3D x, Position3D y)
+		{
+			x.X += y.X;
+			x.Y += y.Y;
+			x.Z += y.Z;
+			return x;
+		}
+		public static double Magnitude(Position3D x)
+		{
+			return Math.Sqrt(Math.Pow(x.X, 2) + Math.Pow(x.Y, 2) + Math.Pow(x.Z, 2));
+		}
+		public override string ToString()
+		{
+			return "Posistion3D: " + X.ToString("F3") + "; " + Y.ToString("F3") + "; " + Z.ToString("F3");
+		}
 	}
 
 	public struct Microphone

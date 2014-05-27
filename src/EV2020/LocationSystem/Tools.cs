@@ -85,7 +85,7 @@ namespace EV2020.LocationSystem
 			{
 				throw new ArgumentException("x0's length should be equal or less than N.", "x0");
 			}
-			Matrix<double> X;
+			Matrix<double> X;			
 			try
 			{
 				//faster
