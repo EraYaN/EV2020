@@ -122,7 +122,7 @@ t = \frac{samples}{Fs}
 \end{equation}
 In the script $length(y)$ is used instead of $samples$.
 
-The plot for the time domain signal can be seen in \ref{fig:timedomain} and the plot for the frequency domain signal can be seen in \ref{fig:freqdomain}.
+The plot for the time domain signal can be seen in Figure \ref{fig:timedomain} and the plot for the frequency domain signal can be seen in Figure \ref{fig:freqdomain}.
 
 
 \begin{figure}[H]
@@ -149,7 +149,7 @@ The plot for the time domain signal can be seen in \ref{fig:timedomain} and the 
 The used train signal is not stationary, because the frequency changes over time. 
 So it does not make sense to record second or hours of an audio signal and then take the DFT of the complete sequence. 
 Instead we splitted the signal into short segments of approximately 20 $ms$ and then we did the DFT on each segment. 
-This resulted in the time-frequncy plot show in figure \ref{fig:timefreq}.
+This resulted in the time-frequncy plot show in Figure \ref{fig:timefreq}.
 
 \begin{figure}[h]
 \centering
@@ -167,9 +167,9 @@ In frequency domain using the DFT, obtain the same number of samples as in time 
 Essentially, \textbf{x} (or \textbf{h}) is augmented with a lot of zeros.
 After that only the DFT has to be applied to the augmented sequence. 
 
-Firstly we use the filter \ref{eq:filter}. 
+Firstly we use the filter in Equation \ref{eq:filter}. 
 We don't apply the zero padding here (yet). 
-A plot of this amplitude spectrum can be seen in figure \ref{fig:zeropadding1}.
+A plot of this amplitude spectrum can be seen in Figure \ref{fig:zeropadding1}.
 
 \begin{equation}
 h = [1\quad zeros(1,5)\quad 0.9\quad zeros(1,5)\quad 0.8];
@@ -185,11 +185,11 @@ h = [1\quad zeros(1,5)\quad 0.9\quad zeros(1,5)\quad 0.8];
 	\label{fig:zeropadding1}
 \end{figure}
 
-After plotting figure \ref{fig:zeropadding1} we apply the 'zero padding' on the filter. 
+After plotting Figure \ref{fig:zeropadding1} we apply the 'zero padding' on the filter. 
 In order to do this \textbf{h} is extended with $3\times 13 = 39$ zeros to 4 times its original length.
 For the new found values we used the plot maker '+'.
-In figure \ref{fig:zeropadding2} the results of both plots are shown. 
-From the figure we can conclude that we have obtained interpolation, because every 4th sample coincides with a sample from the previous plot (also see \ref{fig:zeropadding1}).
+In Figure \ref{fig:zeropadding2} the results of both plots are shown. 
+From the figure we can conclude that we have obtained interpolation, because every 4th sample coincides with a sample from the previous plot (also see Figure \ref{fig:zeropadding1}).
 
 \begin{figure}[H]
 	\centering
