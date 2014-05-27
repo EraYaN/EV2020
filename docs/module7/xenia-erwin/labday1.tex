@@ -1,45 +1,58 @@
 \documentclass[final]{scrreprt} %scrreprt of scrartcl
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
+\usepackage{pgfplots}
 \addbibresource{../../library/bibliography.bib}
 
 \begin{document}
 
 \chapter{Labday 1: Basic filtering}
 \label{ch:labday1}
-\section{Report 1: Channel inpulse response}
-In a 2-dimentional room of 4x4 m, a transmitter and a receiver are placed at (1.2, 0.3) and (3.1, 3.3) resp.
-The progation of a delta impulse from TX to RX is being investagated with the use of the following equation:
+\section{Channel inpulse response}
+In a 2-dimentional room of 4x4 m, a transmitter and a receiver are placed at (1.2, 0.3) and (3.1, 3.3) respectively.
+In this section the propagation of a delta impulse, from TX to RX, is being investagated.
+During propagation, the signal is damped as function of the propagated distance $R$. 
+The speed of sound varies as function of temperature, humidity and air pressure, but we can assume is it 340m/s. 
+For the attenuation $\alpha$(r) of the signal can be found with the use of the following equation:
 
 \begin{equation}
 	\alpha (r) = \frac{\beta}{r^2}
 \label{eq:damping}
 \end{equation}
 
-where $\beta$ is the damping over a reference distance of 1 meter.
-\\ \\
-The direct path is fastest and strongest at the RX point and can be calculated directly.
-The indirect paths, as a result of reflections, can be calculated by looking at the mirror images of the TX and RX over the edges of the room.
-For the first order reflections, only one mirror image is needed of either the RX or TX.
-We choose to mirror the RX.
+In eqaution \ref{eq:damping} $\beta$ is the damping over a reference distance of 1 meter. 
+\\
+\\
+The direct path to the RX point is the fastest and the strongest and can easily be calculated.
+The indirect paths, however, are more difficult to calculate.
+The indirect paths are the results of reflections and can be calculated by looking at the mirror images of the TX and RX over the edges of the room. 
+To find the first order reflections only one mirror image of either the TX or the RX is needed. 
+We choose to mirror the TX.
 The mirrored image of the TX and the original RX are connected, which always results in an intersection with a wall.
 Since there are four walls, four virtual sources are created this way when looking at first order reflections.
 This location at the wall is the point where the single bounce is made, connecting this point with both the RX and TX will be the total path.
-\\ \\
-Second order reflections are calculated by mirroring both the TX and RX as displayed in Figure \ref{fig:mirror}.
-Note that also the first order reflections are displayed in this figure since the TX is also present as non-mirrored version.
-The connection between the mirror images might intersect with the room.
-The connection either intersects with two walls or none, since both mirror images are outside the room.
-When there are intersections, the two points on the two different walls are the two points via which the delta impulse bounces exactly to the RX from the TX.
-The TX and RX are mirrored over all walls in all 16 combinations, but not all of them intersect with the room, which states that it is not possible to bounce via this two walls.
-By inspecting Figure \ref{fig:connected}, it is clear that only 8 paths of the total 16 are possible, making 8 virtual sources from second order reflections.
-\\ \\
-The second order reflection paths are drawn by connecting the two wall intersections, the RX with the intersection at the wall it was reflected over and the TX with the intersection at its wall.
-When the length of all direct and reflected paths are measured and using the speed of sound, the delay of each path can be calculated.
-Also, using Eq. \ref{eq:damping}, the resulting amplitude can be calculated.
-We used a $\beta$ of 1.00 since the outcome of all amplitudes would give the total received signal compared to a infinitely large room with the TX and RX 1 meter from each other.
-The resulting delta impluse response over time is displayed in Figure \ref{fig:response}.
-Using the Matlab script from Appendix A, a resulting total amplitude of 0.5420, which equals the sum of all delta impluse response amplitudes from Figure \ref{fig:response}.
+\\ 
+\\
+In order to find the second order reflections we needed to mirror both the TX and the RX as can be seen in Figure \ref{fig:mirror}.
+In this figure also the first order reflections are displayed. 
+This is because the TX is not only present as the mirrored image, but also as the non-mirrored version. 
+The connection between the mirror image might intersect with the room.
+It either intersects with two walls or none. 
+This is because both mirror images are outside the room.
+When there is an intersection, we have two point on two different walls. 
+Via these two point the delta pulse will bounce from the TX to the RX. 
+When we mirrored the TX and RX over all the walls, we got 16 combinations, but not all of these intersect with the room. 
+Some of them connected outside the wall, this means that it is not possible to bounce via the two walls. 
+When looking closely at Figure \ref{fig:connected}, we see that only 8 of the 16 paths are possible, meaning that we get 8 virutal sources form the second order reflections. 
+\\ 
+\\
+As explained before the second oreder reflection paths were drawn by connecting the two wall intersections. 
+When we calculate the length of all the direct and indirect (reflected) paths and we use the speed of sound, we can calculate the delay of each path.
+With the help of Equation \ref{eq:damping} we are able to calculate the resulting amplitude. 
+We used a $\beta$ of 1.00 since the outcome of all amplitudes would give us the total received signal compared to a infinitely large room with the TX and RX 1 meter away from each other.
+In Figure \ref{fig:response} we displayed the resulting delta impulse response over time. 
+With the Matlab script in Appendix \ref{lst:report1.m}, we got a resulting amplitude of 0.5420. 
+This is equal to the sum of all delta impulse response amplitudes in Figure \reg{fig:response}.
 
 \begin{figure}[H]
 	\centering
@@ -98,11 +111,10 @@ It is kind of a pompous drum roll.
     	\label{fig:a0.-95-plots}
 \end{figure}
 
-\section{Audio signal}
 
 \section{Time domain and frequency domain}
 Now the train signal has to be plotted in the time- and frequency domain.
-The written Matlab-code can be found in Appendix %%%%%\ref{mat:
+The written Matlab-code can be found in Appendix \ref{lst:timefreqdomain.m}.
 Before plotting the time domain signal we had to take into account the sample rate $Fs$.
 In order to find the length of the train signal we used the formula:
 \begin{equation}
@@ -112,27 +124,41 @@ In the script $length(y)$ is used instead of $samples$.
 
 The plot for the time domain signal can be seen in \ref{fig:timedomain} and the plot for the frequency domain signal can be seen in \ref{fig:freqdomain}.
 
+
 \begin{figure}[H]
 	\centering
 	\setlength\figureheight{6cm}
-    	\setlength\figurewidth{6cm}
-	\input{resources/timdomain.tikz}
+    	\setlength\figurewidth{10cm}
+	\input{resources/labday1/timefreq1.tikz}
 	\caption{The train signal in the time domain.}
 	\label{fig:timedomain}
 \end{figure}
 
 
+
 \begin{figure}[H]
 	\centering
 	\setlength\figureheight{6cm}
-  	\setlength\figurewidth{6cm}
-	\input{resources/freqdomain.tikz}
+  	\setlength\figurewidth{10cm}
+	\input{resources/labday1/timefreq2.tikz}
 	\caption{The train signal in the frequency domain.}
 	\label{fig:freqdomain}
 \end{figure}
 
-
 \section{Time-frequency plot}
+The used train signal is not stationary, because the frequency changes over time. 
+So it does not make sense to record second or hours of an audio signal and then take the DFT of the complete sequence. 
+Instead we splitted the signal into short segments of approximately 20 $ms$ and then we did the DFT on each segment. 
+This resulted in the time-frequncy plot show in figure \ref{fig:timefreq}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = 0.5]{resources/labday1/timefrequentieplot.png}
+\caption{Time-frequency plot.}
+\label{fig:timefreq}
+\end{figure}
+
+
 
 \section{Zero padding}
 Sometimes, the number of samples in a time-domain signal \textbf{x} is not very large. 
@@ -153,8 +179,8 @@ h = [1\quad zeros(1,5)\quad 0.9\quad zeros(1,5)\quad 0.8];
 \begin{figure}[H]
 	\centering
 	\setlength\figureheight{6cm}
-  	\setlength\figurewidth{6cm}
-	\input{resources/labday1/zeropaddding1.tikz}
+  	\setlength\figurewidth{10cm}
+	\input{resources/zeropadding1.tikz}
 	\caption{The amplitude spectrum with only the available samples.}
 	\label{fig:zeropadding1}
 \end{figure}
@@ -162,20 +188,28 @@ h = [1\quad zeros(1,5)\quad 0.9\quad zeros(1,5)\quad 0.8];
 After plotting figure \ref{fig:zeropadding1} we apply the 'zero padding' on the filter. 
 In order to do this \textbf{h} is extended with $3\times 13 = 39$ zeros to 4 times its original length.
 For the new found values we used the plot maker '+'.
-In figure \ref{zeropadding2} the results of both plots are shown. 
+In figure \ref{fig:zeropadding2} the results of both plots are shown. 
 From the figure we can conclude that we have obtained interpolation, because every 4th sample coincides with a sample from the previous plot (also see \ref{fig:zeropadding1}).
 
 \begin{figure}[H]
 	\centering
 	\setlength\figureheight{6cm}
-  	\setlength\figurewidth{6cm}
-	\input{resources/labday1/zeropaddding2.tikz}
+  	\setlength\figurewidth{10cm}
+	\input{resources/zeropadding2.tikz}
 	\caption{The amplitude spectrum.}
 	\label{fig:zeropadding2}
 \end{figure}
 
 
 \section{The convolution property}
+Here in this chapter the convolution property is demonstrated. 
 
+
+
+
+\begin{equation}
+y[n] = x[n]\star h[n] \quad \Leftrightarrow \quad Y(\omega) = X(\omega)H(\omega) 
+\label{equ:convprop}
+\end{equation}
 
 \end{document} 
