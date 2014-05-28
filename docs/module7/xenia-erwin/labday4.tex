@@ -43,7 +43,14 @@ This can be caused by several factors: position errors of the microphones, devia
 In overall, the results are sufficiently accurate for TDOA estimation since the target is to achieve about 1 cm accuracy.
 
 \section{Beacon signal TDOA}
-%TODO report 2 and 3
+After we applied of filters and the peak detection, the distances were not very consistent.
+This might be due to the fact that our beacon settings are not the best.
+At the time they seemed to give the higher peaks, but when the noise level is high and the signal level low it does not filter out the noise enough.
+In figure \ref{fig:one-signal} is a typical data segment displayed and in figure \ref{fig:impulse-with-peak} in the filtered data and the peak displayed.\\
+Sometimes there are several outliers, especially when the beacon is far from the microphone the algorithm struggles to find the proper peak time.
+We could average over subsequent measurements but then the car would have to be stationary.
+
+
 Our beacon settings for now are shown in table \ref{tab:beacon-settings}.
 \begin{table} [H]
 	\centering
@@ -75,9 +82,9 @@ For the effect of changes in the speed of sound see Chapter \ref{ch:labday5} Tab
 	\centering
 	\setlength\figureheight{4cm}
     	\setlength\figurewidth{0.8\linewidth}
-	\input{resources/impluse-with-peak.tikz}
+	\input{resources/impulse-with-peak.tikz}
 	\caption{Estimated impulse response from microphones 1 with the beacon in the middle, the red dot denotes the detected peak.}
-	\label{fig:impluse-with-peak}
+	\label{fig:impulse-with-peak}
 \end{figure}
 If a neighbor would use the same code the peaks would overlap and the measured TDOA would be invalid.
 So the codes need to have a low cross correlation, this is most important during the filter stage in the ``receiver''.
@@ -89,7 +96,8 @@ The only downside is that the generation of the matrix uses a lot of cpu time.
 We're looking to speed this up by using a different implementation of the toep function.
 The resulting matrix also takes in a lot of memory.
 After considering implementing the matrix multiplication on the gpu, we decided that this was not yet necessary, the CPU load when running the ASIOtest app (Appendix Section \ref{appsec:ASIOTest}) is about 50\%.
-maybe later when the the ``sampling-rate'' needs to go up we'll transfer the matrix to the GPU memory once and then keep using it for multiplications. The provided PC has a NVidia Quadro so we can take full advantage of CUDA and CUDA is also implemented in MathNet.Numerics.
+Maybe later when the the ``sampling-rate'' (the repetition rate of the beacon should be matched by the frequency we do measurements) needs to go up we'll transfer the matrix to the GPU memory once and then keep using it for multiplications.
+The provided PC has a NVidia Quadro so we can take full advantage of CUDA and CUDA is also implemented in MathNet.Numerics.
 The matrix is generated on a worker thread so to not freeze the UI.
 The actual function call is located at line 60 in file LocationSystem/Localizer.cs (Listing \ref{lst:LocationSystem-Localizer.cs}).
 That beacon signal is reversed.
