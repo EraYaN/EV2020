@@ -5,10 +5,9 @@
 
 \begin{document}
 
-\section*{Labday 3: audio channel measurements}
-\subsection*{Report 11}
-Using the default values of Rx\_TX = 22.050 and Fs\_RX = 22.050, the inpulse response of Figure \ref{fig:response_1} was found. rerww
-The time response is not an ideal delta pulse since the loudspeaker, the microphone and the channel act as filters which distort the signal.
+\section{Labday 3: audio channel measurements}
+\subsection{Report 11}
+Using the default values of Rx\_TX = 22.050 and Fs\_RX = 22.050, the inpulse response of Figure \ref{fig:response_1} was found. The time response is not an ideal delta pulse since the loudspeaker, the microphone and the channel act as filters which distort the signal.
 The rising edge is rather steep, but the falling edge oscillates towards the amplitude of zero.
 The spectrum of this signal is shown below the time-domain impulse response.
 The distortion is also visible in this spectrum since a lot of noise peaks are also present.
@@ -65,12 +64,12 @@ This information is good to know for when analyzing the data from the audio beac
 	\label{fig:highest_freq}
 \end{figure}
 
-\subsection*{Report 12}
+\subsection{Report 12}
 Due to propagation delay through the air, the impulse is not instantly from the loudspeaker to the microphone.
 This propagation is with the speed of sound, 340 m/s.
 Theoretically, the sample frequency to achieve a accuracy of 1 cm must be $2 ~[cm] ~/~ 340 ~[m/s] = 17.000 ~ Hz$.
 Since this exact sample frequency is not available, the next frequency of 22.050 Hz is used.
-Using three test points, 1, 25, 50, 75 and 100 cm, the delay is measured of which the results are shown in Figures \ref{fig:1cm}, \ref{fig:50cm} and \ref{fig:100cm} Table \ref{tab:distances}.
+Using three test points, 1, 25, 50, 75 and 100 cm, the delay is measured of which the results are shown in figures \ref{fig:1cm}, \ref{fig:50cm} and \ref{fig:100cm} table \ref{tab:distances}.
 All test points were tested 25 times using a Matlab script (Appendex A:report12.m) which also calculates the mean and standard deviation of the results.
 
 \begin{figure}[H]
@@ -88,7 +87,7 @@ All test points were tested 25 times using a Matlab script (Appendex A:report12.
     	\setlength\figurewidth{0.8\linewidth}
 	\input{resources/Skill_7_report_12_50cm_OLD.tikz}
 	\caption{Impulse response at 50 cm between the loudspeaker and the microphone.}
-	\label{fig:1cm}
+	\label{fig:50cm}
 \end{figure}
 
 \begin{figure}[H]
@@ -97,7 +96,7 @@ All test points were tested 25 times using a Matlab script (Appendex A:report12.
     	\setlength\figurewidth{0.8\linewidth}
 	\input{resources/Skill_7_report_12_100cm_OLD.tikz}
 	\caption{Impulse response at 100 cm between the loudspeaker and the microphone.}
-	\label{fig:1cm}
+	\label{fig:100cm}
 \end{figure}
 
 \iffalse
@@ -165,12 +164,12 @@ These delays add up to a serious amount, which might be variable as well.
 Looking at the test data, and the fact of having a theoretical accuracy of less than 1 cm, it can be concluded that the delays other than the air delay are variable and disturbing the measurement.
 It can be concluded from the mean plot of Figure \ref{fig:means} and the time delay standard deviations from Table \ref{tab:distances}, that the distance can not be calculated accurately from the time delay.
 
-\subsection*{Report 13}
+\subsection{Report 13}
 
-\subsection*{Report 14}
+\subsection{Report 14}
 
 
-\subsection*{Report 15}
+\subsection{Report 15}
 To pick the optimal beacon signal, it is important to look at the autocorrelation, which is defined as:
 
 \begin{equation}

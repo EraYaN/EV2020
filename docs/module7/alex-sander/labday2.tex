@@ -5,16 +5,13 @@
 
 \begin{document}
 
-\section*{Labday 2: Channel Estimation}
+\section{Labday 2: Channel Estimation}
 \label{ch:labday2}
 
-\section*{Channel estimation using a training sequence}
+\subsection{Channel estimation using a training sequence}
 
-The audio beacon will transmit a known sequence of pulses (\textit{training sequence}).
-This pulse train will be deformes by the channel and we receive $y[n]=h[n]*x[n]$.\\
-
-
-We have to look at four different test signals:
+To obtain the right measurement data ($y[n]$), $x[n]$ should be convolved with $h[n]$.
+First off the following four input signals are used:
 
 \begin{itemize}
 \item 	A "minimium-phase" sequence, 
@@ -37,24 +34,12 @@ x_4 = sign(randn(N,1))
 \end{equation}
 \end{itemize}
 
-These four signals will be convolved with an audio channel impulse response $h[n]$ to obtain measurement data $y[n]$.
-Our channel has a short random sequence $h = [3, 1, 2, -4]$ and length $L = 4$.
-In order to generate the corresponding output signals we use: $y_{i}[n]=h[n]*x_{i}[n]$.
-The outputs of the script are the sequences $y_{i}[n]$ along with the input sequences $x_{i}[n]$. 
-The \texttt{datagen.m} is in Appendix \ref{lst:datagen.m}. 
-\\
-\\
+These are convolved with a random sequence h = [3, 1, 2, -4]. The corresponding outputs are calculated in \ref{lst:datagen.m}.
 
-Two Matlab functions, \texttt{ch1.m} and \texttt{ch2.m} respectively, are written. 
-\texttt{ch1.m} implements the time-domain channel estimation using inversion and \texttt{ch2.m} implements a matched filter.
-The scripts for these functions can be found in Appendix \ref{lst:ch1.m} and Appendix \ref{lst:ch2.m}.
-\\
-With the help of the input $x[n]$, the output $y[n]$ and the channel length $L$ these two functions approach the $\hat{h}[n]$ filter. 
-For the implementation of these two functions we also need the Toeplitz-matrix. 
-We can call upon the Toeplitz matrix by using \texttt{toep.m}. 
-The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
+To implement time-domain channel estimation two scripts are written; \ref{lst:ch1.m} using inversion, and \ref{lst:ch2.m} using a matched filter.
+For the Toeplitz matrix \ref{lst:toep.m} is used.
 
-\subsection*{Autocorrelation of the input signals}
+\subsection{Autocorrelation of the input signals}
 
 With the help of a 'Matched Filter' we were able to check how the autocorrelation plots of all the four signals were correlated with themself.
 The Matched Filter, $r[n]=x[n]*x[-n]$, is implemented in Matlab as folllows: \texttt{r = conv(x, flipud(x))}.
@@ -101,7 +86,7 @@ This happens when, for example, the signal (after a certain value) remains zero 
     	\label{fig:auto4}
 \end{figure}
 
-\subsection*{Singular values of the input signals}
+\subsection{Singular values of the input signals}
 
 For each of the four given signals we needed to make plots of the singular values for various values of the channel length $L$. 
 The plots can be found in Figures \ref{fig:svd1}, \ref{fig:svd2}, \ref{fig:svd3} and \ref{fig:svd4}. 
@@ -149,7 +134,7 @@ The Matlab code used for the calculations of the singular values can be found in
     	\label{fig:svd4}
 \end{figure}
 
-\subsection*{Error criterion}
+\subsection{Error criterion}
 As mentioned at the beginning of this chapter, we have written two Matlab codes (\texttt{ch1.m} and \texttt{ch2.m}) that each use an individual method to retrieve $\hat{h}$ from the input- and outputsignals.
 This will be compared to the real value of $h$ to find the difference between them. \\
 Firstly we add a small amount of Gaussian noise to the measured data vector, which are also computed in the \texttt{ch1.m} and \texttt{ch2.m} files, so that we can determine the $\hat{h}$ filter.
@@ -181,7 +166,7 @@ The Matlab codes we used in this section can be found in Appendix \ref{lst:noise
 \end{figure}
 
 
-\subsection*{Cross-correlation}
+\subsection{Cross-correlation}
 
 Next we had to look at the cross-correlation of the different signals. 
 What happens if we have an interfering signal from a neighboring car?
