@@ -135,8 +135,7 @@ namespace EV2020.LocationSystem
 			for (int i = 1; i < samplemaxes.Length; i++)
 			{
 				Debug.WriteLine("Channel {2} delta is {0:f2} ms at @ {1} samples.", Math.Abs(samplemaxes[0] - samplemaxes[1]) * ASIO.T * 1000, samplemaxes[i], i);
-			}
-			//TODO multilaterate posistion	
+			}			
 			//lastData = responses.Append(filteredResponses);
 			//lastData = responses;
 			Position3D lpos = Localize(samplemaxes,lat);

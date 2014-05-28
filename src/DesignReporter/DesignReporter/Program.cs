@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace DesignReporter
 {
@@ -16,14 +18,12 @@ namespace DesignReporter
 		static string outputFilename = "sourcecode.tex";
 		static DirectoryInfo docs;
         static FileInfo outputPath;
+		static FileInfo preamblePath = new FileInfo(@"docs/library/preamble.tex");
+		static FileInfo stylePath = new FileInfo(@"docs/library/style.tex");
+		static FileInfo bibliographyPath = new FileInfo(@"docs/library/bibliography.bib");
 		static String start =
-@"%!TEX program=xelatex+makeindex+bibtex
-\documentclass{report}
-\input{docs/library/import}
-\input{docs/library/style}
-\addbibresource{docs/library/bibliography.bib}
-
-\begin{document}";
+			@"%!TEX program=xelatex+makeindex+bibtex
+\documentclass{report}";
 
 		static StreamWriter file;
 		static long hardwareLines = 0;
@@ -59,12 +59,15 @@ namespace DesignReporter
 				docs = new DirectoryInfo(docsPathDefault);
 			else
 				docs = new DirectoryInfo(docsPath);
-			outputPath = new FileInfo(docs.FullName + outputFilename);
+			outputPath = new FileInfo(Path.Combine(new string[] {docs.FullName, outputFilename}));
 			//Open file
 			file = outputPath.CreateText();
 			file.WriteLine(start);
+			file.WriteLine("\\input{{{0}}}", GetRelativePath(docs.FullName,preamblePath.FullName));
+			file.WriteLine("\\input{{{0}}}", GetRelativePath(docs.FullName, stylePath.FullName));
+			file.WriteLine("\\addbibresource{{{0}}}", GetRelativePath(docs.FullName, bibliographyPath.FullName));
+			file.WriteLine(@"\start{document}");
 			file.WriteLine("\r\n");
-
 			//Start processing
 			processDirectory(src, 0);
 			
@@ -130,7 +133,8 @@ namespace DesignReporter
 					caption = caption.Replace("_", "-");
 					string filename = fi.Name;
 					filename = filename.Replace("_", "-");
-					string pathescaped = fi.FullName.Replace(outputPath.Directory.FullName + "\\", "").Replace('\\', '/');
+					//string pathescaped = fi.FullName.Replace(outputPath.Directory.FullName + "\\", "").Replace('\\', '/');
+					string pathescaped = GetRelativePath(outputPath.Directory.FullName,fi.FullName);
 
 					//Add source code to file
 					file.WriteLine(String.Format("\\includecode[{1}]{{{2}}}{{{3}}}{{lst:{0}}}\r\n", caption.Replace('/', '-'), extensions[ext], caption, pathescaped));
@@ -185,5 +189,47 @@ namespace DesignReporter
 			}
 			return count;
 		}
+
+		public static string GetRelativePath(string fromPath, string toPath)
+		{
+			int fromAttr = GetPathAttribute(fromPath);
+			int toAttr = GetPathAttribute(toPath);
+
+			StringBuilder path = new StringBuilder(260); // MAX_PATH
+			if (PathRelativePathTo(
+				path,
+				fromPath,
+				fromAttr,
+				toPath,
+				toAttr) == 0)
+			{
+				throw new ArgumentException("Paths must have a common prefix");
+			}
+			return path.ToString().Replace("\\","/");
+		}
+
+		private static int GetPathAttribute(string path)
+		{
+			DirectoryInfo di = new DirectoryInfo(path);
+			if (di.Exists)
+			{
+				return FILE_ATTRIBUTE_DIRECTORY;
+			}
+
+			FileInfo fi = new FileInfo(path);
+			if (fi.Exists)
+			{
+				return FILE_ATTRIBUTE_NORMAL;
+			}
+
+			throw new FileNotFoundException();
+		}
+
+		private const int FILE_ATTRIBUTE_DIRECTORY = 0x10;
+		private const int FILE_ATTRIBUTE_NORMAL = 0x80;
+
+		[DllImport("shlwapi.dll", SetLastError = true)]
+		private static extern int PathRelativePathTo(StringBuilder pszPath,
+			string pszFrom, int dwAttrFrom, string pszTo, int dwAttrTo);
     }
 }
