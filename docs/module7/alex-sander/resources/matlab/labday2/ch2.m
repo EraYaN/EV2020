@@ -1,5 +1,9 @@
 %Matched Filter
-function[h] = ch2(x,y,L)
+function[h] = ch2(x,y)
+
+Ny=length(y);
+Nx=length(x);
+L = Ny - Nx + 1;
 
 while length(y) > L+length(x)-1
     % truncate
@@ -11,13 +15,10 @@ while length(y) < L+length(x)-1
     y = [y;0];
 end
 
-Ny=length(y);
-Nx=length(x);
-L = Ny - Nx + 1;
 xr = flipud(x);
 h = filter(xr,1,y);
 h = h(Nx:end);
 alpha = x'*x;
-h = h/alpha
+h = h/alpha;
 
 end
