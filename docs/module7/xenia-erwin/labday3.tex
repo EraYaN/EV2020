@@ -22,18 +22,17 @@ At first we use a high Fs\_RX compared to the Fs\_TX.
 As can be seen in Figure \ref{fig:response_2} for this scenario the spectrum gets flatter and thus becomes more ideal. 
 It also works the other way around as becomes clear when looking at Figure \ref{fig:response_3}. 
 If we make Fs\_TX high in comparison to the Fs\_RX the spectrum will becomes less flat and thus gets less ideal.
-We can explain this by looking at the transfer functions of the speakers and the micrphone. 
-Both in- and output devices are non-linear bandpass filters, which cause high frequencies to be damped. 
-
-\\ \\
+We can explain this by looking at the transfer functions of the speakers and the microphone. 
+Both in- and output devices are non-linear bandpass filters, which cause high frequencies to be damped.\\
+\vspace{\parskip}
 Aliasing occurs when different signals can not be distinguished from each other anymore.
 This occurs when the sample rate of the receiver is chosen too low.
 We can prevent aliasing by making sure that the sample rate of the receiver is at least twice as high as the sample rate of the transmitter.
 In Figure \ref{fig:response_1} transmitter and receiver both have the same sample rate and in Figure \ref{fig:response_3} the sample rate of the receiver is not even half of the sample rate of the transmitter. 
 In both of these cases aliasing will occur, because the chosen sample rate for the receiver is too low. 
-This can also be seen in the frequencydomain of the figures, it has a lot of noise. 
+This can also be seen in the frequency domain of the figures, it has a lot of noise. 
 In Figure \ref{fig:response_2} the receiver has a sample rate that is approximately 5.5 times higher than the sample rate of the transmitted signal.
-This means that in this last case no aliasing occurs, which can be seen in the frequencydomain of the figure because it looks quite 'clean' and noise free.\\
+This means that in this last case no aliasing occurs, which can be seen in the frequency domain of the figure because it looks quite 'clean' and noise free.\\
 
 
 \begin{figure}[H]
@@ -72,7 +71,7 @@ This means that in this last case no aliasing occurs, which can be seen in the f
 %	\label{fig:highest_freq}
 %\end{figure}
 
-\subsection{Report 12}
+\section{Report 12}
 Because we have to deal with the propagation delay through air, the impulse send from the speaker does not instantly reaches the microphone. 
 The propagation speed is equal to the speed of sound and is 340 m/s.\\
 We uses Equation \ref{eq:fs} to calculate the sample rate. 
@@ -175,11 +174,59 @@ coordinates {
 From the delay mean at a distance of 1.0 cm, we can clearly see that there is a large delay that is not due to the propagation through the air.
 The delay is probably caused by software latency in Matlab, hardware delays in the sound card, hardware delays in the microphone.
 All these different delays add up to quite some delay, which could be variable as well.
-If we take another look at the test data, and keep in mind that we have a theoretical accuracy of less than 1.0 cm, we can conclude that there are indeed othere variable delays, apart from the air delay, that disrupt our measurement.\\ 
-Looking at Figure \ref{fig:means} and Table \ref{tab:distances} we conclude that the distance can not be calculated accurately enogh from the time delay. 
+If we take another look at the test data, and keep in mind that we have a theoretical accuracy of less than 1.0 cm, we can conclude that there are indeed other variable delays, apart from the air delay, that disrupt our measurement.\\ 
+Looking at Figure \ref{fig:means} and Table \ref{tab:distances} we conclude that the distance can not be calculated accurately enough from the time delay. 
 
 
-\subsection{Report 13}
+\section{Report 13}
+
+\section{Report 14}
+
+\section{Report 15}
+To pick the optimal beacon signal, it is important to look at the autocorrelation, which is defined in equation \ref{eq:autoc}.
+
+\begin{equation}
+	R_x(n) = x(-n) * x(n)
+	\label{eq:autoc}
+\end{equation}
+
+The autocorrelation must ideally be a delta peak to achieve the best matched filter results since the following approximation is used in matched filtering (Equation \ref{eq:matchedf}).
+
+\begin{equation}
+	x(-n) * y(n) = h(n) * R_x(n) \approx h(n) * \delta (n)
+	\label{eq:matchedf}
+\end{equation}
+
+To define an alternative beacon signal, more criteria were introduced.
+Firstly, the first and last bit of the code must be ones and the second and before-last be zeros to have a clear start and ending of the signal.
+Secondly, the code must vary enough between zeros and ones, but not in a certain pattern.
+This criteria, plus the original criteria of the delta-like autocorrelation resulted in the code \emph{e65a20e5}.
+\\ \\
+The default autocorrelation is displayed in Figure \ref{fig:default-correlation} and the alternative in Figure \ref{fig:own-correlation}.
+The default autocorrelation shows a slimmer autocorrelation, but it contains high peaks around its main peak.
+These peaks are way more likely to cause errors because they are almost as high as at the same location as the main peak, causing a relatively lower peak when matched filtering.
+For that reason, we allowed more smaller peaks further away from the main peak to reduce the peak height near the main peak.
+This way, the main peak is more prominent, likely to result in better matched filter results later on.
+During system integration we can easily change this later on.
+The implementation is oblivious to the changes, we only have to change one line of code.
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/default-correlation.tikz}
+	\caption{Autocorrelation of the default beacon signal.}
+	\label{fig:default-correlation}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/own-correlation.tikz}
+	\caption{Autocorrelation of the alternative beacon signal.}
+	\label{fig:own-correlation}
+\end{figure}
 
 
 \end{document} 

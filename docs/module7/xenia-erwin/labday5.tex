@@ -6,15 +6,20 @@
 
 \begin{document}
 
-\section{Labday 5: Localization using TDOA information}
+\chapter{Labday 5: Localization using TDOA information}
 \label{ch:labday5}
-\subsection{Report 6}
+\section{Report 6}
 \subsubsection{Basic localization}
 We assumned before doing the TDOA estimation that the delay between sending and receiving in the audio buffer is known, ASIO provides a helpful function getLatencies for that, this function gives you the input and output delays in samples.
 The delay time is mostly dependent on sampling frequency and buffer size.
 When the full delays are known the calculation becomes a lot easier since it can be solved using two microphones only.
 \\ \\
-Figure \ref{fig:location} shows how the location of the car can be found when the locations of the microphones (and thus the distance between them, $a_1 + a_2$) and the time between transmission and arrivals at the two microphones $t_1$ and $t_2$, which can be converted into a distance using the speed of sound $c = 340~m/s$.
+Figure \ref{fig:location} shows how the location of the car can be found when the locations of the microphones (and thus the distance between them, $a_1 + a_2$) and the time between transmission and arrivals at the two microphones $t_1$ and $t_2$, which can be converted into a distance using the speed of sound $c$ (Equation \ref{eq:speedofsound}).
+
+\begin{equation}
+c=\SI{343.2}{\meter\per\second}~\mathrm{for}~p = p_0~\mathrm{and}~T = \SI{293.15}{\kelvin}
+\label{eq:speedofsound}
+\end{equation}
 Using this information, two possible locations can be found, the real location of the car and its mirrored version as shown in Figure \ref{fig:location}.
 
 \begin{figure} [H]
@@ -87,7 +92,7 @@ Since five microphones will be used instead of just two, the mirrored versions c
 By using only two microphones per location estimation instead of all five at once, wrong arrival times can be filtered out easily.
 However, the arrival times are subject to errors, it might not be possible to filter the mirror images completely out of the solution sets.
 
-\subsubsection{Height correction}
+\subsection{Height correction}
 The height difference between the audio beacon and the microphones causes a larger time delay than expected when looking at the 2D plane.
 However, this time delay can be corrected using Pythagoras' theorem (Equation \ref{eq:pythagoras}).
 
@@ -99,7 +104,7 @@ However, this time delay can be corrected using Pythagoras' theorem (Equation \r
 Where $\Delta h$ is the height difference between the beacon and the microphone.
 The resulting $t_{2D}$ can be used in the basic localization to calculate the beacon location, independent of the height difference.
 
-\subsubsection{TDOA to arrival times}
+\subsection{TDOA to arrival times}
 In order to use the TDOA data in the algorithm mentioned above, the time delays between the transmission and reception of the signal per microphone must be calculated from the TDOA data.
 For this, it is known that this transition from TDOA to time delays is accomplished by adding a the same time constant time difference per microphone.
 This constant is defined as the time difference between the absolute time of transmission and the absolute start time of the sample data, e.g. the absolute time of sample number one.
@@ -164,8 +169,9 @@ For that, the base of orthogonal microphones shift to all four possible combinat
 \\ \\
 The final Matlab script can be found in Appendix \ref{app:source} Listing \ref{lst:location.m} location.m, which implements everything discussed so far in this chapter.
 
-\subsubsection{Testing}
-The test script location-errors.m as found in Appendix \ref{app:source} Listing \ref{lst:location.m} was used to find the error mean, standard deviation and maximum.
+\subsection{Testing}
+\label{sec:testing}
+The test script location-errors.m as found in Appendix \ref{app:source} Listing \ref{lst:location.m} was used to find the error mean, standard deviation and maximum error.
 The first test was in 2D mode; all microphones and the beacon were on the same height.
 \\ \\
 The other tests were with the four surrounding microphones 10 cm higher than the beacon and the last microphone 65 cm higher than the beacon.
@@ -185,12 +191,122 @@ The results are displayed in Table \ref{tab:errors}.
 \label{tab:errors}
 \end{table}
 
-The accuracy of the algorithm is sufficient, since the error mean and maximum are below $\SI{1}{\centi\meter}$.
+\subsection{Testing with non-ideal data}
+Errors will occur when the estimated speed of sound is not exactly correct since it varies with environment parameters such as temperature, humidity and air pressure (altitude).
+Using the test script from the previous subsection \ref{sec:testing} with an altered speed of sound with the input data generation, a certain error will occur.
+This was tested for the range of 1 to 5 percent deviation from the ``actual'' speed of sound, the results are shown in Table \ref{tab:c-errors}.
+
+\begin{table} [H]
+\centering
+	\begin{tabular}{ c | c | c | c }
+  	Deviation in speed of sound (\%) & Error mean (cm) & Error standard deviation (cm) & Max error (cm) \\ \hline
+  	1 & 1.39 & 0.62 & 2.89 \\
+	2 & 1.45 & 0.65 & 3.02 \\
+	3 & 2.54 & 1.18 & 5.40 \\
+	4 & 3.60 & 1.68 & 7.54 \\
+  	5 & 3.12 & 1.09 & 6.18 \\
+	\end{tabular}
+\caption{Location error details for various deviations of the speed of sound.}
+\label{tab:c-errors}
+\end{table}
+
+Besides errors in the speed of sound, errors can occur in determining the arrival times at the microphones.
+These errors can be simulated using a normal distribution with varying standard deviations, the results are displayed in Table \ref{tab:std-errors}.
+The noise standard deviation can be converted to standard deviation in distance by multiplying with the speed of sound.
+At 0.15 ms, which corresponds to 5.1 cm, about 5 cm accuracy is achieved.
+
+\begin{table} [H]
+\centering
+	\begin{tabular}{ c | c | c | c }
+  	Noise standard deviation (ms) & Error mean (cm) & Error standard deviation (cm) & Max error (cm) \\ \hline
+	0.1 & 3.34 & 1.88 & 11.88 \\
+	0.15 & 4.90 & 2.97 & 50.51 \\
+	0.2 & 6.70 & 5.00 & 125.76 \\
+	0.3 & 11.34 & 9.02 & 127.42 \\
+	0.4 & 16.35 & 13.55 & 180.23 \\
+	0.5 & 23.03 & 21.88 & 292.76 \\
+	\end{tabular}
+\caption{Location error details for various arrival time error standard variations.}
+\label{tab:std-errors}
+\end{table}
+
+\subsection{Testing with real measurement data}
+The final test with five microphones, four in a 2.9m x 2.9m square on 38 cm height and one microphone placed 2.4 m from the center of the square on 0.93 cm high.
+The car was placed on seven defined spots on the field, the first five at all microphones, the sixth at the center of the square and the last 1 m towards a corner of the square.
+The recordings from the microphones were saved to be processed later on using the matched filter.
+\\ \\
+The matched filter however did not find the beacon signal accurately, which resulted in extremely bad results from the localization algorithm.
+To get good input data for the localization algorithm anyway, a different Matlab script was used: Appendix A: process-mics.m.
+This script looks for the first sample with amplitude of at least one third of the maximum sample amplitude for all inputted channels.
+This sample number can be converted into a time value using the sample rate which can be directly inputted into the localization algorithm.
+The results are shown in Figure \ref{fig:map}.
+\\ \\
+On this map all microphones and other test points are shown as dots and the calculated locations as crosses.
+The five measurements at the microphones are not the exact places since the car could not come very close to the microphones, so the car was placed about 5 cm from the microphones toward the center of the room.
+The microphone outside the square could not be localized, this is because the algorithm is made to work inside the square of microphones.
+The algorithm fails when calculating the constant time offset, which becomes imaginary.
+This will likely not be a problem since the car will stay inside the square in practice.
+\\ \\
+The error in the localization is less than 5 cm, also because the exact location of the car was not known since the car is rather large.
+All together it can be concluded that the localization works with sufficient accuracy in practice too.
+
+\begin{figure} [H]
+\centering
+	\begin{tikzpicture}	
+		\fill[black,thick] (0, 0) circle [radius=0.5mm];
+		\fill[black,thick] (0, 2.9*2) circle [radius=0.5mm];
+		\fill[black,thick] (2.9*2, 2.9*2) circle [radius=0.5mm];
+		\fill[black,thick] (2.9*2, 0) circle [radius=0.5mm];
+		\fill[black,thick] (-1.05*2, 1.45*2) circle [radius=0.5mm];
+		\fill[black,thick] (1.45*2, 1.45*2) circle [radius=0.5mm];
+		\fill[black,thick] (1.45*2 + 0.707*2, 1.45*2 + 0.707*2) circle [radius=0.5mm];
+
+		\draw (0.0014*2 + 0.1, 0.0810*2 + 0.1) -- (0.0014*2 - 0.1, 0.0810*2 - 0.1);
+		\draw (0.0014*2 + 0.1, 0.0810*2 - 0.1) -- (0.0014*2 - 0.1, 0.0810*2 + 0.1);
+
+		\draw (0.0435*2 + 0.1, 2.8779*2 + 0.1) -- (0.0435*2 - 0.1, 2.8779*2 - 0.1);
+		\draw (0.0435*2 + 0.1, 2.8779*2 - 0.1) -- (0.0435*2 - 0.1, 2.8779*2 + 0.1);
+
+		\draw (2.8450*2 + 0.1, 2.9414*2 + 0.1) -- (2.8450*2 - 0.1, 2.9414*2 - 0.1);
+		\draw (2.8450*2 + 0.1, 2.9414*2 - 0.1) -- (2.8450*2 - 0.1, 2.9414*2 + 0.1);
+
+		\draw (2.8536*2 + 0.1, 0.0276*2 + 0.1) -- (2.8536*2 - 0.1, 0.0276*2 - 0.1);
+		\draw (2.8536*2 + 0.1, 0.0276*2 - 0.1) -- (2.8536*2 - 0.1, 0.0276*2 + 0.1);
+
+		\draw (1.4312*2 + 0.1, 1.4258*2 + 0.1) -- (1.4312*2 - 0.1, 1.4258*2 - 0.1);
+		\draw (1.4312*2 + 0.1, 1.4258*2 - 0.1) -- (1.4312*2 - 0.1, 1.4258*2 + 0.1);
+
+		\draw (2.1686*2 + 0.1, 2.2024*2 + 0.1) -- (2.1686*2 - 0.1, 2.2024*2 - 0.1);
+		\draw (2.1686*2 + 0.1, 2.2024*2 - 0.1) -- (2.1686*2 - 0.1, 2.2024*2 + 0.1);
+	\end{tikzpicture}
+	\caption{Map with errors.}
+	\label{fig:map}
+\end{figure}
+
+\section{Porting to C\#}
+Because we opted program the whole project in C\#, the algorithms made in the previous chapters needed to be ported to C\#. A rough test and LocationSystem library are included in Appendix Section \ref{appsec:ASIOTest} and \ref{appsec:LocationSystem}. The LocationSystem uses the ASIO driver interface, the obligatory inclusion of the copyright notice and logo not included in the software because it's not to be released.  Futer more we use the following libraries:
+\begin{itemize}
+\item BlueWave.Interop.Asio
+\item CircularBuffer
+\item MathNet.Numerics
+\item Intel MKL
+\item OxyPlot
+\item OxyPlot.Wpf
+\end{itemize}
+All their dependencies are listed on the projects' websites.
+\\ \\
+\begin{figure}[h]
+	\includegraphics[width=2cm]{resources/ASIO_LOGO1.jpg}
+\end{figure}
+ASIO Driver Interface Technology by Steinberg Media Technologies GmbH
+
+\section{Conclusion}
+The accuracy of the algorithm is sufficient, since the error mean and maximum are below $\SI{1}{\centi\meter}$ (Table \ref{tab:errors}).
 A higher accuracy is not needed because other factors have a much bigger impact on the control of the car.
+
 The height correction definitely adds accuracy to the location estimation as expected, hence it will be used later on.
 This is however when the TDOA information is nearly infinitely accurate, which will not be the case.
-The algorithm can give some erratic results when the measured time differences erroneous.
+The algorithm can give some erratic results when the measured time differences are erroneous.
 To prevent these erratic results to disrupt the workings of the final system we will have to use for example a moving average filter for the position.
 The car has a certain maximum distance it can move per time unit. We will use that knowledge to make sure the positions are not ``faulty'' of invalid.
-
 \end{document}
