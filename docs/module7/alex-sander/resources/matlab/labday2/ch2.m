@@ -1,5 +1,5 @@
-function [z_2,control] = ch2(x, y, L)
-
+%Matched Filter
+function[h] = ch2(x,y,L)
 
 while length(y) > L+length(x)-1
     % truncate
@@ -11,19 +11,13 @@ while length(y) < L+length(x)-1
     y = [y;0];
 end
 
+Ny=length(y);
+Nx=length(x);
+L = Ny - Nx + 1;
+xr = flipud(x);
+h = filter(xr,1,y);
+h = h(Nx:end);
+alpha = x'*x;
+h = h/alpha
 
-
-Ny = length(y);
-Nx = length(x);
-%L = Ny- Nx + 1; %wordt boven gefixt
-
-xr = flipud(x);             %reverse the sequence x ( assuming a col vector)
-z_2 = filter(xr, 1, [y]);       %matched filtering
-z_2 = z_2(Nx +1 : end);         %skip the first Nx sampled, so length(h) = L
-alpha = x' * x;             %compute scale
-z_2 = z_2/alpha;                %scale down
-
-xtoep = toep(x, length(y));
-control = (xtoep' * y) / alpha;
-
-end 
+end

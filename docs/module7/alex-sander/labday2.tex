@@ -36,18 +36,21 @@ x_4 = sign(randn(N,1))
 
 These are convolved with a random sequence h = [3, 1, 2, -4]. The corresponding outputs are calculated in \ref{lst:datagen.m}.
 
-To implement time-domain channel estimation two scripts are written; \ref{lst:ch1.m} using inversion, and \ref{lst:ch2.m} using a matched filter.
-For the Toeplitz matrix \ref{lst:toep.m} is used.
+To implement time-domain channel estimation two scripts are written; \ref{lst:ch1.m} using inversion, and \ref{lst:ch2.m} using a matched filter. For the Toeplitz matrix \ref{lst:toep.m} is used.
+When the output and input sequences from datagen.m are used the channel estimator using inversion will return the right channel.
+The channel estimator using a matched filter works for some signals.
+Why it doesn't work for all signals is not clear yet.
+
 
 \subsection{Autocorrelation of the input signals}
 
-With the help of a 'Matched Filter' we were able to check how the autocorrelation plots of all the four signals were correlated with themself.
-The Matched Filter, $r[n]=x[n]*x[-n]$, is implemented in Matlab as folllows: \texttt{r = conv(x, flipud(x))}.
+With the help of a 'Matched Filter' we were able to check how the auto correlation plots of all the four signals were correlated with themself.
+The Matched Filter, $r[n]=x[n]*x[-n]$, is implemented in Matlab as followed: \texttt{r = conv(x, flipud(x))}.
 \\
 The plots of the autocorrelation can be seen in Figure \ref{fig:auto1}, Figure \ref{fig:auto2}, Figure \ref{fig:auto3} and Figure \ref{fig:auto4}.
 \\
 As has been said above, the autocorrelation shows how a signal is correlated with itself. 
-When a signal contains a certain values, then it will also have an autocorrelation that shows that the signal repeats itself.
+When a signal contains a certain values, it will also have an auto correlation that shows that the signal repeats itself.
 In this way we can, for example, take the beat out of the signal with an algorithm.
 When, however, the signal is completely uncorrelated we will not find any 'interesting' values.
 This happens when, for example, the signal (after a certain value) remains zero in Figure \ref{fig:auto1}.
@@ -135,16 +138,16 @@ The Matlab code used for the calculations of the singular values can be found in
 \end{figure}
 
 \subsection{Error criterion}
-As mentioned at the beginning of this chapter, we have written two Matlab codes (\texttt{ch1.m} and \texttt{ch2.m}) that each use an individual method to retrieve $\hat{h}$ from the input- and outputsignals.
+As mentioned at the beginning of this chapter, we have written two MatLab codes (\texttt{ch1.m} and \texttt{ch2.m}) that each use an individual method to retrieve $\hat{h}$ from the input- and outputsignals.
 This will be compared to the real value of $h$ to find the difference between them. \\
 Firstly we add a small amount of Gaussian noise to the measured data vector, which are also computed in the \texttt{ch1.m} and \texttt{ch2.m} files, so that we can determine the $\hat{h}$ filter.
 The plots for \texttt{ch1.m} and \texttt{ch2.m}, with a noise variance of 0.01, can be seen in Figure \ref{fig:error1} and Figure \ref{fig:error2}.\\
 %As we know \texttt{ch1.m} uses a time-domain equalization to determine $\hat{h}$.
-In Figure \ref{fig:error1} we see that, for all test signals, the error decreases with an increasing channel length.
+In figure \ref{fig:error1} we see that, for all test signals, the error decreases with an increasing channel length.
 Figure \ref{fig:error2} is a little different.
-In this figure the error alsod decreases for all signals only till a certain channel length.
+In this figure the error also decreases for all signals only till a certain channel length.
 We see that there is a value for which the error increases for a few test signals or stays constant.\\
-The Matlab codes we used in this section can be found in Appendix \ref{lst:noise.m} and Appendix \ref{lst:error_criterion.m}.
+The MatLab codes we used in this section can be found in Appendix \ref{lst:noise.m} and Appendix \ref{lst:error_criterion.m}.
 
 
 \begin{figure}[H]
