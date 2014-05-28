@@ -10,6 +10,10 @@
 
 \section{Channel estimation using a training sequence}
 
+The audio beacon will transmit a known sequence of pulses (\textit{training sequence}).
+This pulse train will be deformes by the channeland we receive $y[n]=h[n]*x[n]$.\\
+
+
 We have to look at four different test signals:
 
 \begin{itemize}
@@ -33,11 +37,18 @@ x_4 = sign(randn(N,1))
 \end{equation}
 \end{itemize}
 
-These four signals ..
+These four signals will be convolved with an audio channel impulse response $h[n]$ to obtain measurement data $y[n]$.
+Our channel has a short random sequence $h = [3, 1, 2, -4]$ and length $L = 4$.
+In order to generate the corresponding output signals we use: $y_{i}[n]=h[n]*x_{i}[n]$.
+The outputs of the script are the sequences $y_{i}[n]$ along with the input sequences $x_{i}[n]$. 
+The \texttt{datagen.m} is in Appendix \ref{lst:datagen.m}. 
+\\
+\\
 
 Two Matlab functions, \texttt{ch1.m} and \texttt{ch2.m} respectively, are written. 
 \texttt{ch1.m} implements the time-domain channel estimation using inversion and \texttt{ch2.m} implements a matched filter.
 The scripts for these functions can be found in Appendix \ref{lst:ch1.m} and Appendix \ref{lst:ch2.m}.
+\\
 With the help of the input $x[n]$, the output $y[n]$ and the channel length $L$ these two functions approach the $\hat{h}[n]$ filter. 
 For the implementation of these two functions we also need the Toeplitz-matrix. 
 We can call upon the Toeplitz matrix by using \texttt{toep.m}. 
@@ -47,7 +58,9 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
 
 With the help of a 'Matched Filter' we were able to check how the autocorrelation plots of all the four signals were correlated with themself.
 The Matched Filter, $r[n]=x[n]*x[-n]$, is implemented in Matlab as folllows: \texttt{r = conv(x, flipud(x))}.
-The plots of the autocorrelation can be seen in Figure \ref{fig:auto1}, Figure \ref{fig:auto2}, Figure \ref{fig:auto3} and Figure \ref{auto4}.
+\\
+The plots of the autocorrelation can be seen in Figure \ref{fig:auto1}, Figure \ref{fig:auto2}, Figure \ref{fig:auto3} and Figure \ref{fig:auto4}.
+\\
 As has been said above, the autocorrelation shows how a signal is correlated with itself. 
 When a signal contains a certain values, then it will also have an autocorrelation that shows that the signal repeats itself.
 In this way we can, for example, take the beat out of the signal with an algorithm.
@@ -89,6 +102,7 @@ This happens when, for example, the signal (after a certain value) remains zero 
 \end{figure}
 
 \subsection{Singular values of the input signals}
+
 For each of the four given signals we needed to make plots of the singular values for various values of the channel length $L$. 
 The plots can be found in Figures \ref{fig:svd1}, \ref{fig:svd2}, \ref{fig:svd3} and \ref{fig:svd4}. 
 Since we invert \texttt{X}, we want the singular values not to be to close to 0, because the noise will get magnified otherwise and the results will get unstable. 
@@ -97,7 +111,6 @@ When looking closely at the figures we see that we get more singular values that
 The only exception is \texttt{x3} (see Figure \ref{fig:svd3}).
 Here it is the other way around, the singular value approach 0 when the channel length increases. 
 The Matlab code used for the calculations of the singular values can be found in Appendix \ref{lst:svd.m}.
-
 
 
 \begin{figure}[H]
@@ -137,7 +150,16 @@ The Matlab code used for the calculations of the singular values can be found in
 \end{figure}
 
 \subsection{Error criterion}
-
+As mentioned at the beginning of this chapter, we have written two Matlab codes (\texttt{ch1.m} and \texttt{ch2.m}) that each use an individual method to retrieve $\hat{h}$ from the input- and outputsignals.
+This will be compared to the real value of $h$ to find the difference between them. \\
+Firstly we add a small amount of Gaussian noise to the measured data vector, which are also computed in the \texttt{ch1.m} and \texttt{ch2.m} files, so that we can determine the $\hat{h}$ filter.
+The plots for \texttt{ch1.m} and \texttt{ch2.m}, with a noise variance of 0.01, can be seen in Figure \ref{fig:error1} and Figure \ref{fig:error2}.\\
+%As we know \texttt{ch1.m} uses a time-domain equalization to determine $\hat{h}$.
+In Figure \ref{fig:error1} we see that, for all test signals, the error decreases with an increasing channel length.
+Figure \ref{fig:error2} is a little different.
+In this figure the error alsod decreases for all signals only till a certain channel length.
+We see that there is a value for which the error increases for a few test signals or stays constant.\\
+The Matlab codes we used in this section can be found in Appendix \ref{lst:noise.m} and Appendix \ref{lst:error_criterion.m}.
 
 
 \begin{figure}[H]
@@ -160,15 +182,15 @@ The Matlab code used for the calculations of the singular values can be found in
 
 
 \subsection{Cross-correlation}
+
 Next we had to look at the cross-correlation of the different signals. 
 What happens if we have an interfering signal from a neighboring car?
 In order to find out how big the influence of an interfering signal is, we plotted the cross-correlation of different signals with each other in Figure \ref{fig:cross1}, \ref{fig:cross2}, \ref{fig:cross3} and \ref{fig:cross4}.
 The Matlab script can again be found in Appendix \ref{lst:crosscorrelation.m}.
+\\
 In an ideal situation you want the cross-correlation between the different signals to be zero. 
 In this way you are able to prevent most errors that occur when we have interfering signals. 
 From our figures we see that only the signals in Figure \ref{fig:cross1} and Figure \ref{fig:cross2} go to zero at a certain moment, so the signals \texttt{x1} and \texttt{x2} are the most suitable.
-
-
 
 \begin{figure}[H]
 	\centering
@@ -204,12 +226,9 @@ From our figures we see that only the signals in Figure \ref{fig:cross1} and Fig
     	\input{resources/crossx4.tikz}    	
     	\caption{The cross-correlation of \texttt{x4} with other signals.}
     	\label{fig:cross4}
-\end{figure}
-\\
-\\
-\\
-\\
-\\
+\end{figure}\\ 
+
+
 Lastely we had to discuss how the training  sequence and its length $N_x$ should be designed and how $\hat{L}$ should be chosen in the estimation algorithm.
 $N_x$ is a known value that was given to us at the beginning of this labday. 
 $N_y$ can be chosen by looking at the length of the recieved signal.
@@ -219,5 +238,6 @@ When we know $N_x$ and $N_y$, we can easily find $\hat{L}$ by using Equation \re
 \hat{L}=N_y - N_x +1
 \label{eq:channellength}
 \end{equation}
+
 
 \end{document} 
