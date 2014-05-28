@@ -159,7 +159,8 @@ For that, the base of orthogonal microphones shift to all four possible combinat
 \\ \\
 The final Matlab script can be found in Appendix A: location.m, which implements everything discussed so far in this chapter.
 
-\subsubsection*{Testing}
+\subsubsection{Testing with test data}
+\label{sec:testing}
 The test script location-errors.m as found in Appendix A was used to find the error mean, standard deviation and maximum.
 The first test was in 2D mode; all microphones and the beacon were on the same height.
 \\ \\
@@ -184,5 +185,120 @@ It can be concluded that the algorithm works with sufficient accuracy since the 
 More than 1 cm accuracy is indeed not needed for the purpose of the project.
 The height correction definitely adds accuracy to the location estimation as expected, hence it will be used later on.
 This is however when the TDOA information is nearly infinitely accurate, which will not be the case.
+
+\subsubsection{Testing with non-ideal data}
+Errors will occur when the estimated speed of sound is not exactly correct since it varies with environment parameters such as temperature, humidity and air pressure.
+Using the test script from the previous subsection \ref{sec:testing} with an altered speed of sound with the input data generation, a certain error will occor.
+This was tested for the range of 1 to 5 percent deviation from the actual speed of sound, the results are shown in Table \ref{tab:c-errors}.
+
+\begin{table} [H]
+\centering
+	\begin{tabular}{ c | c | c | c }
+  	Deviation in speed of sound (\%) & Error mean (cm) & Error standard deviation (cm) & Max error (cm) \\ \hline
+  	1 & 1.39 & 0.62 & 2.89 \\
+	2 & 1.45 & 0.65 & 3.02 \\
+	3 & 2.54 & 1.18 & 5.40 \\
+	4 & 3.60 & 1.68 & 7.54 \\
+  	5 & 3.12 & 1.09 & 6.18 \\
+	\end{tabular}
+\caption{Location error details for various deviations of the speed of sound.}
+\label{tab:c-errors}
+\end{table}
+
+Besides errors in the speed of sound, errors will occur in determining the arrival times at the microphones.
+These errors can be simulated using a normal distribution with varying standard deviations, the results are displayed in Table \ref{tab:std-errors}.
+The noise standard deviation can be converted to standard deviation in distance by multiplying with the speed of sound.
+At 0.15 ms, which corresponds to 5.1 cm, about 5 cm accuracy is achieved.
+
+\begin{table} [H]
+\centering
+	\begin{tabular}{ c | c | c | c }
+  	Noise standard deviation (ms) & Error mean (cm) & Error standard deviation (cm) & Max error (cm) \\ \hline
+	0.1 & 3.34 & 1.88 & 11.88 \\
+	0.15 & 4.90 & 2.97 & 50.51 \\
+	0.2 & 6.70 & 5.00 & 125.76 \\
+	0.3 & 11.34 & 9.02 & 127.42 \\
+	0.4 & 16.35 & 13.55 & 180.23 \\
+	0.5 & 23.03 & 21.88 & 292.76 \\
+	\end{tabular}
+\caption{Location error details for various arrival time error standard variations.}
+\label{tab:std-errors}
+\end{table}
+
+\iffalse
+\begin{table} [H]
+\centering
+	\begin{tabular}{ c | c | c | c }
+  	Noise standard deviation (ms) & Error mean (mm) & Error standard deviation (mm) & Max error (mm) \\ \hline
+  	0.1 & 10.0 & 5.5 & 35.9 \\
+	0.2 & 19.2 & 9.9 & 57.0 \\
+	0.3 & 27.8 & 14.9 & 92.6 \\
+	0.4 & 36.5 & 19.5 & 111.8 \\
+  	0.5 & 46.2 & 24.0 & 147.4 \\
+	0.6 & 56.3 & 30.4 & 347.8 \\
+	0.7 & 67.9 & 42.6 & 544.3 \\
+	0.8 & 80.7 & 55.3 & 847.4 \\
+	0.9 & 94.8 & 67.4 & 958.9 \\
+	1.0 & 
+	\end{tabular}
+\caption{Location error details for various deviations of the speed of sound.}
+\label{tab:errors}
+\end{table}
+\fi
+
+\subsubsection{Testing with real measurement data}
+The final test with five microphones, four in a 2.9m x 2.9m square on 38 cm height and one microphone placed 2.4 m from the center of the square on 0.93 cm high.
+The car was placed on seven defined spots on the field, the first five at all microphones, the sixth at the center of the square and the last 1 m towards a corner of the square.
+The recordings from the microphones were saved to be processed later on using the matched filter.
+\\ \\
+The matched filter however did not find the beacon signal accurately, which resulted in extremely bad results from the localization algorithm.
+To get good input data for the localization algorithm anyway, a different Matlab script was used: Appendix A: process-mics.m.
+This script looks for the first sample with amplitude of at least one third of the maximum sample amplitude for all inputted channels.
+This sample number can be converted into a time value using the sample rate which can be directly inputted into the localization algorithm.
+The results are shown in Figure \ref{fig:map}.
+\\ \\
+On this map all microphones and other test points are shown as dots and the calculated locations as crosses.
+The five measurements at the microphones are not the exact places since the car could not come very close to the microphones, so the car was placed about 5 cm from the microphones toward the center of the room.
+The microphone outside the square could not be localized, this is because the algorithm is made to work inside the square of microphones.
+The algorithm fails when calculating the constant time offset, which becomes imaginary.
+This will likely not be a problem since the car will stay inside the square in practice.
+\\ \\
+The error in the localization is less than 5 cm, also because the exact location of the car was not known since the car is rather large.
+All together it can be concluded that the localization works with sufficient accuracy in practice too.
+
+\begin{figure} [H]
+\centering
+	\begin{tikzpicture}	
+		%\node [anchor=south] at (0,0) (mic1) {Mic 1};
+
+		\fill[black,thick] (0, 0) circle [radius=0.5mm];
+		\fill[black,thick] (0, 2.9*2) circle [radius=0.5mm];
+		\fill[black,thick] (2.9*2, 2.9*2) circle [radius=0.5mm];
+		\fill[black,thick] (2.9*2, 0) circle [radius=0.5mm];
+		\fill[black,thick] (-1.05*2, 1.45*2) circle [radius=0.5mm];
+		\fill[black,thick] (1.45*2, 1.45*2) circle [radius=0.5mm];
+		\fill[black,thick] (1.45*2 + 0.707*2, 1.45*2 + 0.707*2) circle [radius=0.5mm];
+
+		\draw (0.0014*2 + 0.1, 0.0810*2 + 0.1) -- (0.0014*2 - 0.1, 0.0810*2 - 0.1);
+		\draw (0.0014*2 + 0.1, 0.0810*2 - 0.1) -- (0.0014*2 - 0.1, 0.0810*2 + 0.1);
+
+		\draw (0.0435*2 + 0.1, 2.8779*2 + 0.1) -- (0.0435*2 - 0.1, 2.8779*2 - 0.1);
+		\draw (0.0435*2 + 0.1, 2.8779*2 - 0.1) -- (0.0435*2 - 0.1, 2.8779*2 + 0.1);
+
+		\draw (2.8450*2 + 0.1, 2.9414*2 + 0.1) -- (2.8450*2 - 0.1, 2.9414*2 - 0.1);
+		\draw (2.8450*2 + 0.1, 2.9414*2 - 0.1) -- (2.8450*2 - 0.1, 2.9414*2 + 0.1);
+
+		\draw (2.8536*2 + 0.1, 0.0276*2 + 0.1) -- (2.8536*2 - 0.1, 0.0276*2 - 0.1);
+		\draw (2.8536*2 + 0.1, 0.0276*2 - 0.1) -- (2.8536*2 - 0.1, 0.0276*2 + 0.1);
+
+		\draw (1.4312*2 + 0.1, 1.4258*2 + 0.1) -- (1.4312*2 - 0.1, 1.4258*2 - 0.1);
+		\draw (1.4312*2 + 0.1, 1.4258*2 - 0.1) -- (1.4312*2 - 0.1, 1.4258*2 + 0.1);
+
+		\draw (2.1686*2 + 0.1, 2.2024*2 + 0.1) -- (2.1686*2 - 0.1, 2.2024*2 - 0.1);
+		\draw (2.1686*2 + 0.1, 2.2024*2 - 0.1) -- (2.1686*2 - 0.1, 2.2024*2 + 0.1);
+	\end{tikzpicture}
+	\caption{Map with errors.}
+	\label{fig:map}
+\end{figure}
 
 \end{document}

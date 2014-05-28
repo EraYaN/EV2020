@@ -4,5 +4,41 @@
 \addbibresource{../../library/bibliography.bib}
 
 \begin{document}
+\section{Labday 4: TDOA estimation}
+\subsection{Report 1}
+\subsubsection{Delta impulse TDOA}
+Firstly, a setup with two microphones and a loudspeaker in 1D alignment were tested with delta impulses.
+The time of arrival for delta peaks are easy to find from the sample data, hence the accuracy of the system can be measured very precise.
+A sample frequency of 48.000 kHz was used on both the TX and RX, which would be sufficient to gain an accuracy of around 0.35 cm.
+A simple Matlab script is used which finds the sample index that corresponds to the maximum amplitude in both microphone signals.
+The samples indexes can be subtracted from each other and converted into a time difference using the speed of sound.
+This Matlab script is not included in Appendex A: tdoa-delta.m.
+\\ \\
+The first microphone was placed 10 cm from the loudspeaker and the other was varied to gain a distance difference between the loudspeakers.
+The arrival times of the two microphones were compared, which resulted in the data in Table \ref{tab:delta} using the estimated local speed of sound: 343.2 m/s.
+
+\begin{table} [H]
+	\centering
+	\begin{tabular} { c | c }
+	Distance (cm) & Error (cm) \\ \hline
+	10 & 0.3 \\
+	20 & 0.7 \\
+	30 & 0.7 \\
+	40 & 0.7 \\
+	50 & 0.7 \\
+	60 & 1.4 \\
+	70 & 0.1 \\
+	80 & 0.6 \\
+	\end{tabular}
+\caption{TDOA data converted into distance errors.}
+\label{tab:delta}
+\end{table}
+
+The errors from Table \ref{tab:delta} are very small, but not as small as the theoretical error value of 0.35 cm.
+This can be caused by several factors: position errors of the microphones, deviation from the estimated speed of sound and the fact that the channel deforms the delta impulse, making it harder to find the exact arrival time from the samples.
+In overall, the results are sufficiently accurate for TDOA estimation since the target is to achieve about 1 cm accuracy.
+
+\subsubsection{Beacon signal TDOA}
+
 
 \end{document}
