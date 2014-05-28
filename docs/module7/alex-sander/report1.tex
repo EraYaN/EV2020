@@ -4,10 +4,10 @@
 \addbibresource{../../library/bibliography.bib}
 
 \begin{document}
-
-\section{Report 1: Channel inpulse response}
-In a 2-dimentional room of 4x4 m, a transmitter and a receiver are placed at (1.2, 0.3) and (3.1, 3.3) resp.
-The progation of a delta impulse from TX to RX is being investagated with the use of the following equation:
+\section*{Labday 1: Basic filtering in time domain and frequency domain}
+\subsection*{Report 1: Channel impulse response}
+In a 2-dimensional room of 4x4 m, a transmitter and a receiver are placed at (1.2, 0.3) and (3.1, 3.3) resp.
+The propagation of a delta impulse from TX to RX is being investigated with the use of the following equation:
 
 \begin{equation}
 	\alpha (r) = \frac{\beta}{r^2}
@@ -36,8 +36,8 @@ The second order reflection paths are drawn by connecting the two wall intersect
 When the length of all direct and reflected paths are measured and using the speed of sound, the delay of each path can be calculated.
 Also, using Eq. \ref{eq:damping}, the resulting amplitude can be calculated.
 We used a $\beta$ of 1.00 since the outcome of all amplitudes would give the total received signal compared to a infinitely large room with the TX and RX 1 meter from each other.
-The resulting delta impluse response over time is displayed in Figure \ref{fig:response}.
-Using the Matlab script from Appendix A, a resulting total amplitude of 0.5420, which equals the sum of all delta impluse response amplitudes from Figure \ref{fig:response}.
+The resulting delta impulse response over time is displayed in Figure \ref{fig:response}.
+Using the Matlab script from Appendix A, a resulting total amplitude of 0.5420, which equals the sum of all delta impulse response amplitudes from Figure \ref{fig:response}.
 
 \begin{figure}[H]
 	\centering
@@ -75,4 +75,89 @@ Using the Matlab script from Appendix A, a resulting total amplitude of 0.5420, 
 	\label{fig:response}
 \end{figure}
 
+\section*{Report 3}
+
+In MatLab the standard train file is loaded. 
+Subsequently the time and frequency domain signals are plotted as seen in figure \ref{fig:train_time} and figure \ref{fig:train_freq}. 
+For the time axis vector a linearly spaced vector of the same size as the vector y from the train file is used. 
+The plot of the frequency domain signal is the result of a fast Fourier transformation.
+
+The symmetry might be explained because the train file is a real audio signal. 
+Negative frequencies point to complex sinusoids. 
+If the plot would not be symmetrical that would mean negative frequencies influence the audio signal. 
+Instead if the plot is symmetrical the real and imaginary frequency components overlap and thus there is no significant influence of negative frequencies.\\
+This is also why it would make sense to only plot positive frequencies.
+To accomplish this one should take the absolute value of the frequency axis vector.
+\begin{figure}[H]
+    \centering
+	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{14cm}
+	\input{resources/labday1_report3_time.tikz}
+	\caption{Time domain signal (s).}
+	\label{fig:train_time}
+\end{figure}
+\begin{figure}[H]
+    \centering
+	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{14cm}
+	\input{resources/labday1_report3_frequency.tikz}
+	\caption{Frequency domain signal (Hz)).}
+	\label{fig:train_freq}
+\end{figure}
+
+\section*{Report 4}
+
+Figure \ref{fig:timefreq} is a time frequency plot of the train signal. 
+The signal is spitted into 20 ms seconds whereafter the FFT is applied on each segment.
+It can be seen that mainly the frequencies around 2,5 Hz are prominent and that there is a moment of silence around 0,5 seconds. 
+This is in agreement with figure \ref{fig:train_time} and figure \ref{fig:train_freq}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.7]{resources/labday1_report4_timefrequency.png}
+\caption{Time-frequency plot.}
+\label{fig:timefreq}
+\end{figure}
+
+\section*{Report 5 \& 6}
+
+Sometimes the resolution might not be very high. 
+To address this issue we consider zero padding.
+This is basically augmenting a signal with zeros.
+Subsequently the original samples will be interpolated.
+In figure \ref{fig:zeropadding} an amplitude spectrum is shown.
+The circles point to a Fourier transformed impulse response without zero padding, while the pluses indicate that zero padding has been applied.
+Interpolation is obtained as every 4th sample coincides with a sample of the non augmented impulse response.
+
+\begin{figure}[H]
+    \centering
+	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{14cm}
+	\input{resources/labday1_report5and6.tikz}
+	\caption{The circles indicate no zero padding while the pluses do.}
+	\label{fig:zeropadding}
+\end{figure}
+
+\section*{Report 7}
+To demonstrate the convolution property, as noted in equation \ref{eq:convolution}, $X(\omega)H(\omega)$ should be identical to $Y(\omega)$.
+\begin{equation}
+y[n] = x[n] * h[n] \Leftrightarrow Y(\omega) = X(\omega)H(\omega)
+\label{eq:convolution}
+\end{equation}
+For this reason we convolute the vectors x and h to get an y. 
+Afterwards we apply the Fourier transform on y.
+Parallel to this x and h are Fourier transformed after which they are multiplied.
+This should result in identical plots.
+For the latter case x and h should have the length of y.
+To obtain the right length we make use of zero padding.
+In figure \ref{fig:convolution} the two plots are identical and thus the convolution property is demonstrated.
+
+\begin{figure}[H]
+    \centering
+	\setlength\figureheight{6cm}
+    	\setlength\figurewidth{14cm}
+	\input{resources/labday1_report7.tikz}
+	\caption{Convolution property demonstrated; the upper plot represents X*H while the lower plot represents a Fourier transformed y vector.}
+	\label{fig:convolution}
+\end{figure}
 \end{document}

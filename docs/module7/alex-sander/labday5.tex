@@ -5,9 +5,9 @@
 
 \begin{document}
 
-\section{Labday 5: Localization using TDOA information}
-\subsection{Report 6}
-\subsubsection{Basic localization}
+\section*{Labday 5: Localization using TDOA information}
+\subsection*{Report 6}
+\subsubsection*{Basic localization}
 Before going into TDOA estimation, it was assumed that the time it took for the sound to travel from the beacon to all microphones was known.
 This made the calculation a lot easier since it can be solved using two microphones only.
 \\ \\
@@ -83,7 +83,7 @@ Since five microphones will be used instead of just two, the mirrored versions c
 By using only two microphones per location estimation instead of all five at once, wrong arrival times can be filtered out easily.
 However, when the arrival times are all poorly defined due to errors, it might not be possible to filter the mirror images out of the solution sets.
 
-\subsubsection{Height correction}
+\subsubsection*{Height correction}
 The height difference between the audio beacon and the microphones causes a larger time delay than expected when only looking at the 2D plane only.
 However, this time delay can be corrected using Pythagoras' theorem:
 
@@ -94,7 +94,7 @@ However, this time delay can be corrected using Pythagoras' theorem:
 With $\Delta h$ the height difference between the beacon and the microphone.
 The resulting $t_{2D}$ can be used in the basic localization to exactly calculate the beacon location, independent of the height difference.
 
-\subsubsection{TDOA to arrival times}
+\subsubsection*{TDOA to arrival times}
 In order to use the TDOA data in the algorithm mentioned above, the time delays between the transmission and reception of the signal per microphone must be calculated from the TDOA data.
 For this, it is known that this transition from TDOA to time delays is accomplished by adding a the same time constant time difference per microphone.
 This constant is defined as the time difference between the absolute time of transmission and the absolute start time of the sample data, e.g. the absolute time of sample number one.
@@ -159,7 +159,7 @@ For that, the base of orthogonal microphones shift to all four possible combinat
 \\ \\
 The final Matlab script can be found in Appendix A: location.m, which implements everything discussed so far in this chapter.
 
-\subsubsection{Testing}
+\subsubsection*{Testing}
 The test script location-errors.m as found in Appendix A was used to find the error mean, standard deviation and maximum.
 The first test was in 2D mode; all microphones and the beacon were on the same height.
 \\ \\
