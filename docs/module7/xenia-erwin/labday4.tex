@@ -44,13 +44,16 @@ In overall, the results are sufficiently accurate for TDOA estimation since the 
 
 \section{Beacon signal TDOA}
 After we applied of filters and the peak detection, the distances were not very consistent.
-This might be due to the fact that our beacon settings are not the best.
+This might be due to the fact that our beacon settings are not the best possible, we will investigate this further during the system integration phase.
 At the time they seemed to give the higher peaks, but when the noise level is high and the signal level low it does not filter out the noise enough.
+When the signal is properly received the mean in the C\# implementation the variance is very small, around 5 to 20 samples depending on the position the car to the nearest microphone.
+On a distance of half a meter we got a mean of $76$ samples, the actual number of samples should of been $70 = 0.5/343.2*48000$.
+This corresponds to a distance of $\SI{54}{\centi\meter}$.
+The furthest and nearly only real outlier was over 20 samples away of the mean, this measurement was discarded.
+The best result was obtained to move the nearest microphone to about $\SI{5}{\centi\meter}$ of the beacon.
 In figure \ref{fig:one-signal} is a typical data segment displayed and in figure \ref{fig:impulse-with-peak} in the filtered data and the peak displayed.\\
 Sometimes there are several outliers, especially when the beacon is far from the microphone the algorithm struggles to find the proper peak time.
 We could average over subsequent measurements but then the car would have to be stationary.
-
-
 Our beacon settings for now are shown in table \ref{tab:beacon-settings}.
 \begin{table} [H]
 	\centering
