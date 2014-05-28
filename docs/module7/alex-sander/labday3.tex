@@ -183,16 +183,16 @@ The autocorrelation must ideally be a delta peak to achieve the best matched fil
 	x(-n) * y(n) = h(n) * R_x(n) \approx h(n) * \delta (n)
 \end{equation}
 
-To define an alternative, more criteria were introduced.
+To define an alternative beacon signal, more criteria were introduced.
 Firstly, the first and last bit of the code must be ones and the second and before-last be zeros to have a clear start and ending of the signal.
 Secondly, the code must vary enough between zeros and ones, but not in a certain pattern.
 This criteria, plus the original criteria of the delta-like autocorrelation resulted in the code \emph{e65a20e5}.
 \\ \\
 The default autocorrelation is displayed in Figure \ref{fig:default-correlation} and the alternative in Figure \ref{fig:own-correlation}.
 The default autocorrelation shows a slimmer autocorrelation, but it contains high peaks around its main peak.
-These peaks are way more likely to cause errors because they are almost as high as at thesame location as the main peak.
-For that reason, we allowed more smaller peaks further away from the main peak to reduce the peak hight near the main peak.
-This way the main peak can be depicted a lot easier, likely to result in better matched filter results later on.
+These peaks are way more likely to cause errors because they are almost as high as at thesame location as the main peak, causing a relatively lower peak when matched filtering.
+For that reason, we allowed more smaller peaks further away from the main peak to reduce the peak height near the main peak.
+This way, the main peak is more prominent, likely to result in better matched filter results later on.
 
 \begin{figure}[H]
 	\centering
