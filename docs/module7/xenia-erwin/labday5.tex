@@ -284,14 +284,18 @@ All together it can be concluded that the localization works with sufficient acc
 \end{figure}
 
 \section{Porting to C\#}
-Because we opted program the whole project in C\#, the algorithms made in the previous chapters needed to be ported to C\#. A rough test and LocationSystem library are included in Appendix Section \ref{appsec:ASIOTest} and \ref{appsec:LocationSystem}. The LocationSystem uses the ASIO driver interface, the obligatory inclusion of the copyright notice and logo not included in the software because it's not to be released.  Futer more we use the following libraries:
+Because we opted program the whole project in C\#, the algorithms made in the previous chapters needed to be ported to C\#.
+A rough test and LocationSystem library are included in Appendix \ref{app:source} Sections \ref{appsec:ASIOTest} and \ref{appsec:LocationSystem}.
+The LocationSystem uses the ASIO driver interface, the obligatory inclusion of the copyright notice and logo not included in the software because it's not to be released.
+Furthermore we use the following libraries/SDKs
 \begin{itemize}
+\item ASIOSDK 2.3
 \item BlueWave.Interop.Asio
 \item CircularBuffer
-\item MathNet.Numerics
-\item Intel MKL
-\item OxyPlot
-\item OxyPlot.Wpf
+\item MathNet.Numerics master@83f222f02
+\item Intel MKL 11.1 update 3
+\item OxyPlot.Core 2014.1.240.1
+\item OxyPlot.Wpf 2014.1.240.1
 \end{itemize}
 All their dependencies are listed on the projects' websites.
 \\ \\
