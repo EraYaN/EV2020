@@ -1,55 +1,54 @@
 Math.NET Numerics Contributors
 ==============================
 
-The Math.NET project is a community effort. We accept contributions and pull requests, but other support like submitting issues or helping the community are just as valuable. Why don't you join us as well? 
+The Math.NET project is a community effort. We accept contributions and pull requests, but other support like submitting issues or helping the community are just as valuable. Why don't you join us as well?
 
 **Thanks for all the contributions!**
 
 ### Maintainers
 
-- [Christoph Rüegg](http://christoph.ruegg.name/): @cdrnet
-- Jurgen Van Gael: @jvangael
+- [Christoph Rüegg](http://christoph.ruegg.name/) (@cdrnet)
 
 ### Code Contributors
 
 *Essentially the output of `git shortlog -sn` in original order.  
 Feel free to add a link to your personal site/blog and/or twitter handle.*
 
-- [Christoph Rüegg](http://christoph.ruegg.name/) (cdrnet)
-- [Marcus Cuda](http://marcuscuda.com/)
-- Jurgen Van Gael
-- Alexander Karatarakis (Danimoth)
-- Thomas Ibel (tibel)
+- [Christoph Rüegg](http://christoph.ruegg.name/) (@cdrnet)
+- [Marcus Cuda](http://marcuscuda.com/) (@marcuscuda)
+- Jurgen Van Gael (@jvangael)
+- Alexander Karatarakis
+- Thomas Ibel
 - Gustavo Guerra
+- Alexander Täschner
 - Hani Medhat
 - manyue
-- Alexander Täschner (taschna)
 - David Prince
-- Andriy Bratiychuk (Abratiychuk)
+- Andriy Bratiychuk
 - Jack Pappas
 - Artyom Baranovskiy
-- Phil Cleveland (Phil)
+- Phil Cleveland
 - Scott Stephens
 - Superbest
+- Anders Gustafsson
+- Gauthier Segay
 - Patrick van der Velde
 - Robin Neatherway
-- Anders Gustafsson (cureos)
-- Gauthier Segay (gauthier)
 - Andrew Kazyrevich
 - Candy Chiu
 - Ethar Alali
-- Iain McDonald (lifebeyondfife)
+- Iain McDonald
 - Gregor959
 - IUser
 - Iain Sproat
-- Kosei ABE (kos59125)
+- Kosei ABE
 - Martin Posch
+- Paul Varkey
 - Till Hoffmann
 - Tomas Petricek
 - VicPara
 - bstrausser
 - nyuriks
-- Paul Varkey
 - seahearman
 
 ### Indirect Code Contributors
@@ -88,8 +87,10 @@ This section is incomplete - let us know if we forgot something.*
 
 *For other ways of support, documentation, website, feedback, software licenses, etc.*
 
+- Marcus Cuda (long time core contributor; license)
+- Jurgen Van Gael (long time core contributor)
 - F# Foundation & Community
-- Marcus Cuda
 - Don Syme
 - Lokad SAS
 - Microsoft Corp
+- Xamarin (license)
