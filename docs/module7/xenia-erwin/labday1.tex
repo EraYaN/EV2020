@@ -239,19 +239,28 @@ From the figure we can conclude that we have obtained interpolation, because eve
 
 \section{The convolution property}
 Here in this chapter the convolution property is demonstrated. 
-This can be done by showing that Equation \ref{eq:convprop}
-
-
+This can be done by showing that Equation \ref{eq:convprop} holds.
 
 \begin{equation}
 y[n] = x[n]\star h[n] \quad \Leftrightarrow \quad Y(\omega) = X(\omega)H(\omega) 
 \label{eq:convprop}
 \end{equation}
 
+To check this property we calculate $Y(\omega)$ and $X(\omega)H(\omega)$ separately and we check if both results are the same. 
+We let the original signals \textbf{x} and \textbf{h} convolve with each other.
+We then get the signaal $y[n]$, then, by using the DFT we get the $Y(\omega)$.\\
+Now we only need to find the second part, the $X(\omega)H(\omega)$ part, respectively.
+We do this by using zero padding to give both signals \textbf{x} and \textbf{h} the same length. 
+If we then use DFT on our signals and use point to point multiplication, we obtain  $X(\omega)H(\omega)$.\\
+Lastely we plot the absolute values in the frequencydomain. 
+In Figure \ref{fig:convpro} we see two results. 
+The first plot is the amplitude plot of  $X(\omega)H(\omega)$ in the frequencydomain and the second plot is the amplitude of $Y(\omega)$, also in the frequencydomain.
+The plots are equal to each other, which means that convolution property holds.
+
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale = 0.5]{resources/labday1/theconvolutionproperty.png}
+\includegraphics[scale = 1.0]{resources/labday1/theconvolutionproperty.png}
 \caption{Time-frequency plot.}
 \label{fig:convpro}
 \end{figure}
