@@ -11,13 +11,13 @@
 \section{Channel estimation using a training sequence}
 
 The audio beacon will transmit a known sequence of pulses (\textit{training sequence}).
-This pulse train will be deformes by the channeland we receive $y[n]=h[n]*x[n]$.\\
+This pulse train will be deformed by the channel and we receive $y[n]=h[n]*x[n]$.\\
 
 
 We have to look at four different test signals:
 
 \begin{itemize}
-\item 	A "minimium-phase" sequence, 
+\item 	A "minimum-phase" sequence, 
 \begin{equation}
 X_1(z) = 1 - \dfrac{1}{2}Z^{-1} \leftrightarrow x_1 = [1, -\dfrac{1}{2}, 0, 0,  \dots]^T
 \end{equation}
@@ -56,7 +56,7 @@ The script for the Toeplitz-matrix can be found in Appendix \ref{lst:toep.m}.
 
 \subsection{Autocorrelation of the input signals}
 
-With the help of a 'Matched Filter' we were able to check how the autocorrelation plots of all the four signals were correlated with themself.
+With the help of a 'Matched Filter' we were able to check how the autocorrelation plots of all the four signals were correlated with them self.
 The Matched Filter, $r[n]=x[n]*x[-n]$, is implemented in Matlab as folllows: \texttt{r = conv(x, flipud(x))}.
 \\
 The plots of the autocorrelation can be seen in Figure \ref{fig:auto1}, Figure \ref{fig:auto2}, Figure \ref{fig:auto3} and Figure \ref{fig:auto4}.
@@ -150,14 +150,14 @@ The Matlab code used for the calculations of the singular values can be found in
 \end{figure}
 
 \subsection{Error criterion}
-As mentioned at the beginning of this chapter, we have written two Matlab codes (\texttt{ch1.m} and \texttt{ch2.m}) that each use an individual method to retrieve $\hat{h}$ from the input- and outputsignals.
+As mentioned at the beginning of this chapter, we have written two Matlab codes (\texttt{ch1.m} and \texttt{ch2.m}) that each use an individual method to retrieve $\hat{h}$ from the input and output signals.
 This will be compared to the real value of $h$ to find the difference between them. \\
 Firstly we add a small amount of Gaussian noise to the measured data vector, which are also computed in the \texttt{ch1.m} and \texttt{ch2.m} files, so that we can determine the $\hat{h}$ filter.
 The plots for \texttt{ch1.m} and \texttt{ch2.m}, with a noise variance of 0.01, can be seen in Figure \ref{fig:error1} and Figure \ref{fig:error2}.\\
 %As we know \texttt{ch1.m} uses a time-domain equalization to determine $\hat{h}$.
 In Figure \ref{fig:error1} we see that, for all test signals, the error decreases with an increasing channel length.
 Figure \ref{fig:error2} is a little different.
-In this figure the error alsod decreases for all signals only till a certain channel length.
+In this figure the error decreases for all signals only till a certain channel length.
 We see that there is a value for which the error increases for a few test signals or stays constant.\\
 The Matlab codes we used in this section can be found in Appendix \ref{lst:noise.m} and Appendix \ref{lst:error_criterion.m}.
 

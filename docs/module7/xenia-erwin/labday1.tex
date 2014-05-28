@@ -7,9 +7,9 @@
 
 \chapter{Labday 1: Basic filtering}
 \label{ch:labday1}
-\section{Channel inpulse response}
-In a 2-dimentional room of 4x4 m, a transmitter and a receiver are placed at (1.2, 0.3) and (3.1, 3.3) respectively.
-In this section the propagation of a delta impulse, from TX to RX, is being investagated.
+\section{Channel impulse response}
+In a 2-dimensional room of 4x4 m, a transmitter and a receiver are placed at (1.2, 0.3) and (3.1, 3.3) respectively.
+In this section the propagation of a delta impulse, from TX to RX, is being investigated.
 During propagation, the signal is damped as function of the propagated distance $R$. 
 The speed of sound varies as function of temperature, humidity and air pressure, but we can assume is it 340m/s. 
 For the attenuation $\alpha$(r) of the signal can be found with the use of the following equation:
@@ -19,7 +19,7 @@ For the attenuation $\alpha$(r) of the signal can be found with the use of the f
 \label{eq:damping}
 \end{equation}
 
-In Eqaution \ref{eq:damping} $\beta$ is the damping over a reference distance of 1 meter. 
+In Equation \ref{eq:damping} $\beta$ is the damping over a reference distance of 1 meter. 
 \\
 \\
 The direct path to the RX point is the fastest and the strongest and can easily be calculated.
@@ -42,7 +42,7 @@ When there is an intersection, we have two point on two different walls.
 Via these two point the delta pulse will bounce from the TX to the RX. 
 When we mirrored the TX and RX over all the walls, we got 16 combinations, but not all of these intersect with the room. 
 Some of them connected outside the wall, this means that it is not possible to bounce via the two walls. 
-When looking closely at Figure \ref{fig:connected}, we see that only 8 of the 16 paths are possible, meaning that we get 8 virutal sources form the second order reflections. 
+When looking closely at Figure \ref{fig:connected}, we see that only 8 of the 16 paths are possible, meaning that we get 8 virtual sources form the second order reflections. 
 \\ 
 \\
 As explained before the second oreder reflection paths were drawn by connecting the two wall intersections. 
@@ -107,7 +107,7 @@ It is kind of a pompous drum roll.
 
 In Figure \ref{fig:a0.95-plots} the impulse response of the filter in Equation \ref{eq:filters} is plotted for a = 0.95. 
 In Figure \ref{fig:a0.-95-plots} shows the impulse response of the filter for a value of a = -0.95.
-From the figures we can clearly see that for a value of a = 0.95 the filter enhanceses the signal at frequencies $\omega = \pi + 2n \pi$ and for a = -0.95 the signals are enhanced for the frequencies $\omega = 2n \pi$. 
+From the figures we can clearly see that for a value of a = 0.95 the filter enhancements the signal at frequencies $\omega = \pi + 2n \pi$ and for a = -0.95 the signals are enhanced for the frequencies $\omega = 2n \pi$. 
 When we give the input a different, more general signal, than this signal will also be enhanced at the previously named frequencies. 
 \\
 \\
@@ -183,8 +183,8 @@ The plot for the time domain signal can be seen in Figure \ref{fig:timedomain} a
 \section{Time-frequency plot}
 The used train signal is not stationary, because the frequency changes over time. 
 So it does not make sense to record second or hours of an audio signal and then take the DFT of the complete sequence. 
-Instead we splitted the signal into short segments of approximately 20 $ms$ and then we did the DFT on each segment. 
-This resulted in the time-frequncy plot show in Figure \ref{fig:timefreq}.
+Instead we split the signal into short segments of approximately 20 $ms$ and then we did the DFT on each segment. 
+This resulted in the time-frequency plot show in Figure \ref{fig:timefreq}.
 
 \begin{figure}[h]
 \centering
@@ -251,9 +251,9 @@ We then get the signaal $y[n]$, then, by using the DFT we get the $Y(\omega)$.\\
 Now we only need to find the second part, the $X(\omega)H(\omega)$ part, respectively.
 We do this by using zero padding to give both signals \textbf{x} and \textbf{h} the same length. 
 If we then use DFT on our signals and use point to point multiplication, we obtain  $X(\omega)H(\omega)$.\\
-Lastely we plot the absolute values in the frequencydomain. 
+Lastly we plot the absolute values in the frequency domain. 
 In Figure \ref{fig:convpro} we see two results. 
-The first plot is the amplitude plot of  $X(\omega)H(\omega)$ in the frequencydomain and the second plot is the amplitude of $Y(\omega)$, also in the frequencydomain.
+The first plot is the amplitude plot of  $X(\omega)H(\omega)$ in the frequency domain and the second plot is the amplitude of $Y(\omega)$, also in the frequency domain.
 The plots are equal to each other, which means that convolution property holds.
 
 
