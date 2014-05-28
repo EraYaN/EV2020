@@ -5,7 +5,181 @@
 
 \begin{document}
 
-\chapter{Labday 3: Audio channel measurements}
+\chapter{Labday 3: audio channel measurements}
 \label{ch:labday3}
+\section{Report 11}
+When we used the default values of Rx\_TX = 22.050 and Fs\_RX = 22.050, we found the impulse response of Figure \ref{fig:response_1}.
+The time response can be seen a not ideal delta pulse, because the microphone, the loudspeaker and the channel all act as filters. 
+Because of this they distort the signal and the time response becomes non ideal.
+In the ideal case of flat spectral transfer functions, the following spectrum would occur:
+
+\begin{equation}
+	\delta(t) \xrightarrow{\mathfrak{F}} 1
+\end{equation}
+
+The plots shown in Figure \ref{fig:response_2} and Figure \ref{fig:response_3} show the effect a varying Fs\_RX and Fs\_TX can have.
+At first we use a high Fs\_RX compared to the Fs\_TX. 
+As can be seen in Figure \ref{fig:response_2} for this scenario the spectrum gets flatter and thus becomes more ideal. 
+It also works the other way around as becomes clear when looking at Figure \ref{fig:response_3}. 
+If we make Fs\_TX high in comparison to the Fs\_RX the spectrum will becomes less flat and thus gets less ideal.
+We can explain this by looking at the transfer functions of the speakers and the micrphone. 
+Both in- and output devices are non-linear bandpass filters, which cause high frequencies to be damped. 
+
+\\ \\
+Aliasing occurs when different signals can not be distinguished from each other anymore.
+This occurs when the sample rate of the receiver is chosen too low.
+We can prevent aliasing by making sure that the sample rate of the receiver is at least twice as high as the sample rate of the transmitter.
+In Figure \ref{fig:response_1} transmitter and receiver both have the same sample rate and in Figure \ref{fig:response_3} the sample rate of the receiver is not even half of the sample rate of the transmitter. 
+In both of these cases aliasing will occur, because the chosen sample rate for the receiver is too low. 
+This can also be seen in the frequencydomain of the figures, it has a lot of noise. 
+In Figure \ref{fig:response_2} the receiver has a sample rate that is approximately 5.5 times higher than the sample rate of the transmitted signal.
+This means that in this last case no aliasing occurs, which can be seen in the frequencydomain of the figure because it looks quite 'clean' and noise free.\\
+
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/report1/Skill_7_report_11_1_reduced.tikz}
+	\caption{Impulse response at Fs\_TX = 22.050 Hz and Fs\_RX = 22.050 Hz.}
+	\label{fig:response_1}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/report1/Skill_7_report_11_2_reduced.tikz}
+	\caption{Impulse response at Fs\_TX = 4.000 Hz and Fs\_RX = 22.050 Hz.}
+	\label{fig:response_2}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/report1/Skill_7_report_11_3_reduced.tikz}
+	\caption{Impulse response at Fs\_TX = 22.050 Hz and Fs\_RX = 8.000 Hz.}
+	\label{fig:response_3}
+\end{figure}
+
+%\begin{figure}[H]
+%	\centering
+%	\setlength\figureheight{4cm}
+%    	\setlength\figurewidth{0.8\linewidth}
+%	\input{resources/report1/Skill_7_report_11_4_reduced.tikz}
+%	\caption{Impulse response at Fs\_TX = 176.400 Hz and Fs\_RX = 22.050 Hz.}
+%	\label{fig:highest_freq}
+%\end{figure}
+
+\subsection{Report 12}
+Because we have to deal with the propagation delay through air, the impulse send from the speaker does not instantly reaches the microphone. 
+The propagation speed is equal to the speed of sound and is 340 m/s.\\
+We uses Equation \ref{eq:fs} to calculate the sample rate. 
+\begin{equation}
+f= \frac{1}{T_{s}}=\frac{1}{\frac{d}{v}}=\frac{v}{d}=34000 Hz
+\label{eq:fs}
+\end{equation}
+
+Since this exact sample frequency is not available, the next frequency of 22.050 Hz is used.
+Using three test points, 1, 25, 50, 75 and 100 cm, the delay is measured of which the results are shown in Figure \ref{fig:1cm}, Figure \ref{fig:50cm}, Figure \ref{fig:100cm} and Table \ref{tab:distances}.
+In order to make the test reliable all the tests were preformed 25 times using a Matlab script (see Appendix \ref{lst:report12.m}).
+This script will also calculate the mean and the standard deviation of the results.
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/report1/Skill_7_report_12_1cm_OLD.tikz}
+	\caption{Impulse response at 1 cm between the loudspeaker and the microphone.}
+	\label{fig:1cm}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/report1/Skill_7_report_12_50cm_OLD.tikz}
+	\caption{Impulse response at 50 cm between the loudspeaker and the microphone.}
+	\label{fig:50cm}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/report1/Skill_7_report_12_100cm_OLD.tikz}
+	\caption{Impulse response at 100 cm between the loudspeaker and the microphone.}
+	\label{fig:100cm}
+\end{figure}
+
+\iffalse
+\begin{table}[H]
+\begin{tabular}{  c | c | c | c }
+    Distance (cm) & Sample number & Delay to 1 cm (ms) & Corresponding distance (cm) \\\hline
+    1 & 14.311 & 0 & 1 \\
+    50 & 14.352 & 1.86 & 64 \\
+    100 & 14.425 & 5.17 & 177 \\
+\end{tabular}
+\caption{Sample number of delta response peak and time delay relative to reference distance 1 cm.}
+\label{tab:distances}
+\end{table}
+
+ 1 & 327.828828  \\
+    25 & 327.695654 \\
+    50 & 330.270342 \\
+    75 & 330.803036
+    100 & 332.179163 \\
+
+\fi
+
+\begin{table}[H]
+\centering
+\begin{tabular}{  c | c | c }
+    Distance (cm) & Delay mean (ms) & Delay standard deviation (ms) \\\hline
+    1 & 318.73 & 3.97 \\
+    25 & 318.21 & 1.80 \\
+    50 & 321.68 & 5.16 \\
+    75 & 321.68 & 1.36 \\
+    100 & 321.27 & 1.80 \\
+\end{tabular}
+\caption{Sample number of delta response peak and time delay relative to reference distance 1 cm.}
+\label{tab:distances}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel = {Distance (cm)},
+    ylabel = {Time delay mean (ms)},
+]
+\addplot[
+    color = black,
+    fill = black,
+    mark = *,
+    only marks]
+coordinates {
+    ( 1, 318.73 )
+    ( 25, 318.21 )
+    ( 50, 321.68 )
+    ( 75, 321.68 )
+    ( 100, 321.27 )
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Distance between the loudspeaker and microphone versus the time delay mean.}
+\label{fig:means}
+\end{figure}
+
+From the delay mean at a distance of 1.0 cm, we can clearly see that there is a large delay that is not due to the propagation through the air.
+The delay is probably caused by software latency in Matlab, hardware delays in the sound card, hardware delays in the microphone.
+All these different delays add up to quite some delay, which could be variable as well.
+If we take another look at the test data, and keep in mind that we have a theoretical accuracy of less than 1.0 cm, we can conclude that there are indeed othere variable delays, apart from the air delay, that disrupt our measurement.\\ 
+Looking at Figure \ref{fig:means} and Table \ref{tab:distances} we conclude that the distance can not be calculated accurately enogh from the time delay. 
+
+
+\subsection{Report 13}
+
 
 \end{document} 
