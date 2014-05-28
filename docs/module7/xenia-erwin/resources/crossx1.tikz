@@ -22,7 +22,7 @@ xmin=0,
 xmax=200,
 ymin=-2.5,
 ymax=1.5,
-title={Kruiscorrelatie x1 met:},
+title={Cross correlation x1 with:},
 axis x line*=bottom,
 axis y line*=left,
 legend style={draw=black,fill=white,legend cell align=left}
