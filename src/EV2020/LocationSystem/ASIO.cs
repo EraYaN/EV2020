@@ -171,12 +171,14 @@ namespace EV2020.LocationSystem
 			inputSamplesMatrix = new DenseMatrix(nSamples, sampleBuffersIn.Count);			
 			for (int i = 0; i < sampleBuffersIn.Count; i++)
 			{
-				double[] inputSamples = sampleBuffersIn[i].Get(sampleBuffersIn[i].Size);
 				for (int j = 0; j < nSamples; j++)
 				{
-					inputSamplesMatrix[j, i] = inputSamples[j];					
+					while (sampleBuffersIn[i].Size == 0)
+					{
+						;
+					}
+					inputSamplesMatrix[j, i] = sampleBuffersIn[i].Get();					
 				}
-				sampleBuffersIn[i].Clear();
 			}
 			return inputSamplesMatrix;
 		}

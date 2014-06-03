@@ -11,6 +11,7 @@
 			<Button x:Name="ASIOTest" Content="ASIOTest" Margin="10,10,10,0" VerticalAlignment="Top" Click="ASIOTest_Click" IsEnabled="False"/>
 			<Button x:Name="ASIOShowControlPanel" Content="ASIOCP" Margin="10,10,10,0" VerticalAlignment="Top" Click="ASIOShowControlPanel_Click" IsEnabled="False"/>
 			<Button x:Name="ASIOGetData" Content="ASIOGetData" Margin="10,10,10,0" VerticalAlignment="Top" IsEnabled="False" Click="ASIOGetData_Click" />
+			<TextBox x:Name="posistionLog" Height="188" TextWrapping="Wrap" Text="" Margin="10,10,10,0" IsReadOnly="True"/>
 		</StackPanel>
 	</Grid>
 </Window>

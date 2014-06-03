@@ -3,6 +3,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
@@ -12,6 +13,7 @@ namespace EV2020.LocationSystem
 {
 	public class Localizer : IDisposable
 	{
+		const double samplelength = 0.25; //in seconds
 		ASIO asio;
 		Matrix<double> matchedfilter;
 		bool _disposed;
@@ -39,20 +41,40 @@ namespace EV2020.LocationSystem
 		{
 			Debug.WriteLine("Generating beaconsignal.");
 
-			//Default
-			//beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier20kHz, Tools.Timer1Freq.Code5000Hz, Tools.Timer3Freq.Repeat10Hz, "92340f0f", ASIO.Fs);
-			//Own Code: e65a20e5b37ac60d
-			beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat5Hz, "e65a20e5", ASIO.Fs);
+			FileInfo beaconfile = new FileInfo(@"resources/beaconfile.bin");
+			if (beaconfile.Exists && false)
+			{
+				long samples = beaconfile.Length / 4; //singles
+				beaconsignal = DenseVector.Create(Convert.ToInt32(samples), 0);
+				using (BinaryReader br = new BinaryReader(beaconfile.OpenRead()))
+				{
+					int i = 0;
+					while (i < samples)
+					{
+						beaconsignal[i] = br.ReadSingle();
+						i++;
+					}
+				}
+				Debug.WriteLine("Used measurement data for beaconsignal.");
+			}
+			else
+			{
+				//Own Code: e65a20e5b37ac60d
+				beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat5Hz, "e65a20e5", ASIO.Fs);
+				Debug.WriteLine("Used reference data for beaconsignal.");
+			}
 			//Circulant Convolution
 			Debug.WriteLine("Generating Toeplitz matrix.");
 
 			//Figure out corrent matchedfilter matrix
-			Vector<double> bsreverse = new DenseVector(Convert.ToInt32(Math.Round((double)beaconsignal.Count * 1)));
-			int i = 0;
+			Vector<double> bsreverse = new DenseVector(Convert.ToInt32(Math.Round(ASIO.Fs*samplelength)));
+			int samplenumber = 0;
 			foreach (double d in beaconsignal.Reverse())
 			{
-				bsreverse[i] = d;
-				i++;
+				bsreverse[samplenumber] = d;
+				samplenumber++;
+				if (samplenumber == bsreverse.Count)
+					break;
 			}
 			//Normal Convolution
 			//Matrix<double> X = Tools.Toep(bsreverse, bsreverse.Count*2-1, bsreverse.Count, false);
@@ -71,9 +93,10 @@ namespace EV2020.LocationSystem
 				return false;
 			asio = new ASIO(_driverIndex, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
-			timer = new System.Timers.Timer(1000);
+			timer = new System.Timers.Timer(250);
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
+			asio.IsInputEnabled = true;
 			return true;
 		}
 
@@ -95,16 +118,16 @@ namespace EV2020.LocationSystem
 			if (asio == null)
 				return;
 			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-			asio.ClearInput();		
-			asio.IsInputEnabled = true;
+			//asio.ClearInput();		
+			
 			ASIOLatencies lat = GetASIOLatencies();
 			Debug.WriteLine("Latencies; IN: {0}, OUT: {1}",lat.Input,lat.Output);
-			Thread.Sleep(new TimeSpan(Convert.ToInt64((lat.Input*ASIO.T+0.5)*TimeSpan.TicksPerSecond)));
+			Thread.Sleep(new TimeSpan(Convert.ToInt64(((lat.Input + matchedfilter.ColumnCount) * ASIO.T) * TimeSpan.TicksPerSecond)));
 			//get all channels in a matrix (every column is a channel)
 			if (asio == null)
 				return;
 			Matrix<double> responses = asio.getAllInputSamplesMatrix(matchedfilter.ColumnCount); //MATCHED Filter way
-			asio.IsInputEnabled = false;						
+			//asio.IsInputEnabled = false;						
 			 //Matrix multiply way
 			int[] samplemaxes = new int[responses.ColumnCount];
 			double[] maxes = new double[responses.ColumnCount];
@@ -146,8 +169,8 @@ namespace EV2020.LocationSystem
 		protected Position3D Localize(int[] samplemaxes, ASIOLatencies lat)
 		{
 			//Width and Height of the rectangle field
-			double H = 2.9;
-			double B = 2.9;
+			double H = 7.4;
+			double B = 7;
 			//Height of beacon
 			double h = 0.28;
 			//speed of sound
@@ -166,8 +189,8 @@ namespace EV2020.LocationSystem
 					if (k == 1)
 					{
 						d1 = samplemaxes[0] * c / ASIO.Fs; // Base point (0,0)
-						d2 = samplemaxes[3] * c / ASIO.Fs; // Y-direction
-						d3 = samplemaxes[1] * c / ASIO.Fs; // X-direction
+						d2 = samplemaxes[1] * c / ASIO.Fs; // Y-direction
+						d3 = samplemaxes[3] * c / ASIO.Fs; // X-direction
 					}
 					else if (k == 2)
 					{

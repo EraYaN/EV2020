@@ -107,8 +107,12 @@ namespace ASIOTest
 		void bw_generate_DoWork(object sender, DoWorkEventArgs e)
 		{
 			List<Microphone> mics = new List<Microphone>();
-			mics.Add(new Microphone { Position = new Position3D { X = 0.02, Y = 0, Z = 0 }, ChannelIndex = 1 });
-			mics.Add(new Microphone { Position = new Position3D { X = 0.35, Y = 0, Z = 0 }, ChannelIndex = 0 });
+			//TODO verify
+			mics.Add(new Microphone { Position = new Position3D { X = 0, Y = 0, Z = 0.36 }, ChannelIndex = 0 });
+			mics.Add(new Microphone { Position = new Position3D { X = 0, Y = 7.4, Z = 0.36 }, ChannelIndex = 1 });
+			mics.Add(new Microphone { Position = new Position3D { X = 7, Y = 7.4, Z = 0.36 }, ChannelIndex = 2 });
+			mics.Add(new Microphone { Position = new Position3D { X = 7, Y = 0, Z = 0.36 }, ChannelIndex = 3 });
+			mics.Add(new Microphone { Position = new Position3D { X = 3.5, Y = 0, Z = 0.8 }, ChannelIndex = 4 });
 			localizer = new Localizer(mics,(int) e.Argument, new int[] { 0, 1, 2, 3, 4 }, new int[] { });
 			localizer.GenerateFilterMatrix();			
 		}
@@ -139,7 +143,9 @@ namespace ASIOTest
 						
 					}
 				}
-				Debug.WriteLine(e.Position);
+				//Debug.WriteLine(e.Position);
+				posistionLog.AppendText(e.Position.ToString()+"\n");
+				posistionLog.ScrollToEnd();
 			});			
 			
 		}
