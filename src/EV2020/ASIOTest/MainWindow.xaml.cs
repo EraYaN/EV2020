@@ -133,11 +133,11 @@ namespace ASIOTest
 						if (pw != null)
 						{
 							if(pw.IsLoaded)
-								pw.Update("Data", localizer.lastData, legend, ASIO.T);
+								pw.Update("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
 						}
 						else
 						{
-							pw = new PlotWindow("Data", localizer.lastData, legend, ASIO.T);
+							pw = new PlotWindow("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
 							pw.Show();
 						}	
 						

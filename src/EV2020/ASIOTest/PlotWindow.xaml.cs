@@ -1,6 +1,7 @@
 ﻿using EV2020.LocationSystem;
 using MathNet.Numerics.LinearAlgebra;
 using OxyPlot;
+using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
@@ -31,16 +32,16 @@ namespace ASIOTest
 		{
 			InitializeComponent();
 		}
-		public PlotWindow(String title, Matrix<double> plotdata, List<string> legend, double timestep)
+		public PlotWindow(String title, Matrix<double> plotdata, List<string> legend, double timestep, int[] markers)
 		{
 			InitializeComponent();
 			p = (Presenter)this.DataContext;
-			p.Update(title, plotdata, legend, timestep);
+			p.Update(title, plotdata, legend, timestep, markers);
 		}
-		public void Update(String title, Matrix<double> plotdata, List<string> legend, double timestep)
+		public void Update(String title, Matrix<double> plotdata, List<string> legend, double timestep, int[] markers)
 		{			
 			p = (Presenter)this.DataContext;
-			p.Update(title, plotdata, legend, timestep);
+			p.Update(title, plotdata, legend, timestep, markers);
 		}
 	}
 	public class ObservableObject : INotifyPropertyChanged
@@ -68,7 +69,7 @@ namespace ASIOTest
 			RaisePropertyChangedEvent("PlotModel");
 		}
 
-		public void Update(String title, Matrix<double> plotdata, List<string> legend, double timestep)
+		public void Update(String title, Matrix<double> plotdata, List<string> legend, double timestep, int[] markers)
 		{
 			if (_plotModel == null)
 			{
@@ -79,24 +80,46 @@ namespace ASIOTest
 				throw new ArgumentException("Plotdata can contain at most 20 columns.", "plotdata");
 			}
 			_plotModel.Series.Clear();
+			_plotModel.Axes.Clear();
+			double maxx = plotdata.RowCount * timestep;
+			double maxy = 15;
+			Axis x = new LinearAxis(AxisPosition.Bottom, 0, maxx);
+			//Axis y =new LinearAxis(AxisPosition.Left, 0, 15);
+			_plotModel.Axes.Add(x);
+			//_plotModel.Axes.Add(y);
 			for (int line = 0; line < plotdata.ColumnCount; line++)
 			{
 				LineSeries ls = new LineSeries();
 				List<DataPoint> list = new List<DataPoint>();
 				for (int i = 0; i < plotdata.RowCount; i++)
 				{
-					list.Add(new DataPoint(timestep * i, plotdata[i, line]));
+					list.Add(new DataPoint(timestep * i, Math.Abs(plotdata[i, line])));
 				}
 				ls.ItemsSource = list;
 				ls.Smooth = false;
 				ls.StrokeThickness = 0.5;
-				ls.Title = legend[line];
+				ls.Title = legend[line];				
 				_plotModel.Series.Add(ls);
+				
 			}
+			int nummarkers=  Math.Min(markers.Length, plotdata.ColumnCount);
+			LineSeries markerseries = new LineSeries();
+			List<DataPoint> mark = new List<DataPoint>();
+			for (int i = 0; i < nummarkers; i++)
+			{
+				mark.Add(new DataPoint(timestep * markers[i], Math.Abs(plotdata[markers[i], i])));	
+			}
+			markerseries.ItemsSource = mark;
+			markerseries.LineStyle = LineStyle.None;
+			markerseries.MarkerType = MarkerType.Circle;
+			markerseries.MarkerSize = 3;
+			markerseries.MarkerFill = OxyColors.Black;
+			markerseries.Title = "Detected Peaks";
+			_plotModel.Series.Add(markerseries);
+
 			_plotModel.IsLegendVisible = true;
 			_plotModel.RefreshPlot(true);
 			RaisePropertyChangedEvent("PlotModel");
-			//plot.Model = new Binding();
 		}
 
 		

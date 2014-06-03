@@ -22,6 +22,7 @@ namespace EV2020.LocationSystem
 		List<Microphone> Microphones;
 		System.Timers.Timer timer;
 		public Matrix<double> lastData;
+		public int[] lastMaxes;
 		Vector<double> beaconsignal;
 		object _posistionLock;
 		Stopwatch sw;
@@ -93,7 +94,8 @@ namespace EV2020.LocationSystem
 				return false;
 			asio = new ASIO(_driverIndex, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
-			timer = new System.Timers.Timer(250);
+			//TODO back to 250 ms
+			timer = new System.Timers.Timer(1000);
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
 			asio.IsInputEnabled = true;
@@ -161,8 +163,10 @@ namespace EV2020.LocationSystem
 			}			
 			//lastData = responses.Append(filteredResponses);
 			//lastData = responses;
-			Position3D lpos = Localize(samplemaxes,lat);
 			lastData = filteredResponses;
+			lastMaxes = samplemaxes;
+			Position3D lpos = Localize(samplemaxes,lat);
+			
 			OnLocationUpdated(this, new LocationUpdatedEventArgs(lpos));
 		}
 
@@ -261,9 +265,10 @@ namespace EV2020.LocationSystem
 			points = 5;
 			points_std = 0;*/
 			List<Position3D> y = new List<Position3D>();
-			for (int i = 0; i < Microphones.Count; i++)
+			int passes = Math.Min(Microphones.Count,t.Length);
+			for (int i = 0; i < passes; i++)
 			{
-				for (int j = 0; j < Microphones.Count; j++){
+				for (int j = 0; j < passes; j++){
 					if (i == j || i < j)
 					{
 						continue; // Do not compare with own time or twice thesame
