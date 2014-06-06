@@ -177,131 +177,36 @@ namespace EV2020.LocationSystem
 			OnLocationUpdated(this, new LocationUpdatedEventArgs(lpos));
 		}
 
-		protected Position3D Localize(int[] samplemaxes, ASIOLatencies lat)
-		{
-			
-			Complex d1 = 0, d2 = 0, d3 = 0;
-			//Working vars
-			Position3D new_loc, loc = new Position3D();
-			int new_points = 0, points = 0;
-			double new_points_std = 0, points_std = 0;
-			
-			for (int k = 0; k < 4; k++)
-			{
-				Complex C;
-				if (samplemaxes.Length >= 4)
-				{
-					if (k == 1)
-					{
-						d1 = samplemaxes[0] * c / ASIO.Fs; // Base point (0,0)
-						d2 = samplemaxes[1] * c / ASIO.Fs; // Y-direction
-						d3 = samplemaxes[3] * c / ASIO.Fs; // X-direction
-					}
-					else if (k == 2)
-					{
-						d1 = samplemaxes[2] * c / ASIO.Fs; // Base point (0,0)
-						d2 = samplemaxes[3] * c / ASIO.Fs; // Y-direction
-						d3 = samplemaxes[1] * c / ASIO.Fs; // X-direction
-					}
-					else if (k == 3)
-					{
-						d1 = samplemaxes[1] * c / ASIO.Fs; // Base point (0,0)
-						d2 = samplemaxes[0] * c / ASIO.Fs; // Y-direction
-						d3 = samplemaxes[2] * c / ASIO.Fs; // X-direction
-					}
-					else if (k == 4)
-					{
-						d1 = samplemaxes[3] * c / ASIO.Fs; // Base point (0,0)
-						d2 = samplemaxes[2] * c / ASIO.Fs; // Y-direction
-						d3 = samplemaxes[0] * c / ASIO.Fs; // X-direction
-					}
+        protected Position3D Localize(int[] samplemaxes, ASIOLatencies lat)
+        {
+            //Working vars
+            Position3D loc = new Position3D();
 
-					C =
-					(
-						(B * Complex.Pow(d1, 3) - Complex.Pow(B, 3) * d1 + Complex.Pow(B, 3) * d2 - H * Complex.Pow(d1, 3) + 2 * d1 *
-						Complex.Sqrt(
-							((B + d1 - d3) * (B - d1 + d3) * (Complex.Pow(B, 4) - 2 * Complex.Pow(B, 3) * d1 + 2 * Complex.Pow(B, 3) * d2 + Complex.Pow(B, 2) * Complex.Pow(H, 2) + 2 * Complex.Pow(B, 2) * H * d1 - 2 * Complex.Pow(B, 2) * H * d2 + Complex.Pow(B, 2) * Complex.Pow(d1, 2) - 2 * Complex.Pow(B, 2) * d1 * d3 - Complex.Pow(B, 2) * Complex.Pow(d2, 2) + 2 * Complex.Pow(B, 2) * d2 * d3 - 2 * B * H * Complex.Pow(d1, 2) + 4 * B * H * d1 * d2 - 2 * B * H * Complex.Pow(d2, 2) - 2 * B * Complex.Pow(d1, 2) * d2 + 2 * B * Complex.Pow(d1, 2) * d3 + 4 * B * d1 * Complex.Pow(d2, 2) - 4 * B * d1 * d2 * d3 - 2 * B * Complex.Pow(d2, 3) + 2 * B * Complex.Pow(d2, 2) * d3 - Complex.Pow(H, 2) * Complex.Pow(d1, 2) + 2 * Complex.Pow(H, 2) * d1 * d3 - Complex.Pow(H, 2) * Complex.Pow(d3, 2) + 2 * H * Complex.Pow(d1, 2) * d2 - 2 * H * Complex.Pow(d1, 2) * d3 - 4 * H * d1 * Complex.Pow(d2, 2) + 4 * H * d1 * d2 * d3 + 2 * H * Complex.Pow(d2, 3) - 2 * H * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * d2 * d3 + Complex.Pow(d1, 2) * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 3) + 4 * d1 * Complex.Pow(d2, 2) * d3 - 2 * d1 * d2 * Complex.Pow(d3, 2) + Complex.Pow(d2, 4) - 2 * Complex.Pow(d2, 3) * d3 + Complex.Pow(d2, 2) * Complex.Pow(d3, 2))) / 4
-						)
-						-
-						2 * d2 *
-						Complex.Sqrt(
-							(
-								(B + d1 - d3) * (B - d1 + d3) * (Complex.Pow(B, 4) - 2 * Complex.Pow(B, 3) * d1 + 2 * Complex.Pow(B, 3) * d2 + Complex.Pow(B, 2) * Complex.Pow(H, 2) + 2 * Complex.Pow(B, 2) * H * d1 - 2 * Complex.Pow(B, 2) * H * d2 + Complex.Pow(B, 2) * Complex.Pow(d1, 2) - 2 * Complex.Pow(B, 2) * d1 * d3 - Complex.Pow(B, 2) * Complex.Pow(d2, 2) + 2 * Complex.Pow(B, 2) * d2 * d3 - 2 * B * H * Complex.Pow(d1, 2) + 4 * B * H * d1 * d2 - 2 * B * H * Complex.Pow(d2, 2) - 2 * B * Complex.Pow(d1, 2) * d2 + 2 * B * Complex.Pow(d1, 2) * d3 + 4 * B * d1 * Complex.Pow(d2, 2) - 4 * B * d1 * d2 * d3 - 2 * B * Complex.Pow(d2, 3) + 2 * B * Complex.Pow(d2, 2) * d3 - Complex.Pow(H, 2) * Complex.Pow(d1, 2) + 2 * Complex.Pow(H, 2) * d1 * d3 - Complex.Pow(H, 2) * Complex.Pow(d3, 2) + 2 * H * Complex.Pow(d1, 2) * d2 - 2 * H * Complex.Pow(d1, 2) * d3 - 4 * H * d1 * Complex.Pow(d2, 2) + 4 * H * d1 * d2 * d3 + 2 * H * Complex.Pow(d2, 3) - 2 * H * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * d2 * d3 + Complex.Pow(d1, 2) * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 3) + 4 * d1 * Complex.Pow(d2, 2) * d3 - 2 * d1 * d2 * Complex.Pow(d3, 2) + Complex.Pow(d2, 4) - 2 * Complex.Pow(d2, 3) * d3 + Complex.Pow(d2, 2) * Complex.Pow(d3, 2))
-							)
-							/
-							4
-						)
-						- Complex.Pow(d1, 3) * d2 + d1 * Complex.Pow(d3, 3) + Complex.Pow(d1, 3) * d3 - d2 * Complex.Pow(d3, 3) + Complex.Pow(B, 4) - Complex.Pow(B, 2) * Complex.Pow(d1, 2) - Complex.Pow(B, 2) * Complex.Pow(d2, 2) - Complex.Pow(B, 2) * Complex.Pow(d3, 2) + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * Complex.Pow(d3, 2) + Complex.Pow(d2, 2) * Complex.Pow(d3, 2) + Complex.Pow(B, 2) * H * d1 - Complex.Pow(B, 2) * H * d2 - B * Complex.Pow(d1, 2) * d2 + Complex.Pow(B, 2) * d1 * d2 + B * d1 * Complex.Pow(d3, 2) - 2 * B * Complex.Pow(d1, 2) * d3 + Complex.Pow(B, 2) * d1 * d3 - B * d2 * Complex.Pow(d3, 2) + Complex.Pow(B, 2) * d2 * d3 + H * Complex.Pow(d1, 2) * d2 - H * d1 * Complex.Pow(d3, 2) + 2 * H * Complex.Pow(d1, 2) * d3 + H * d2 * Complex.Pow(d3, 2) + d1 * d2 * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * d2 * d3 + 2 * B * d1 * d2 * d3 - 2 * H * d1 * d2 * d3) / (Complex.Pow(B, 2) - 2 * Complex.Pow(d1, 2) + 2 * d1 * d2 + 2 * d1 * d3 - Complex.Pow(d2, 2) - Complex.Pow(d3, 2)) - Complex.Pow(B, 2) - Complex.Pow(d1, 2) + Complex.Pow(d2, 2)
-					)
-					/
-					(
-					2 * d1 - 2 * d2
-					);
-				}
-				else
-				{
-					C = 0;
-				}
-				//Make it a time.
-				C = C / c;
-				double[] t = new double[samplemaxes.Length];
-				for (int i = 0; i < t.Length; i++)
-				{
-					t[i] = lat.Input / ASIO.Fs + C.Real + samplemaxes[i] / ASIO.Fs;
-				}
 
-				Laterate(t, h, c, out new_loc, out new_points, out new_points_std);
-				if (new_points > points || (new_points == points && new_points_std < points_std))
-				{
-					loc = new_loc;
-					points = new_points;
-					points_std = new_points_std;
-				}
-			}
-			return loc;
-		}
-		protected void Laterate(double[] t, double h, double c, out Position3D loc, out int points, out double points_std)
-		{
-			/*loc = new Position3D() { X = 0, Y = 0, Z = h };
-			points = 5;
-			points_std = 0;*/
-			List<Position3D> y = new List<Position3D>();
-			int passes = Math.Min(Microphones.Count,t.Length);
-			for (int i = 0; i < passes; i++)
-			{
-				for (int j = 0; j < passes; j++){
-					if (i == j || i < j)
-					{
-						continue; // Do not compare with own time or twice thesame
-					}
-					double d = Math.Sqrt(Math.Pow(Microphones[i].Position.X - Microphones[j].Position.X,2) + Math.Pow(Microphones[i].Position.Y - Microphones[j].Position.Y,2));
-					double h1 = Microphones[i].Position.X-h;
-					double h2 = Microphones[j].Position.X-h;
+            Matrix<double> a = DenseMatrix.Create(10, 6, 0);
+            Vector<double> b = DenseVector.Create(10, 0);
 
-					double t1_ = (Complex.Sqrt(Math.Pow(t[i] * c,2) - Math.Pow(h1,2))).Real / c;
-					double t2_ = (Complex.Sqrt(Math.Pow(t[j] * c,2) - Math.Pow(h2,2))).Real / c;
+            int nmics = Microphones.Count;
+            int row = 0;
+            for (int i = 0; i < nmics; i++)
+            {
+                for (int j = 0; j < nmics; i++)
+                {
+                    if (j <= i)
+                        continue;
+                    a[row, 0] = 2 * (Microphones[j].Position.X - Microphones[i].Position.X);
+                    a[row, 1] = 2 * (Microphones[j].Position.Y - Microphones[i].Position.Y);
+                    a[row, 1 + j] = -2 * (samplemaxes[i] - samplemaxes[j]) / ASIO.Fs * c;
+                    b[row] = Math.Pow(((samplemaxes[i] - samplemaxes[j]) / ASIO.Fs * c), 2) - Math.Pow(Position3D.Magnitude(Microphones[i].Position), 2) + Math.Pow(Position3D.Magnitude(Microphones[j].Position), 2);
+                    row++;
+                }
+            }
 
-					double d1 = (Math.Pow(t1_ * c,2) - Math.Pow(t2_ * c,2) + Math.Pow(d,2)) / (2 * d);
-					double x = (Complex.Sqrt((Math.Pow(t1_ * c,2) - Math.Pow(d1,2)))).Real;
-					double mx = d1/d * (Microphones[j].Position.X - Microphones[i].Position.X);
-					double my = d1/d * (Microphones[j].Position.Y - Microphones[i].Position.Y);
+            Vector<double> y = a.Solve(b);
+            loc = new Position3D() { X = y[0], Y = y[1], Z = 0 };
+            return loc;
+        }
 
-					
-					Vector<double> r = DenseVector.OfArray(new double[]{Math.Sqrt(Math.Pow(mx,2) + Math.Pow(my,2)),x});
-					double angle = -Math.Atan2(my, mx);
-					Matrix<double> rot = DenseMatrix.OfArray(new double[,]{{Math.Cos(angle), -Math.Sin(angle)},{Math.Sin(angle), Math.Cos(angle)}});
-					Vector<double> disp = DenseVector.OfArray(new double[]{Microphones[i].Position.X, Microphones[i].Position.Y});
-					Vector<double> coord = r * rot + disp;
-					y.Add(new Position3D(){X=coord[0], Y=coord[1], Z=h});
-
-				}
-			}
-			y = Filter(y);
-			y = RemoveOutliers(y); // Remove the mirror images and other outliers due to input data errors
-			loc = GetAveragePosition(y);
-			points = y.Count;
-			points_std = y.Select(o => o.X).StdDev() + y.Select(o => o.Y).StdDev();    
-		}
 		protected List<Position3D> Filter(List<Position3D> x)
 		{
 			List<Position3D> result = new List<Position3D>();			
@@ -318,53 +223,6 @@ namespace EV2020.LocationSystem
 				result.Add(x[i]);
 			}
 			return result;
-		}
-		protected List<Position3D> RemoveOutliers(List<Position3D> x)
-		{
-			List<Position3D> result = new List<Position3D>();
-			if (x.Count <= 1)
-			{
-				return x;
-			}
-			for (int i = 0; i < x.Count; i++)
-			{
-				List<Position3D> y = new List<Position3D>();
-				for (int j = 0; j < x.Count; j++)
-				{
-					if (Position3D.Magnitude(x[j] - x[i]) < 0.20)
-					{// Max 20 cm from the rest
-						// Pick the beacon location instead of its mirror image
-						bool firstBest = false;
-						int index = (int)Math.Floor((double)(j) / 2) * 2;
-						if (index >= 0 && index+1<x.Count)
-						{
-							if (Position3D.Magnitude(x[index + 1] - x[i]) > Position3D.Magnitude(x[index] - x[i]))
-							{
-								firstBest = true;
-							}
-						}
-						// Only get one per two results
-						if ((j % 2 == 0 && firstBest) || (j % 2 == 1 && !firstBest))
-						{
-							y.Add(x[j]);
-						}
-					}
-				}
-				if (y.Count > result.Count)
-				{
-					result = y;
-				}
-			}
-			return result;
-		}
-		protected Position3D GetAveragePosition(List<Position3D> x)
-		{
-			if (x.Count > 0)
-			{
-				return new Position3D() { X = x.Average(p => p.X), Y = x.Average(p => p.Y), Z = x.Average(p => p.Z) };
-			}
-			else { return new Position3D(); }
-
 		}
 		protected virtual void Dispose(bool disposing)
 		{
