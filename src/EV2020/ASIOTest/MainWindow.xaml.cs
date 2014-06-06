@@ -111,10 +111,10 @@ namespace ASIOTest
 			//TODO verify
 			mics.Add(new Microphone { Position = new Position3D { X = 0, Y = 0, Z = 0.36 }, ChannelIndex = 0 });
 			mics.Add(new Microphone { Position = new Position3D { X = 0, Y = 7.4, Z = 0.36 }, ChannelIndex = 1 });
-			mics.Add(new Microphone { Position = new Position3D { X = 7, Y = 7.4, Z = 0.36 }, ChannelIndex = 2 });
-			mics.Add(new Microphone { Position = new Position3D { X = 7, Y = 0, Z = 0.36 }, ChannelIndex = 3 });
-			mics.Add(new Microphone { Position = new Position3D { X = 3.5, Y = 0, Z = 0.8 }, ChannelIndex = 4 });
-			localizer = new Localizer(mics,(int) e.Argument, new int[] { 0, 1, 2, 3, 4 }, new int[] { });
+			//mics.Add(new Microphone { Position = new Position3D { X = 7, Y = 7.4, Z = 0.36 }, ChannelIndex = 2 });
+			//mics.Add(new Microphone { Position = new Position3D { X = 7, Y = 0, Z = 0.36 }, ChannelIndex = 3 });
+			//mics.Add(new Microphone { Position = new Position3D { X = 3.5, Y = 0, Z = 0.8 }, ChannelIndex = 4 });
+			localizer = new Localizer(mics,(int) e.Argument);
 			localizer.GenerateFilterMatrix();			
 		}
 		void localizer_OnLocationUpdated(object sender, LocationUpdatedEventArgs e)

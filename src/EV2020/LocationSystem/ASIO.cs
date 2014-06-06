@@ -19,6 +19,24 @@ namespace EV2020.LocationSystem
 		{
 			get { return 1 / Fs; }
 		}
+		public int InChannels
+		{
+			get
+			{
+				if (driver != null)
+					return driver.NumberInputChannels;
+				return -1;
+			}
+		}
+		public int OutChannels
+		{
+			get
+			{
+				if (driver != null)
+					return driver.NumberOutputChannels;
+				return -1;
+			}
+		}
 		const int DefaultQueueDepth = (int)Fs * 10;
 		List<long> times = new List<long>();
 		List<CircularBuffer<double>> sampleBuffersOut = new List<CircularBuffer<double>>();
@@ -177,7 +195,14 @@ namespace EV2020.LocationSystem
 					{
 						;
 					}
-					inputSamplesMatrix[j, i] = sampleBuffersIn[i].Get();					
+					try
+					{
+						inputSamplesMatrix[j, i] = sampleBuffersIn[i].Get();
+					}
+					catch
+					{
+						//TODO handle exception for emtpy buffer
+					}
 				}
 			}
 			return inputSamplesMatrix;
