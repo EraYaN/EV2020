@@ -14,6 +14,14 @@ namespace EV2020.LocationSystem
 	public class Localizer : IDisposable
 	{
 		const double samplelength = 0.25; //in seconds
+		const double margin = 1;
+		//Width and Height of the rectangle field
+		const double H = 7.4;
+		const double B = 7;
+		//Height of beacon
+		const double h = 0.28;
+		//speed of sound
+		const double c = 343.2;
 		ASIO asio;
 		Matrix<double> matchedfilter;
 		bool _disposed;
@@ -134,13 +142,12 @@ namespace EV2020.LocationSystem
 			int[] samplemaxes = new int[responses.ColumnCount];
 			double[] maxes = new double[responses.ColumnCount];
 			//Filter that shit.
-			Matrix<double> filteredResponses = matchedfilter * responses;
+			Matrix<double> filteredResponses = /*matchedfilter **/ responses;
 			//loop over channels	
 			double windowStart = 0;
 			double windowEnd = filteredResponses.RowCount;
 			for (int i = 0; i < filteredResponses.ColumnCount; i++)
-			{
-				
+			{				
 				//loop over samples in channel i	
 				for (int sample = (int)Math.Floor(windowStart); sample < Math.Ceiling(windowEnd); sample++)
 				{						
@@ -172,13 +179,7 @@ namespace EV2020.LocationSystem
 
 		protected Position3D Localize(int[] samplemaxes, ASIOLatencies lat)
 		{
-			//Width and Height of the rectangle field
-			double H = 7.4;
-			double B = 7;
-			//Height of beacon
-			double h = 0.28;
-			//speed of sound
-			double c = 343.2;
+			
 			Complex d1 = 0, d2 = 0, d3 = 0;
 			//Working vars
 			Position3D new_loc, loc = new Position3D();
@@ -295,11 +296,28 @@ namespace EV2020.LocationSystem
 
 				}
 			}
-			
+			y = Filter(y);
 			y = RemoveOutliers(y); // Remove the mirror images and other outliers due to input data errors
 			loc = GetAveragePosition(y);
 			points = y.Count;
 			points_std = y.Select(o => o.X).StdDev() + y.Select(o => o.Y).StdDev();    
+		}
+		protected List<Position3D> Filter(List<Position3D> x)
+		{
+			List<Position3D> result = new List<Position3D>();			
+			for (int i = 0; i < x.Count; i++)
+			{
+				if (x[i].X < -margin || x[i].X > B + margin)
+				{
+					continue;
+				}
+				if (x[i].Y < -margin || x[i].Y > H + margin)
+				{
+					continue;
+				}
+				result.Add(x[i]);
+			}
+			return result;
 		}
 		protected List<Position3D> RemoveOutliers(List<Position3D> x)
 		{

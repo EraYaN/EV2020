@@ -118,35 +118,42 @@ namespace ASIOTest
 		}
 		void localizer_OnLocationUpdated(object sender, LocationUpdatedEventArgs e)
 		{
-			App.Current.Dispatcher.Invoke((Action)delegate
+			try
 			{
-				
-				if (localizer != null)
+				App.Current.Dispatcher.Invoke((Action)delegate
 				{
-					if (localizer.lastData != null)
+
+					if (localizer != null)
 					{
-						List<string> legend = new List<string>();
-						for (int i = 0; i < localizer.lastData.ColumnCount; i++)
+						if (localizer.lastData != null)
 						{
-							legend.Add(String.Format("Channel {0}",i+1));
+							List<string> legend = new List<string>();
+							for (int i = 0; i < localizer.lastData.ColumnCount; i++)
+							{
+								legend.Add(String.Format("Channel {0}", i + 1));
+							}
+							if (pw != null)
+							{
+								if (pw.IsLoaded)
+									pw.Update("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
+							}
+							else
+							{
+								pw = new PlotWindow("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
+								pw.Show();
+							}
+
 						}
-						if (pw != null)
-						{
-							if(pw.IsLoaded)
-								pw.Update("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
-						}
-						else
-						{
-							pw = new PlotWindow("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
-							pw.Show();
-						}	
-						
 					}
-				}
-				//Debug.WriteLine(e.Position);
-				posistionLog.AppendText(e.Position.ToString()+"\n");
-				posistionLog.ScrollToEnd();
-			});			
+					//Debug.WriteLine(e.Position);
+					posistionLog.AppendText(e.Position.ToString() + "\n");
+					posistionLog.ScrollToEnd();
+				});
+			}
+			catch
+			{
+				//nothing
+			}
 			
 		}
 		[STAThread]
