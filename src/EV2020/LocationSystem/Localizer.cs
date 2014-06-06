@@ -190,7 +190,7 @@ namespace EV2020.LocationSystem
             int row = 0;
             for (int i = 0; i < nmics; i++)
             {
-                for (int j = 0; j < nmics; i++)
+                for (int j = 0; j < nmics; j++)
                 {
                     if (j <= i)
                         continue;

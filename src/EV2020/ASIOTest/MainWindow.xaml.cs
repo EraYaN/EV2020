@@ -22,6 +22,7 @@ namespace ASIOTest
 	{
 		Localizer localizer;
 		bool nodrivers, discovered, tested;
+		Position3D lpos = new Position3D();
 		PlotWindow pw;
 
 		BackgroundWorker bw_generate = new BackgroundWorker();
@@ -146,7 +147,9 @@ namespace ASIOTest
 						}
 					}
 					//Debug.WriteLine(e.Position);
-					posistionLog.AppendText(e.Position.ToString() + "\n");
+					Position3D pos = new Position3D() { X = (lpos.X * 2 + e.Position.X) / 3, Y = (lpos.Y * 2 + e.Position.Y) / 3, Z = 0 };
+					posistionLog.AppendText(pos.ToString() + "\n");
+					lpos = e.Position;
 					posistionLog.ScrollToEnd();
 				});
 			}
