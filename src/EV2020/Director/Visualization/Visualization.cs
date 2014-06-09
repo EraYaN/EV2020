@@ -39,7 +39,10 @@ namespace EV2020.Director
 			{
 				double centerH = jc.ActualHeight / 2;
 				double centerW = jc.ActualWidth / 2;
-
+				if (Data.ctr == null)
+				{
+					return;
+				}
 				double Y = -Data.ctr.Driving * centerH / 15 + centerH - joystickDiameter / 2;
 				double X = -Data.ctr.Steering * centerW / 50 + centerW - joystickDiameter / 2;
 				jc.Children[0].SetValue(Canvas.LeftProperty, X);
@@ -51,7 +54,7 @@ namespace EV2020.Director
 				{
 					c.Dispatcher.Invoke(drawJoystick, DispatcherPriority.Normal);
 				}
-				catch (Exception)
+				catch
 				{
 
 				}

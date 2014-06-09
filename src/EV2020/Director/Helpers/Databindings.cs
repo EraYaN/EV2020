@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -14,8 +15,24 @@ namespace EV2020.Director
 	/// </summary>
 	public class Databindings : INotifyPropertyChanged
 	{
-		public event PropertyChangedEventHandler PropertyChanged;		
+		public event PropertyChangedEventHandler PropertyChanged;
 
+		public string VersionInfo
+		{
+			get
+			{
+				StringBuilder sb = new StringBuilder();
+				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+				foreach (Assembly a in assemblies)
+				{
+					AssemblyName an = a.GetName();
+					if(a.GlobalAssemblyCache==false)
+						sb.AppendLine(String.Format("{0} v{1} {2}", an.Name, an.Version, an.ProcessorArchitecture));					
+				}
+				
+				return sb.ToString();
+			}
+		}
 		public string SerialPortStatus
 		{
 			get
@@ -232,13 +249,13 @@ namespace EV2020.Director
 		{
 			get
 			{
-				if (Data.obsvr != null)
+				if (Data.nav != null)
 				{
-					return Data.obsvr.DebugInfo;
+					return Data.nav.GetDebugInfo();
 				}
 				else
 				{
-					return "obsvr is null";
+					return "nav is null";
 				}
 			}
 		}

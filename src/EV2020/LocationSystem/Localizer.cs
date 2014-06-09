@@ -1,5 +1,6 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using MicroMvvm;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,16 +14,19 @@ namespace EV2020.LocationSystem
 {
 	public class Localizer : IDisposable
 	{
-		const double samplelength = 0.25; //in seconds
-		const double margin = 1;
-		const bool filterenabled = false;
-		//Width and Height of the rectangle field
-		const double H = 7.4;
-		const double B = 7;
-		//Height of beacon
-		const double h = 0.28;
 		//speed of sound
 		const double c = 343.2;
+		#region settings
+		double sampleLength = 0.25; //in seconds
+		double fieldMargin = 1;
+		bool matchedFilterEnabled = false;
+		//Width and Height of the rectangle field
+		double fieldHeight = 7.4;
+		double fieldWidth = 7;
+		//Height of beacon
+		double beaconHeight = 0.28;
+		#endregion
+		double sampleWindow = ASIO.Fs / 5;
 		ASIO asio;
 		Matrix<double> matchedfilter;
 		bool _disposed;
@@ -33,32 +37,39 @@ namespace EV2020.LocationSystem
 		public Matrix<double> lastData;
 		public int[] lastMaxes;
 		Vector<double> beaconsignal;
-		object _posistionLock;
-		Stopwatch sw;
 		int _driverIndex;
 		int[] _inputChannels;
 		int[] _outputChannels;
-		double samplewindow = ASIO.Fs / 5;
-		public Localizer(List<Microphone> mics, int DriverIndex)			
-		{			
+
+		public Localizer(List<Microphone> mics, int DriverIndex, double FieldWidth = 1, double FieldHeight = 1, double FieldMargin = 1,
+			double SampleWindow = 1, double SampleLength = 2400, double BeaconHeight = 0.28, bool MatchedFilterEnabled = false)
+		{
 			Microphones = mics;
 			_driverIndex = DriverIndex;
 			int[] ins = new int[mics.Count];
-			for(int i = 0; i< mics.Count;i++){
+			for (int i = 0; i < mics.Count; i++)
+			{
 				ins[i] = mics[i].ChannelIndex;
 			}
 			_inputChannels = ins;
 			_outputChannels = new int[0];
+			fieldWidth = FieldWidth;
+			fieldHeight = FieldHeight;
+			fieldMargin = FieldMargin;
+			sampleWindow = SampleWindow;
+			sampleLength = SampleLength;
+			beaconHeight = BeaconHeight;
+			matchedFilterEnabled = MatchedFilterEnabled;
 		}
 
-		public bool GenerateFilterMatrix()
+		public bool GenerateFilterMatrix(bool UseMeasuredSignal = false)
 		{
-			if (filterenabled)
+			if (matchedFilterEnabled)
 			{
 				Debug.WriteLine("Generating beaconsignal.");
 
 				FileInfo beaconfile = new FileInfo(@"resources/beaconfile.bin");
-				if (beaconfile.Exists && false)
+				if (beaconfile.Exists && UseMeasuredSignal)
 				{
 					long samples = beaconfile.Length / 4; //singles
 					beaconsignal = DenseVector.Create(Convert.ToInt32(samples), 0);
@@ -83,7 +94,7 @@ namespace EV2020.LocationSystem
 				Debug.WriteLine("Generating Toeplitz matrix.");
 
 				//Figure out corrent matchedfilter matrix
-				Vector<double> bsreverse = new DenseVector(Convert.ToInt32(Math.Round(ASIO.Fs * samplelength)));
+				Vector<double> bsreverse = new DenseVector(Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength)));
 				int samplenumber = 0;
 				foreach (double d in beaconsignal.Reverse())
 				{
@@ -115,7 +126,7 @@ namespace EV2020.LocationSystem
 			asio = new ASIO(_driverIndex, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
 			//TODO back to 250 ms
-			timer = new System.Timers.Timer(samplelength*1000);
+			timer = new System.Timers.Timer(sampleLength * 1000);
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
 			asio.IsInputEnabled = true;
@@ -129,7 +140,7 @@ namespace EV2020.LocationSystem
 		~Localizer()
 		{
 			Dispose(false);
-		}		
+		}
 		public void Dispose()
 		{
 			Dispose(true);
@@ -141,33 +152,36 @@ namespace EV2020.LocationSystem
 				return;
 			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			//asio.ClearInput();		
-			
+
 			ASIOLatencies lat = GetASIOLatencies();
-			Debug.WriteLine("Latencies; IN: {0}, OUT: {1}",lat.Input,lat.Output);
+			Debug.WriteLine("Latencies; IN: {0}, OUT: {1}", lat.Input, lat.Output);
 			Thread.Sleep(new TimeSpan(Convert.ToInt64(((lat.Input + matchedfilter.ColumnCount) * ASIO.T) * TimeSpan.TicksPerSecond)));
 			//get all channels in a matrix (every column is a channel)
 			if (asio == null)
 				return;
 			Matrix<double> responses = asio.getAllInputSamplesMatrix(matchedfilter.ColumnCount); //MATCHED Filter way
 			//asio.IsInputEnabled = false;						
-			 //Matrix multiply way
+			//Matrix multiply way
 			int[] samplemaxes = new int[responses.ColumnCount];
 			double[] maxes = new double[responses.ColumnCount];
 			//Filter that shit.
 			Matrix<double> filteredResponses;
-			if(filterenabled){
+			if (matchedFilterEnabled)
+			{
 				filteredResponses = matchedfilter * responses;
-			} else {
+			}
+			else
+			{
 				filteredResponses = responses;
 			}
 			//loop over channels	
 			double windowStart = 0;
 			double windowEnd = filteredResponses.RowCount;
 			for (int i = 0; i < filteredResponses.ColumnCount; i++)
-			{				
+			{
 				//loop over samples in channel i	
 				for (int sample = (int)Math.Floor(windowStart); sample < Math.Ceiling(windowEnd); sample++)
-				{						
+				{
 					if (Math.Abs(filteredResponses[sample, i]) > maxes[i])
 					{
 						maxes[i] = Math.Abs(filteredResponses[sample, i]);
@@ -176,34 +190,34 @@ namespace EV2020.LocationSystem
 				}
 				if (i == 0)
 				{
-					windowStart = Math.Max(0, samplemaxes[i] - samplewindow / 2);
-					windowEnd = Math.Min(filteredResponses.RowCount, samplemaxes[i] + samplewindow / 2); 
+					windowStart = Math.Max(0, samplemaxes[i] - sampleWindow / 2);
+					windowEnd = Math.Min(filteredResponses.RowCount, samplemaxes[i] + sampleWindow / 2);
 				}
 			}
 			Debug.WriteLine("Channel 0 is the 'zero' at @ {0} samples.", samplemaxes[0]);
 			for (int i = 1; i < samplemaxes.Length; i++)
 			{
 				Debug.WriteLine("Channel {2} delta is {0:f2} ms at @ {1} samples.", Math.Abs(samplemaxes[0] - samplemaxes[1]) * ASIO.T * 1000, samplemaxes[i], i);
-			}			
+			}
 			//lastData = responses.Append(filteredResponses);
 			//lastData = responses;
 			lastData = filteredResponses;
 			lastMaxes = samplemaxes;
 			List<Position3D> l = new List<Position3D>();
-			l.Add(Localize(samplemaxes,lat));
+			l.Add(Localize(samplemaxes, lat));
 			//l.Add(Localize2(samplemaxes, lat));
 			Debug.WriteLine(l[0]);
 			//Debug.WriteLine(l[1]);
 			Position3D lpos = GetAveragePosition(l);
 			Debug.WriteLine(lpos);
-			
+
 			OnLocationUpdated(this, new LocationUpdatedEventArgs(lpos));
 		}
 
-        protected Position3D Localize(int[] samplemaxes, ASIOLatencies lat)
-        {
-            //Working vars
-            Position3D loc = new Position3D();
+		protected Position3D Localize(int[] samplemaxes, ASIOLatencies lat)
+		{
+			//Working vars
+			Position3D loc = new Position3D();
 
 			int nmics = Math.Min(Microphones.Count, asio.InChannels);
 			int row = 0;
@@ -211,25 +225,25 @@ namespace EV2020.LocationSystem
 			Matrix<double> a = DenseMatrix.Create(nmics * (nmics - 1), nmics - 1, 0);
 			Vector<double> b = DenseVector.Create(nmics * (nmics - 1), 0);
 
-            
-            for (int i = 0; i < nmics; i++)
-            {
-                for (int j = 0; j < nmics; j++)
-                {
-                    if (j <= i)
-                        continue;
-                    a[row, 0] = 2 * (Microphones[j].Position.X - Microphones[i].Position.X);
-                    a[row, 1] = 2 * (Microphones[j].Position.Y - Microphones[i].Position.Y);
-                    a[row, 1 + j] = -2 * (samplemaxes[i] - samplemaxes[j]) / ASIO.Fs * c;
-                    b[row] = Math.Pow(((samplemaxes[i] - samplemaxes[j]) / ASIO.Fs * c), 2) - Math.Pow(Position3D.Magnitude(Microphones[i].Position), 2) + Math.Pow(Position3D.Magnitude(Microphones[j].Position), 2);
-                    row++;
-                }
-            }
 
-            Vector<double> y = a.Solve(b);
-            loc = new Position3D() { X = y[0], Y = y[1], Z = 0 };
-            return loc;
-        }
+			for (int i = 0; i < nmics; i++)
+			{
+				for (int j = 0; j < nmics; j++)
+				{
+					if (j <= i)
+						continue;
+					a[row, 0] = 2 * (Microphones[j].Position.X - Microphones[i].Position.X);
+					a[row, 1] = 2 * (Microphones[j].Position.Y - Microphones[i].Position.Y);
+					a[row, 1 + j] = -2 * (samplemaxes[i] - samplemaxes[j]) / ASIO.Fs * c;
+					b[row] = Math.Pow(((samplemaxes[i] - samplemaxes[j]) / ASIO.Fs * c), 2) - Math.Pow(Position3D.GetMagnitude(Microphones[i].Position), 2) + Math.Pow(Position3D.GetMagnitude(Microphones[j].Position), 2);
+					row++;
+				}
+			}
+
+			Vector<double> y = a.Solve(b);
+			loc = new Position3D() { X = y[0], Y = y[1], Z = 0 };
+			return loc;
+		}
 		protected Position3D Localize2(int[] samplemaxes, ASIOLatencies lat)
 		{
 
@@ -271,20 +285,20 @@ namespace EV2020.LocationSystem
 
 					C =
 					(
-						(B * Complex.Pow(d1, 3) - Complex.Pow(B, 3) * d1 + Complex.Pow(B, 3) * d2 - H * Complex.Pow(d1, 3) + 2 * d1 *
+						(fieldWidth * Complex.Pow(d1, 3) - Complex.Pow(fieldWidth, 3) * d1 + Complex.Pow(fieldWidth, 3) * d2 - fieldHeight * Complex.Pow(d1, 3) + 2 * d1 *
 						Complex.Sqrt(
-							((B + d1 - d3) * (B - d1 + d3) * (Complex.Pow(B, 4) - 2 * Complex.Pow(B, 3) * d1 + 2 * Complex.Pow(B, 3) * d2 + Complex.Pow(B, 2) * Complex.Pow(H, 2) + 2 * Complex.Pow(B, 2) * H * d1 - 2 * Complex.Pow(B, 2) * H * d2 + Complex.Pow(B, 2) * Complex.Pow(d1, 2) - 2 * Complex.Pow(B, 2) * d1 * d3 - Complex.Pow(B, 2) * Complex.Pow(d2, 2) + 2 * Complex.Pow(B, 2) * d2 * d3 - 2 * B * H * Complex.Pow(d1, 2) + 4 * B * H * d1 * d2 - 2 * B * H * Complex.Pow(d2, 2) - 2 * B * Complex.Pow(d1, 2) * d2 + 2 * B * Complex.Pow(d1, 2) * d3 + 4 * B * d1 * Complex.Pow(d2, 2) - 4 * B * d1 * d2 * d3 - 2 * B * Complex.Pow(d2, 3) + 2 * B * Complex.Pow(d2, 2) * d3 - Complex.Pow(H, 2) * Complex.Pow(d1, 2) + 2 * Complex.Pow(H, 2) * d1 * d3 - Complex.Pow(H, 2) * Complex.Pow(d3, 2) + 2 * H * Complex.Pow(d1, 2) * d2 - 2 * H * Complex.Pow(d1, 2) * d3 - 4 * H * d1 * Complex.Pow(d2, 2) + 4 * H * d1 * d2 * d3 + 2 * H * Complex.Pow(d2, 3) - 2 * H * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * d2 * d3 + Complex.Pow(d1, 2) * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 3) + 4 * d1 * Complex.Pow(d2, 2) * d3 - 2 * d1 * d2 * Complex.Pow(d3, 2) + Complex.Pow(d2, 4) - 2 * Complex.Pow(d2, 3) * d3 + Complex.Pow(d2, 2) * Complex.Pow(d3, 2))) / 4
+							((fieldWidth + d1 - d3) * (fieldWidth - d1 + d3) * (Complex.Pow(fieldWidth, 4) - 2 * Complex.Pow(fieldWidth, 3) * d1 + 2 * Complex.Pow(fieldWidth, 3) * d2 + Complex.Pow(fieldWidth, 2) * Complex.Pow(fieldHeight, 2) + 2 * Complex.Pow(fieldWidth, 2) * fieldHeight * d1 - 2 * Complex.Pow(fieldWidth, 2) * fieldHeight * d2 + Complex.Pow(fieldWidth, 2) * Complex.Pow(d1, 2) - 2 * Complex.Pow(fieldWidth, 2) * d1 * d3 - Complex.Pow(fieldWidth, 2) * Complex.Pow(d2, 2) + 2 * Complex.Pow(fieldWidth, 2) * d2 * d3 - 2 * fieldWidth * fieldHeight * Complex.Pow(d1, 2) + 4 * fieldWidth * fieldHeight * d1 * d2 - 2 * fieldWidth * fieldHeight * Complex.Pow(d2, 2) - 2 * fieldWidth * Complex.Pow(d1, 2) * d2 + 2 * fieldWidth * Complex.Pow(d1, 2) * d3 + 4 * fieldWidth * d1 * Complex.Pow(d2, 2) - 4 * fieldWidth * d1 * d2 * d3 - 2 * fieldWidth * Complex.Pow(d2, 3) + 2 * fieldWidth * Complex.Pow(d2, 2) * d3 - Complex.Pow(fieldHeight, 2) * Complex.Pow(d1, 2) + 2 * Complex.Pow(fieldHeight, 2) * d1 * d3 - Complex.Pow(fieldHeight, 2) * Complex.Pow(d3, 2) + 2 * fieldHeight * Complex.Pow(d1, 2) * d2 - 2 * fieldHeight * Complex.Pow(d1, 2) * d3 - 4 * fieldHeight * d1 * Complex.Pow(d2, 2) + 4 * fieldHeight * d1 * d2 * d3 + 2 * fieldHeight * Complex.Pow(d2, 3) - 2 * fieldHeight * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * d2 * d3 + Complex.Pow(d1, 2) * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 3) + 4 * d1 * Complex.Pow(d2, 2) * d3 - 2 * d1 * d2 * Complex.Pow(d3, 2) + Complex.Pow(d2, 4) - 2 * Complex.Pow(d2, 3) * d3 + Complex.Pow(d2, 2) * Complex.Pow(d3, 2))) / 4
 						)
 						-
 						2 * d2 *
 						Complex.Sqrt(
 							(
-								(B + d1 - d3) * (B - d1 + d3) * (Complex.Pow(B, 4) - 2 * Complex.Pow(B, 3) * d1 + 2 * Complex.Pow(B, 3) * d2 + Complex.Pow(B, 2) * Complex.Pow(H, 2) + 2 * Complex.Pow(B, 2) * H * d1 - 2 * Complex.Pow(B, 2) * H * d2 + Complex.Pow(B, 2) * Complex.Pow(d1, 2) - 2 * Complex.Pow(B, 2) * d1 * d3 - Complex.Pow(B, 2) * Complex.Pow(d2, 2) + 2 * Complex.Pow(B, 2) * d2 * d3 - 2 * B * H * Complex.Pow(d1, 2) + 4 * B * H * d1 * d2 - 2 * B * H * Complex.Pow(d2, 2) - 2 * B * Complex.Pow(d1, 2) * d2 + 2 * B * Complex.Pow(d1, 2) * d3 + 4 * B * d1 * Complex.Pow(d2, 2) - 4 * B * d1 * d2 * d3 - 2 * B * Complex.Pow(d2, 3) + 2 * B * Complex.Pow(d2, 2) * d3 - Complex.Pow(H, 2) * Complex.Pow(d1, 2) + 2 * Complex.Pow(H, 2) * d1 * d3 - Complex.Pow(H, 2) * Complex.Pow(d3, 2) + 2 * H * Complex.Pow(d1, 2) * d2 - 2 * H * Complex.Pow(d1, 2) * d3 - 4 * H * d1 * Complex.Pow(d2, 2) + 4 * H * d1 * d2 * d3 + 2 * H * Complex.Pow(d2, 3) - 2 * H * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * d2 * d3 + Complex.Pow(d1, 2) * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 3) + 4 * d1 * Complex.Pow(d2, 2) * d3 - 2 * d1 * d2 * Complex.Pow(d3, 2) + Complex.Pow(d2, 4) - 2 * Complex.Pow(d2, 3) * d3 + Complex.Pow(d2, 2) * Complex.Pow(d3, 2))
+								(fieldWidth + d1 - d3) * (fieldWidth - d1 + d3) * (Complex.Pow(fieldWidth, 4) - 2 * Complex.Pow(fieldWidth, 3) * d1 + 2 * Complex.Pow(fieldWidth, 3) * d2 + Complex.Pow(fieldWidth, 2) * Complex.Pow(fieldHeight, 2) + 2 * Complex.Pow(fieldWidth, 2) * fieldHeight * d1 - 2 * Complex.Pow(fieldWidth, 2) * fieldHeight * d2 + Complex.Pow(fieldWidth, 2) * Complex.Pow(d1, 2) - 2 * Complex.Pow(fieldWidth, 2) * d1 * d3 - Complex.Pow(fieldWidth, 2) * Complex.Pow(d2, 2) + 2 * Complex.Pow(fieldWidth, 2) * d2 * d3 - 2 * fieldWidth * fieldHeight * Complex.Pow(d1, 2) + 4 * fieldWidth * fieldHeight * d1 * d2 - 2 * fieldWidth * fieldHeight * Complex.Pow(d2, 2) - 2 * fieldWidth * Complex.Pow(d1, 2) * d2 + 2 * fieldWidth * Complex.Pow(d1, 2) * d3 + 4 * fieldWidth * d1 * Complex.Pow(d2, 2) - 4 * fieldWidth * d1 * d2 * d3 - 2 * fieldWidth * Complex.Pow(d2, 3) + 2 * fieldWidth * Complex.Pow(d2, 2) * d3 - Complex.Pow(fieldHeight, 2) * Complex.Pow(d1, 2) + 2 * Complex.Pow(fieldHeight, 2) * d1 * d3 - Complex.Pow(fieldHeight, 2) * Complex.Pow(d3, 2) + 2 * fieldHeight * Complex.Pow(d1, 2) * d2 - 2 * fieldHeight * Complex.Pow(d1, 2) * d3 - 4 * fieldHeight * d1 * Complex.Pow(d2, 2) + 4 * fieldHeight * d1 * d2 * d3 + 2 * fieldHeight * Complex.Pow(d2, 3) - 2 * fieldHeight * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * d2 * d3 + Complex.Pow(d1, 2) * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 3) + 4 * d1 * Complex.Pow(d2, 2) * d3 - 2 * d1 * d2 * Complex.Pow(d3, 2) + Complex.Pow(d2, 4) - 2 * Complex.Pow(d2, 3) * d3 + Complex.Pow(d2, 2) * Complex.Pow(d3, 2))
 							)
 							/
 							4
 						)
-						- Complex.Pow(d1, 3) * d2 + d1 * Complex.Pow(d3, 3) + Complex.Pow(d1, 3) * d3 - d2 * Complex.Pow(d3, 3) + Complex.Pow(B, 4) - Complex.Pow(B, 2) * Complex.Pow(d1, 2) - Complex.Pow(B, 2) * Complex.Pow(d2, 2) - Complex.Pow(B, 2) * Complex.Pow(d3, 2) + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * Complex.Pow(d3, 2) + Complex.Pow(d2, 2) * Complex.Pow(d3, 2) + Complex.Pow(B, 2) * H * d1 - Complex.Pow(B, 2) * H * d2 - B * Complex.Pow(d1, 2) * d2 + Complex.Pow(B, 2) * d1 * d2 + B * d1 * Complex.Pow(d3, 2) - 2 * B * Complex.Pow(d1, 2) * d3 + Complex.Pow(B, 2) * d1 * d3 - B * d2 * Complex.Pow(d3, 2) + Complex.Pow(B, 2) * d2 * d3 + H * Complex.Pow(d1, 2) * d2 - H * d1 * Complex.Pow(d3, 2) + 2 * H * Complex.Pow(d1, 2) * d3 + H * d2 * Complex.Pow(d3, 2) + d1 * d2 * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * d2 * d3 + 2 * B * d1 * d2 * d3 - 2 * H * d1 * d2 * d3) / (Complex.Pow(B, 2) - 2 * Complex.Pow(d1, 2) + 2 * d1 * d2 + 2 * d1 * d3 - Complex.Pow(d2, 2) - Complex.Pow(d3, 2)) - Complex.Pow(B, 2) - Complex.Pow(d1, 2) + Complex.Pow(d2, 2)
+						- Complex.Pow(d1, 3) * d2 + d1 * Complex.Pow(d3, 3) + Complex.Pow(d1, 3) * d3 - d2 * Complex.Pow(d3, 3) + Complex.Pow(fieldWidth, 4) - Complex.Pow(fieldWidth, 2) * Complex.Pow(d1, 2) - Complex.Pow(fieldWidth, 2) * Complex.Pow(d2, 2) - Complex.Pow(fieldWidth, 2) * Complex.Pow(d3, 2) + Complex.Pow(d1, 2) * Complex.Pow(d2, 2) - 2 * Complex.Pow(d1, 2) * Complex.Pow(d3, 2) + Complex.Pow(d2, 2) * Complex.Pow(d3, 2) + Complex.Pow(fieldWidth, 2) * fieldHeight * d1 - Complex.Pow(fieldWidth, 2) * fieldHeight * d2 - fieldWidth * Complex.Pow(d1, 2) * d2 + Complex.Pow(fieldWidth, 2) * d1 * d2 + fieldWidth * d1 * Complex.Pow(d3, 2) - 2 * fieldWidth * Complex.Pow(d1, 2) * d3 + Complex.Pow(fieldWidth, 2) * d1 * d3 - fieldWidth * d2 * Complex.Pow(d3, 2) + Complex.Pow(fieldWidth, 2) * d2 * d3 + fieldHeight * Complex.Pow(d1, 2) * d2 - fieldHeight * d1 * Complex.Pow(d3, 2) + 2 * fieldHeight * Complex.Pow(d1, 2) * d3 + fieldHeight * d2 * Complex.Pow(d3, 2) + d1 * d2 * Complex.Pow(d3, 2) - 2 * d1 * Complex.Pow(d2, 2) * d3 + Complex.Pow(d1, 2) * d2 * d3 + 2 * fieldWidth * d1 * d2 * d3 - 2 * fieldHeight * d1 * d2 * d3) / (Complex.Pow(fieldWidth, 2) - 2 * Complex.Pow(d1, 2) + 2 * d1 * d2 + 2 * d1 * d3 - Complex.Pow(d2, 2) - Complex.Pow(d3, 2)) - Complex.Pow(fieldWidth, 2) - Complex.Pow(d1, 2) + Complex.Pow(d2, 2)
 					)
 					/
 					(
@@ -303,7 +317,7 @@ namespace EV2020.LocationSystem
 					t[i] = lat.Input / ASIO.Fs + C.Real + samplemaxes[i] / ASIO.Fs;
 				}
 
-				Laterate(t, h, c, out new_loc, out new_points, out new_points_std);
+				Laterate(t, beaconHeight, c, out new_loc, out new_points, out new_points_std);
 				if (new_points > points || (new_points == points && new_points_std < points_std))
 				{
 					loc = new_loc;
@@ -315,7 +329,7 @@ namespace EV2020.LocationSystem
 		}
 		protected void Laterate(double[] t, double h, double c, out Position3D loc, out int points, out double points_std)
 		{
-			/*loc = new Position3D() { X = 0, Y = 0, Z = h };
+			/*loc = new Position3D() { X = 0, Y = 0, Z = beaconHeight };
 			points = 5;
 			points_std = 0;*/
 			List<Position3D> y = new List<Position3D>();
@@ -361,11 +375,11 @@ namespace EV2020.LocationSystem
 			List<Position3D> result = new List<Position3D>();
 			for (int i = 0; i < x.Count; i++)
 			{
-				if (x[i].X < -margin || x[i].X > B + margin)
+				if (x[i].X < -fieldMargin || x[i].X > fieldWidth + fieldMargin)
 				{
 					continue;
 				}
-				if (x[i].Y < -margin || x[i].Y > H + margin)
+				if (x[i].Y < -fieldMargin || x[i].Y > fieldHeight + fieldMargin)
 				{
 					continue;
 				}
@@ -385,14 +399,14 @@ namespace EV2020.LocationSystem
 				List<Position3D> y = new List<Position3D>();
 				for (int j = 0; j < x.Count; j++)
 				{
-					if (Position3D.Magnitude(x[j] - x[i]) < 0.20)
+					if (Position3D.GetMagnitude(x[j] - x[i]) < 0.20)
 					{// Max 20 cm from the rest
 						// Pick the beacon location instead of its mirror image
 						bool firstBest = false;
 						int index = (int)Math.Floor((double)(j) / 2) * 2;
 						if (index >= 0 && index + 1 < x.Count)
 						{
-							if (Position3D.Magnitude(x[index + 1] - x[i]) > Position3D.Magnitude(x[index] - x[i]))
+							if (Position3D.GetMagnitude(x[index + 1] - x[i]) > Position3D.GetMagnitude(x[index] - x[i]))
 							{
 								firstBest = true;
 							}
@@ -420,7 +434,7 @@ namespace EV2020.LocationSystem
 			else { return new Position3D(); }
 
 		}
-		
+
 		protected virtual void Dispose(bool disposing)
 		{
 			if (_disposed)
@@ -430,8 +444,10 @@ namespace EV2020.LocationSystem
 			{
 				// free other managed objects that implement
 				// IDisposable only
-				if(asio!=null)
+				if (asio != null)
 					asio.Dispose();
+				if (timer != null)
+					timer.Dispose();
 			}
 
 			// release any unmanaged objects
@@ -439,6 +455,7 @@ namespace EV2020.LocationSystem
 
 			asio = null;
 			matchedfilter = null;
+			timer = null;
 
 			_disposed = true;
 		}
@@ -461,39 +478,4 @@ namespace EV2020.LocationSystem
 			Position = _pos;
 		}
 	}
-	public struct Position3D
-	{
-		public double X;
-		public double Y;
-		public double Z;
-		public static Position3D operator -(Position3D x, Position3D y)
-		{
-			x.X -= y.X;
-			x.Y -= y.Y;
-			x.Z -= y.Z;
-			return x;
-		}
-		public static Position3D operator +(Position3D x, Position3D y)
-		{
-			x.X += y.X;
-			x.Y += y.Y;
-			x.Z += y.Z;
-			return x;
-		}
-		public static double Magnitude(Position3D x)
-		{
-			return Math.Sqrt(Math.Pow(x.X, 2) + Math.Pow(x.Y, 2) + Math.Pow(x.Z, 2));
-		}
-		public override string ToString()
-		{
-			return "Posistion3D: " + X.ToString("F3") + "; " + Y.ToString("F3") + "; " + Z.ToString("F3");
-		}
-	}
-
-	public struct Microphone
-	{
-		public Position3D Position;
-		public int ChannelIndex;
-	}
-	
 }

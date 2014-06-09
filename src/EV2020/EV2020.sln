@@ -30,6 +30,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Numerics", "..\mathnet\src\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MKL", "..\mathnet\src\NativeProviders\Windows\MKL\MKLWrapper.vcxproj", "{C0B0DBA9-7FB0-4C87-BDB1-3EED19DC2B8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectorTests", "DirectorTests\DirectorTests.csproj", "{2A7A8882-B6A9-4C39-9662-57475F7848B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroMvvm", "MicroMvvm\MicroMvvm.csproj", "{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -182,8 +186,43 @@ Global
 		{C0B0DBA9-7FB0-4C87-BDB1-3EED19DC2B8F}.Release-MKL|x64.Build.0 = Release|x64
 		{C0B0DBA9-7FB0-4C87-BDB1-3EED19DC2B8F}.Release-MKL|x86.ActiveCfg = Release|Win32
 		{C0B0DBA9-7FB0-4C87-BDB1-3EED19DC2B8F}.Release-MKL|x86.Build.0 = Release|Win32
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Debug|x64.ActiveCfg = Debug|x64
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Debug|x64.Build.0 = Debug|x64
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Debug|x86.ActiveCfg = Debug|x86
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Debug|x86.Build.0 = Debug|x86
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Debug-MKL|x64.ActiveCfg = Debug|x64
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Debug-MKL|x64.Build.0 = Debug|x64
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Debug-MKL|x86.ActiveCfg = Debug|x86
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Debug-MKL|x86.Build.0 = Debug|x86
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Release|x64.ActiveCfg = Release|x64
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Release|x64.Build.0 = Release|x64
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Release|x86.ActiveCfg = Release|x86
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Release|x86.Build.0 = Release|x86
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Release-MKL|x64.ActiveCfg = Release|x64
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Release-MKL|x64.Build.0 = Release|x64
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Release-MKL|x86.ActiveCfg = Release|x86
+		{2A7A8882-B6A9-4C39-9662-57475F7848B8}.Release-MKL|x86.Build.0 = Release|x86
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug|x64.ActiveCfg = Debug|x64
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug|x64.Build.0 = Debug|x64
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug|x86.ActiveCfg = Debug|x86
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug|x86.Build.0 = Debug|x86
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug-MKL|x64.ActiveCfg = Debug|x64
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug-MKL|x64.Build.0 = Debug|x64
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug-MKL|x86.ActiveCfg = Debug|x86
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug-MKL|x86.Build.0 = Debug|x86
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Release|x64.ActiveCfg = Release|x64
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Release|x64.Build.0 = Release|x64
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Release|x86.ActiveCfg = Release|x86
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Release|x86.Build.0 = Release|x86
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Release-MKL|x64.ActiveCfg = Release|x64
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Release-MKL|x64.Build.0 = Release|x64
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Release-MKL|x86.ActiveCfg = Release|x86
+		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Release-MKL|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		BuildVersion_UseGlobalSettings = True
 	EndGlobalSection
 EndGlobal

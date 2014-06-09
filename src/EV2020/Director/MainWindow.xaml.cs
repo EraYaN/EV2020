@@ -12,6 +12,8 @@ using MathNet.Numerics.Distributions;
 using System.Diagnostics;
 using BlueWave.Interop.Asio;
 using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace EV2020.Director
 {
@@ -20,94 +22,92 @@ namespace EV2020.Director
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		SettingsWindow settingsWindow;
 		public MainWindow()
 		{
-			InitializeComponent();			
+			this.DataContext = Data.db;
+			InitializeComponent();
 			/*statusBarComPort.DataContext = Data.db;
 			statusBarLastPing.DataContext = Data.db;
 			statusBarEmergencyStop.DataContext = Data.db;
 			statusBarFixedInputSequence.DataContext = Data.db;*/
-            MathNet.Numerics.Control.LinearAlgebraProvider = new MklLinearAlgebraProvider();
-			this.DataContext = Data.db;
-		}
-		private void comPortsComboBox_DropDownOpened(object sender, EventArgs e)
-		{
-			string[] ports = SerialPort.GetPortNames();
-			comPortsComboBox.Items.Clear();
-			foreach (string s in ports)
+			MathNet.Numerics.Control.LinearAlgebraProvider = new MklLinearAlgebraProvider();
+			if (File.Exists("cfg.bin"))
 			{
-				ComboBoxItem extra = new ComboBoxItem();
-				extra.Content = s;
-
-				if (Data.ComPort == s)
+				try
 				{
-					extra.IsSelected = true;
+					IFormatter formatter = new BinaryFormatter();
+					using (Stream stream = new FileStream("cfg.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
+					{
+						Data.cfg = (Configuration)formatter.Deserialize(stream);
+					}
 				}
-				comPortsComboBox.Items.Add(extra);
+				catch
+				{
+					Data.cfg = new Configuration();
+				}
+				finally
+				{
+				}
 			}
+			else
+			{
+				Data.cfg = new Configuration();
+			}
+			settingsWindow = new SettingsWindow();
 		}
 
 		private void initButton_Click(object sender, RoutedEventArgs e)
 		{
 			initButton.IsEnabled = false;
 			initButton.Refresh();
-			//Init classes
-			Data.obsvr = new Observer(new PDEpicModel());
+			//Init classes			
+			//Data.obsvr = new Observer(new PDEpicModel());
 			Data.nav = new StandardNavigation();
 			Data.vis = new Visualization(visCanvas, joystickCanvas);
-			
-			if (comPortsComboBox.SelectedItem != null && baudRateComboBox.SelectedItem != null)
+
+			if (Data.cfg.ComPort != "" && Data.cfg.BaudRate > 0)
 			{
-				Data.ComPort = (string)((ComboBoxItem)comPortsComboBox.SelectedItem).Content;
-				Data.BaudRate = int.Parse((string)((ComboBoxItem)baudRateComboBox.SelectedItem).Content);
-				if (Data.ComPort != "" && Data.BaudRate > 0)
-				{
-					Data.com = new SerialInterface(Data.ComPort, Data.BaudRate);
-					int res = Data.com.OpenPort();
-					Data.ctr = new Controller();
-					if (res != 0)
-						MessageBox.Show("SerialInterface Error: #" + res + "\n" + Data.com.lastError, "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
-				}
-				else
-				{
-					MessageBox.Show("COM Port or Baud Rate not valid.", "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
-				}
+				Data.com = new SerialInterface(Data.cfg.ComPort, Data.cfg.BaudRate);
+				int res = Data.com.OpenPort();
+				Data.ctr = new Controller();
+				if (res != 0)
+					MessageBox.Show("SerialInterface Error: #" + res + "\n" + Data.com.lastError, "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			else
 			{
-				MessageBox.Show("No COM Port or Baud Rate chosen.", "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show("COM Port or Baud Rate not valid.", "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
+
 			//MATLAB is for now not needed.
 			/*if(Data.matlab==null)
-				Data.matlab = new MATLABWrapper(@"H:\mcode","Groep B1");*/
+				Data.matlab = new MATLABWrapper(@"fieldHeight:\mcode","Groep B1");*/
 			Data.db.UpdateProperty(String.Empty); //Update All Bindings			
-							
+
 			//enable buttons				
 			destroyButton.IsEnabled = true;
-			comPortsComboBox.IsEnabled = false;
-			baudRateComboBox.IsEnabled = false;
 			//update vis
 			Data.vis.drawJoystick();
 		}
 
 		private void destroyButton_Click(object sender, RoutedEventArgs e)
-		{			
+		{
 			destroyButton.IsEnabled = false;
 			destroyButton.Refresh();
 			initButton.IsEnabled = true;
-			comPortsComboBox.IsEnabled = true;
-			baudRateComboBox.IsEnabled = true;
-			Data.ctr = null;
-			Data.obsvr = null;
-			Data.vis = null;
-			Data.nav = null;
+			Data.ctr = null;			
+			if (Data.vis != null)
+				Data.vis = null;
+			if (Data.nav != null)
+				Data.nav = null;
 			if (Data.matlab != null)
 			{
 				Data.matlab.CloseAll();
 				Data.matlab.Dispose();
 				Data.matlab = null;
 			}
-			Data.com.Dispose();
+			if (Data.com != null)
+				Data.com.Dispose();
 			Data.com = null;
 			Data.db.UpdateProperty(String.Empty); //Update All Bindings
 		}
@@ -124,7 +124,7 @@ namespace EV2020.Director
 				Data.ctr.Center();
 				Data.ctr.Brake();
 				//Data.ctr.Stop();
-				
+
 			}
 			if (e.Key == Key.S)
 			{
@@ -140,7 +140,7 @@ namespace EV2020.Director
 						}
 					}
 				}
-			}	
+			}
 		}
 
 		private void joystickCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -158,7 +158,7 @@ namespace EV2020.Director
 		{
 			if (Data.ctr == null)
 				return;
-			Point pos = e.GetPosition(joystickCanvas);		
+			Point pos = e.GetPosition(joystickCanvas);
 			double centerH = joystickCanvas.ActualHeight / 2;
 			double centerW = joystickCanvas.ActualWidth / 2;
 			Data.ctr.SetDrivingSteering((int)Math.Round(-(pos.Y - centerH) / (centerH / 15)), -(int)Math.Round((pos.X - centerW) / (centerW / 50)));
@@ -187,24 +187,17 @@ namespace EV2020.Director
 		private void joystickCanvas_MouseUp(object sender, MouseButtonEventArgs e)
 		{
 			if (Data.ctr == null)
-				return; 
+				return;
 			Data.ctr.Stop();
 			Data.ctr.Center();
 			Data.vis.drawJoystick();
-		}
-
-		private void testPlotButton_Click(object sender, RoutedEventArgs e)
-		{
-			double[] x = { 1, 2, 3, 4, 5 };
-			double[] y = { 2, 4, 6, 8, 1 };
-			Data.matlab.plot(x, y, "Titel", "X (label)", "Y (label)", "Data legenda");
 		}
 
 		private void sendPulseButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (Data.ctr == null)
 				return;
-			InputSequence fis = new InputSequence(Sequence.Pulse(100, 0, 20, -10, 0),new Sequence(100));
+			InputSequence fis = new InputSequence(Sequence.Pulse(100, 0, 20, -10, 0), new Sequence(100));
 			Data.ctr.StartFixedInputSequence(ref fis);
 		}
 
@@ -221,28 +214,37 @@ namespace EV2020.Director
 			s.Append(s2);
 			s.Append(s1);
 			s.Append(s2);
-			InputSequence fis = new InputSequence(s,new Sequence(s.Length));
-			Data.ctr.StartFixedInputSequence(ref fis);		
+			InputSequence fis = new InputSequence(s, new Sequence(s.Length));
+			Data.ctr.StartFixedInputSequence(ref fis);
 		}
-
-        private void testMathButton_Click(object sender, RoutedEventArgs e)
-        {
-            Matrix<double> A = DenseMatrix.OfArray(new double[,] { { 1, 2, 3 }, { 3, 2, 1 }, { 2, 1, 3 } });
-            Matrix<double> B = DenseMatrix.OfArray(new double[,] { { 2, 0, 0 }});
-            Matrix<double> C = DenseMatrix.OfArray(new double[,] { { 5 }, { 0 }, { 5 } });
-            var E = DenseMatrix.CreateRandom(10000, 1000, new ContinuousUniform(0, 1));
-            var F = DenseMatrix.CreateRandom(1000, 10000, new ContinuousUniform(0, 1));
-            var D = B*A*C;
-            var s = Stopwatch.StartNew();
-            var G = E * F;
-            s.Stop();
-            MessageBox.Show(s.ElapsedMilliseconds.ToString());
-            MessageBox.Show(D.ToString());
-        }
 
 		private void ToggleAudioBeaconMenuItem_Click(object sender, RoutedEventArgs e)
 		{
-			Data.ctr.ToggleAudio();
-		}				
+			if(Data.ctr!=null)
+				Data.ctr.ToggleAudio();
+		}
+
+		private void Window_Closed(object sender, EventArgs e)
+		{
+			settingsWindow.Close();
+			settingsWindow = null;
+			IFormatter formatter = new BinaryFormatter();
+			using (Stream stream = new FileStream("cfg.bin", FileMode.Create, FileAccess.Write, FileShare.Read))
+			{
+				formatter.Serialize(stream, Data.cfg);
+			}
+		}
+
+		private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			settingsWindow.Show();
+			settingsWindow.Focus();
+		}
+
+		private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			AboutWindow aboutWindow = new AboutWindow();
+			aboutWindow.ShowDialog();
+		}
 	}
 }

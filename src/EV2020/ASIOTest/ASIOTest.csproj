@@ -176,6 +176,10 @@
       <Project>{6db00ba8-efde-4d3a-8983-f01857a36c1a}</Project>
       <Name>BlueWave.Interop.Asio</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MicroMvvm\MicroMvvm.csproj">
+      <Project>{9efe6cbd-df21-436e-9f81-e258bab0b653}</Project>
+      <Name>MicroMvvm</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -218,6 +222,11 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)..\mathnet\out\MKL\Windows\$(PlatformName)\*.dll" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties/AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" StartAt="635355707843349787" Versioning="1" IncrementAction="2" IncrementOnBuild="True" IncrementOnRebuild="True" IncrementInformational="False" />
+    </VisualStudio>
+  </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

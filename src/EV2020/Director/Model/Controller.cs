@@ -30,6 +30,7 @@ namespace EV2020.Director
 		private StringBuilder _receivingBuffer;
 		private Stopwatch _replyStopwatch;
 		private long _lastPing = -1;
+		private bool replyTimerRunning = false;
 		public long LastPing
 		{
 			get { return _lastPing; }
@@ -124,12 +125,7 @@ namespace EV2020.Director
 		public int CurrentAudioState
 		{
 			get { return currentAudioState; }
-		}
-		private double target = 0.25;
-		public double Target
-		{
-			get { return target; }
-		}
+		}		
 
 		public Controller()
 		{
@@ -157,12 +153,15 @@ namespace EV2020.Director
 			}
 			else
 			{
-				if (Data.obsvr != null)
+				if (Data.nav != null)
 				{
-					double d = Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100); //using average of the sensor values.
+					//TODO NAV tick
+					CarCommand command = Data.nav.Tick(currentLeftDistance,currentRightDistance);
+					//double d = Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100); //using average of the sensor values.
 					//double d = Data.obsvr.Tick(Math.Min(currentLeftDistance, currentRightDistance), Target * 100); //using minimum of the sensor values.
 					//double d = Data.obsvr.Tick(currentLeftDistance, Target * 100); //using left sensor value.
-					
+					//TODO
+					double d = 0;
 					//Set Driving for sending to car.
 					SetDriving((int)Math.Round(d));
 				}
@@ -195,9 +194,14 @@ namespace EV2020.Director
 					if (c == 4)
 					{
 						//Block done (= EOT).
-						_replyStopwatch.Stop();
-						_lastPing = _replyStopwatch.ElapsedMilliseconds;
-						Data.db.UpdateProperty("LastPing");
+						if (replyTimerRunning)
+						{
+							_replyStopwatch.Stop();
+							replyTimerRunning = false;
+							_lastPing =(long)Math.Round((_lastPing*2.0+(double)_replyStopwatch.ElapsedMilliseconds)/3);
+							Data.db.UpdateProperty("LastPing");
+						}
+						
 						processReply(_receivingBuffer.ToString());
 					}
 					else if (c != '\n')
@@ -403,7 +407,11 @@ namespace EV2020.Director
 			if (Data.com == null)
 				return;
 			Data.com.WriteLine(line);
-			_replyStopwatch = Stopwatch.StartNew();
+			if (!replyTimerRunning)
+			{
+				_replyStopwatch = Stopwatch.StartNew();
+				replyTimerRunning = true;
+			}
 		}
 		private void enableAudio()
 		{

@@ -85,19 +85,34 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Databindings.cs" />
-    <Compile Include="IModel.cs" />
-    <Compile Include="INavigator.cs" />
-    <Compile Include="InputSequence.cs" />
-    <Compile Include="Localization.cs" />
-    <Compile Include="StandardNavigation.cs" />
-    <Compile Include="Observer.cs" />
-    <Compile Include="OutputSequence.cs" />
-    <Compile Include="PDDefaultModel.cs" />
-    <Compile Include="PDEpicModel.cs" />
-    <Compile Include="PIDModel.cs" />
-    <Compile Include="Sequence.cs" />
-    <Compile Include="Visualization.cs" />
+    <Compile Include="AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Communication\CarCommand.cs" />
+    <Compile Include="Settings\Configuration.cs" />
+    <Compile Include="Helpers\Databindings.cs" />
+    <Compile Include="Model\IModel.cs" />
+    <Compile Include="Model\IModelND.cs" />
+    <Compile Include="Model\INavigator.cs" />
+    <Compile Include="Communication\InputSequence.cs" />
+    <Compile Include="Helpers\PlotWindow.xaml.cs">
+      <DependentUpon>PlotWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Model\StandardNavigation.cs" />
+    <Compile Include="Communication\OutputSequence.cs" />
+    <Compile Include="Model\PDDefaultModel.cs" />
+    <Compile Include="Model\PDEpicModel.cs" />
+    <Compile Include="Model\PIDModel.cs" />
+    <Compile Include="Communication\Sequence.cs" />
+    <Compile Include="Settings\ConfigurationViewModel.cs" />
+    <Compile Include="Visualization\Visualization.cs" />
+    <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -106,14 +121,22 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Arrow.cs" />
-    <Compile Include="Controller.cs" />
-    <Compile Include="Data.cs" />
-    <Compile Include="Helpers.cs" />
+    <Compile Include="Visualization\Arrow.cs" />
+    <Compile Include="Model\Controller.cs" />
+    <Compile Include="Helpers\Data.cs" />
+    <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Helpers\PlotWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -129,6 +152,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="resources\intel-logo.jpg" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -140,6 +164,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="resources\ASIO_LOGO1.jpg" />
+    <Content Include="resources\beaconsignal.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\MLE4WCSharp\MLE4WCSharp\MLE4WCSharp.csproj">
@@ -158,11 +186,24 @@
       <Project>{e091cb2b-20fa-43c1-a595-1ab23320f97d}</Project>
       <Name>Communication</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LocationSystem\LocationSystem.csproj">
+      <Project>{ab7c90e7-a0e7-446c-9bb7-9068d013a600}</Project>
+      <Name>LocationSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MicroMvvm\MicroMvvm.csproj">
+      <Project>{9efe6cbd-df21-436e-9f81-e258bab0b653}</Project>
+      <Name>MicroMvvm</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)..\mathnet\out\MKL\Windows\$(PlatformName)\*.dll" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties/AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" StartAt="635297472000000000" Versioning="1" IncrementAction="2" IncrementOnBuild="True" IncrementOnRebuild="True" IncrementInformational="False" />
+    </VisualStudio>
+  </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

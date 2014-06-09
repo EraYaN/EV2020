@@ -18,7 +18,7 @@ using namespace System::Runtime::InteropServices;
 [assembly:AssemblyCopyrightAttribute("Copyright © Rob Philpott 2008")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
-[assembly:AssemblyVersionAttribute("1.0.0.0")];
+[assembly:AssemblyVersionAttribute("2014.6.9.2")];
 [assembly:ComVisible(false)];
 [assembly:CLSCompliantAttribute(true)];
 //[assembly:SecurityPermission(SecurityAction::Demand, UnmanagedCode = true)];

@@ -1,28 +1,28 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
+// General Information about an a is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("EV2020.AudioSystem")]
+// associated with an a.
+[assembly: AssemblyTitle("DirectorTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("EV2020.AudioSystem")]
+[assembly: AssemblyProduct("DirectorTests")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
+// Setting ComVisible to false makes the types in this a not visible 
+// to COM components.  If you need to access a type in this a from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2e757cba-f75e-4ec9-b60c-2332bac36f70")]
+[assembly: Guid("90edf7be-49bf-4003-8184-84571f3eaff6")]
 
-// Version information for an assembly consists of the following four values:
+// Version information for an a consists of the following four values:
 //
 //      Major Version
 //      Minor Version 
@@ -31,6 +31,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2014.6.9.10")]
-[assembly: AssemblyFileVersion("2014.6.9.10")]
+// [a: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("2014.6.9.2")]
+[assembly: AssemblyFileVersion("2014.6.9.1")]

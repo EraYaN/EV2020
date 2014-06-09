@@ -12,8 +12,7 @@ namespace EV2020.Director
 	/// The model with the PID Controller. Not finished.
 	/// </summary>
 	class PIDModel
-	{	
-		
+	{			
 		long lastTimestamp;
 
 		public PIDModel()
@@ -29,7 +28,7 @@ namespace EV2020.Director
 		/// <summary>
 		/// Not implemented
 		/// </summary>
-		/// <param name="Distance">The current measured distance.</param>
+		/// <param name="Position">The current measured distance.</param>
 		/// <param name="Target">The target distance.</param>
 		/// <returns>Output signals</returns>
 		public double Tick(double Distance, double Target)

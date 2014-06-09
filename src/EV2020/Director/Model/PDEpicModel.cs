@@ -11,7 +11,7 @@ namespace EV2020.Director
 	/// <summary>
 	/// The model made with a worse fit in MATLAB, but truer to reality.
 	/// </summary>
-	class PDEpicModel : IModel
+	class PDEpicModel : IModelND
 	{
 		// State matrix
 		readonly Matrix<double> A = null;
@@ -26,9 +26,9 @@ namespace EV2020.Director
 		// Observer Gain
 		readonly Matrix<double> L = null;
 
+
 		Matrix<double> x;
 		Matrix<double> xDot;
-		double debug1;
 
 		long lastTimestamp;
 
@@ -39,36 +39,36 @@ namespace EV2020.Director
 			C = DenseMatrix.OfArray(new double[,] { { 1, 0 } });
 			D = DenseMatrix.OfArray(new double[,] { { 0 } });
 			K = DenseMatrix.OfArray(new double[,] { { -0.15, -0.093 } });
-			L = DenseMatrix.OfArray(new double[,] { { 18.22 }, { 67.54 } });
-			debug1 = 0;
+			L = DenseMatrix.OfArray(new double[,] { { 18.22 }, { 67.54 } });			
 		}
-
-		public void Init()
+		/// <summary>
+		/// This initializes the internal model state.
+		/// </summary>
+		/// <param name="X">Start X coordinate in meters</param>
+		/// <param name="Y">StartY coordinate in meters</param>
+		public void Init(double X, double Y)
 		{
-			//Start was 300 cm from the wall.
-			x = DenseMatrix.OfArray(new double[,] { { 300 }, { 0 } });
+			//Start position = 50 cm and 50 cm and angle 0.5 pi. (y+ direction)
+			x = DenseMatrix.OfArray(new double[,] { { X*100, Y*100 }, { 0, 0 } });			
 			lastTimestamp = 0;
 		}
 
 		/// <summary>
-		/// 
+		/// Processes one step in the model.
 		/// </summary>
-		/// <param name="Distance">The current measured distance.</param>
-		/// <param name="Target">The target distance.</param>
+		/// <param name="Position">The current measured posistion in meters (col vec).</param>
+		/// <param name="Target">The target location in meters (col vec).</param>
 		/// <returns>Output signals</returns>
-		public double Tick(double Distance, double Target)
-		{
-			debug1 = ((-K * x)[0, 0]);
-
+		public Matrix<double> Tick(Matrix<double> Position, Matrix<double> Target)
+		{			
 			//Calculate the feedback. And clamp the value to the maximum values to be send to the car the "back" value is higher for faster braking.
-			double feedback = ((-K * x)[0, 0]).Clamp(-9, 5);
+			Matrix<double> feedback = (-K * x).Clamp(-9, 5);
 
 			// Dead zone. Non-symmetrical
-			if (feedback > -1 && feedback < 1.5)
-				feedback = 0;
+			feedback = feedback.Deadzone(-1,1.5);
 
 			//Calculate the change in x, xDot
-			xDot = A * x + B * feedback + L * ((Distance - Target) - (C * x)[0,0]);
+			xDot = A * x + B * feedback + L * ((Position*100 - Target*100) - (C * x));
 
 			//Save the "now"
 			long nowTimestamp = DateTime.Now.Ticks;
@@ -86,7 +86,7 @@ namespace EV2020.Director
 		}
 		public String GetDebugInfo()
 		{
-			return x.ToString()+"\n"+debug1.ToString();
+			return x.ToString();
 		}
 	}
 }

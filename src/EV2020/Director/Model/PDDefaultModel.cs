@@ -51,7 +51,7 @@ namespace EV2020.Director
 		/// <summary>
 		/// All inputs in meters. Output scaled with Nbar.
 		/// </summary>
-		/// <param name="Distance">The current measured distance.</param>
+		/// <param name="Position">The current measured distance.</param>
 		/// <param name="Target">The target distance.</param>
 		/// <returns>Output signals</returns>
 		public double Tick(double Distance, double Target)

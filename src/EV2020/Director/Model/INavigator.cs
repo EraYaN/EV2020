@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,11 +14,10 @@ namespace EV2020.Director
 	public interface INavigator
 	{
 		void Init();
-		double Tick(double Distance, double Target);
+		CarCommand Tick(double LeftSensor, double RightSensor);
 		string GetDebugInfo();
-		bool GoToPosition(double pos);
+		bool GoToPosition(Matrix<double> pos);
 		bool Pause();
 		bool Resume();
-
 	}
 }

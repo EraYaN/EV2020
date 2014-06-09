@@ -15,14 +15,13 @@ namespace EV2020.Director
 	/// </summary>
     public static class Data
     {
-        public static string ComPort = "COM10";
-        public static int BaudRate = 115200;
+		static public Configuration cfg;
         static public SerialInterface com;
         static public Visualization vis;
 		static public INavigator nav;
         static public Controller ctr;
         public static Databindings db = new Databindings();
         public static MATLABWrapper matlab;
-		public static Observer obsvr;		
+		//public static Observer obsvr;		
     }
 }
