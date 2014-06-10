@@ -166,7 +166,7 @@ namespace EV2020.Director
 		/// <summary>
 		/// Refreshes/Redraws a UIElement
 		/// </summary>
-		/// <param name="uiElement">Teh element to be refreshed/redrawed</param>
+		/// <param name="uiElement">The element to be refreshed/redrawed</param>
 		public static void Refresh(this UIElement uiElement)
 		{
 			uiElement.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
