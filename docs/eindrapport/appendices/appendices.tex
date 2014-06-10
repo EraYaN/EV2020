@@ -1,0 +1,22 @@
+%!TEX program = xelatex+makeindex+bibtex
+\documentclass[final]{scrreprt} %scrreprt of scrartcl
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
+\addbibresource{../../library/bibliography.bib}
+\begin{document}
+\begin{appendices}
+\renewcommand{\chapternumber}{\appendixname\space\thechapter} 
+\chapter{Model}
+\label{app:model}
+\begin{figure}[H]
+	\centering    	
+    	\includegraphics[width=\textwidth]{resources/model.png}
+    	\caption{The model used to simulate the observer and controller}
+    	\label{app:model}
+\end{figure}
+\chapter{Source}
+\label{app:source}
+\subimport{../../}{sourcecode}
+
+\end{appendices}
+\end{document}

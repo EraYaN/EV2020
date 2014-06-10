@@ -1,0 +1,91 @@
+%!TEX program=xelatex+makeindex+bibtex
+\documentclass[12pt]{scrreprt}
+\usepackage{amsmath}
+\newcommand{\tss}{\textsubscript}
+\input{../../library/preamble}
+
+
+\begin{document}
+
+
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+ 
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE TU Delft}\\[1.5cm] % Name of your university/college
+\textsc{\Large EE2831 EPO-4 Project}\\[0.5cm] % Major heading such as course name
+\textsc{\large Module 8 Final report}\\[0.5cm] % Minor heading such as course title
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+\textsc{\huge \bfseries Electric Transport 2020}\\[0.2cm] % Title of your document
+\HRule \\[1.5cm]
+ 
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.45\textwidth}
+\begin{flushleft} \large
+\emph{Authors:}\\
+\begin{tabular}{ll}
+Sander A. \textsc{van Dijk} & 4227018\\
+Erwin R. \textsc{de Haan} & 4222814\\
+Alex S. J. \textsc{Misdorp} & 4240561\\
+Xenia G. \textsc{Wesdijk} & 4144074\
+
+\end{tabular}
+
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.45\textwidth}
+\begin{flushright} \large
+\emph{Project Supervisiors:} \\
+\begin{tabular}{r}
+Tim \textsc{Velzeboer} BSc\\
+Matthijs E. \textsc{Weskin} BSc\\
+\end{tabular}
+\end{flushright}
+\end{minipage}\\[1.5cm]
+
+%\Large \emph{Author:}\\
+%John \textsc{Smith}\\[1.5cm] % Your name
+
+%----------------------------------------------------------------------------------------
+%	DATE SECTION
+%----------------------------------------------------------------------------------------
+
+{\large \today}\\ [1.5cm]
+
+%----------------------------------------------------------------------------------------
+%	LOGO SECTION
+%----------------------------------------------------------------------------------------
+
+%\includegraphics{Logo}\\ 
+ 
+%----------------------------------------------------------------------------------------
+% 
+
+\textbf{Abstract} \\ 
+This is the mid-term report written for the EPO-4 "Electric Transport 2020" project. 
+An R/C car is modified with wireless charging and autonomous control options. 
+We will describe control and trajectory tracking, anticollision, and contactless charging. 
+Our motivations for choosing certain components will become clear and a general overview of the design is given. 
+Contradictory to the standard we use C\# as opposed to Matlab for the implementation. 
+Via contactless charging we managed to charge a \unit[35]{F} capacitance to \unit[20]{V} in 5:02 minutes. 
+Besides that the R/C car can bridge a \unit[3]{m} distance in under 3 seconds and come to a stand still at little more than \unit[10]{cm} of the wall.
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+\end{document}
