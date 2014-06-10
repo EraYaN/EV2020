@@ -45,8 +45,8 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(true)]
 [assembly: NeutralResourcesLanguage("en")]
 
-[assembly: AssemblyVersion("2014.6.9.3")]
-[assembly: AssemblyFileVersion("2014.6.9.2")]
+[assembly: AssemblyVersion("2014.6.10.7")]
+[assembly: AssemblyFileVersion("2014.6.10.6")]
 [assembly: AssemblyInformationalVersion("1.0.0")]
 
 #if PORTABLE

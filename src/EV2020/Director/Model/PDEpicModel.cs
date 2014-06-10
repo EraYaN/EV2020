@@ -48,7 +48,7 @@ namespace EV2020.Director
 		/// <param name="Y">StartY coordinate in meters</param>
 		public void Init(double X, double Y)
 		{
-			//Start position = 50 cm and 50 cm and angle 0.5 pi. (y+ direction)
+			//Start position = 50 cm and 50 cm and bearing 0.5 pi. (y+ direction)
 			x = DenseMatrix.OfArray(new double[,] { { X*100, Y*100 }, { 0, 0 } });			
 			lastTimestamp = 0;
 		}
@@ -59,7 +59,7 @@ namespace EV2020.Director
 		/// <param name="Position">The current measured posistion in meters (col vec).</param>
 		/// <param name="Target">The target location in meters (col vec).</param>
 		/// <returns>Output signals</returns>
-		public Matrix<double> Tick(Matrix<double> Position, Matrix<double> Target)
+		public Vector<double> Tick(Vector<double> Position, Vector<double> Target)
 		{			
 			//Calculate the feedback. And clamp the value to the maximum values to be send to the car the "back" value is higher for faster braking.
 			Matrix<double> feedback = (-K * x).Clamp(-9, 5);
@@ -68,21 +68,20 @@ namespace EV2020.Director
 			feedback = feedback.Deadzone(-1,1.5);
 
 			//Calculate the change in x, xDot
-			xDot = A * x + B * feedback + L * ((Position*100 - Target*100) - (C * x));
+			xDot = A * x + B * feedback + L * (DenseMatrix.OfRowVectors(new Vector<double>[] {(Position*100 - Target*100) - (C * x).Row(0)}));
 
 			//Save the "now"
 			long nowTimestamp = DateTime.Now.Ticks;
 			//If lastTimestamp is not 0 then add the change to the x value times dt.
 			if (lastTimestamp != 0)
 			{
-
 				double dt = ((double)nowTimestamp - lastTimestamp) / TimeSpan.TicksPerSecond;
 				x += xDot * dt;
 			}
 			// Set new timestamp in ticks.
 			lastTimestamp = nowTimestamp;
 			//return the feedback value for sending to the car.
-			return feedback;
+			return feedback.Row(0);
 		}
 		public String GetDebugInfo()
 		{

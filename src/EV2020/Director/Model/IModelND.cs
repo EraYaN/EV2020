@@ -10,7 +10,7 @@ namespace EV2020.Director
 	public interface IModelND
 	{
 		void Init(double X, double Y);
-		Matrix<double> Tick(Matrix<double> Distance, Matrix<double> Target);
+		Vector<double> Tick(Vector<double> Distance, Vector<double> Target);
 		string GetDebugInfo();
 		
 	}

@@ -73,6 +73,36 @@ namespace EV2020.Director
 			}
 			return null;
 		}
+		public static double Angle(this Vector<double> val)
+		{
+			if (val.Count != 2)
+			{
+				throw new ArgumentException("Vector needs to be 2D.");
+			}
+			if (val[0] == 0)
+			{
+				return Math.Atan(val[1] / val[0]);
+			}
+			else
+			{
+				if (val[1] >= 0)
+				{
+					return 0.5 * Math.PI;
+				}
+				else
+				{
+					return -0.5 * Math.PI;
+				}
+			}
+		}
+		public static double Maginitude(this Vector<double> val)
+		{
+			if (val.Count != 2)
+			{
+				throw new ArgumentException("Vector needs to be 2D.");
+			}			
+			return Math.Sqrt(val[0]*val[0] + val[1]*val[1]);			
+		}
 		private static Action EmptyDelegate = delegate() { };
 
 		public static void Refresh(this UIElement uiElement)

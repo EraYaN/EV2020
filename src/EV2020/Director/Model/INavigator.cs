@@ -16,7 +16,7 @@ namespace EV2020.Director
 		void Init();
 		CarCommand Tick(double LeftSensor, double RightSensor);
 		string GetDebugInfo();
-		bool GoToPosition(Matrix<double> pos);
+		void GoToPosition(Vector<double> pos);
 		bool Pause();
 		bool Resume();
 	}

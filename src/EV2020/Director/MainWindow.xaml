@@ -15,6 +15,11 @@
 				<MenuItem Header="Settings..." Name="SettingsMenuItem" Click="SettingsMenuItem_Click"/>
 				<MenuItem Header="Toggle Audio Beacon" Name="ToggleAudioBeaconMenuItem" Click="ToggleAudioBeaconMenuItem_Click"/>
 			</MenuItem>
+			<MenuItem Header="Debug" Height="23">
+				<MenuItem Header="Get Status" x:Name="getStatusButton" Click="getStatusButton_Click" Margin="2"/>
+				<MenuItem x:Name="sendPulseButton" Header="Send Pulse" Margin="2" Click="sendPulseButton_Click"/>
+				<MenuItem x:Name="sendWaveButton" Header="Send Wave" Margin="2" Click="sendWaveButton_Click"/>
+			</MenuItem>
 			<MenuItem Header="Help" Height="23">
 				<MenuItem Header="About..." Name="AboutMenuItem" Click="AboutMenuItem_Click"/>
 			</MenuItem>
@@ -29,9 +34,8 @@
 			</GroupBox>
 			<GroupBox Header="Debug">
 				<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-					<Button Content="Get Status" x:Name="getStatusButton" Click="getStatusButton_Click" Margin="2"/>
-					<Button x:Name="sendPulseButton" Content="Send Pulse" Margin="2" Click="sendPulseButton_Click"/>
-					<Button x:Name="sendWaveButton" Content="Send Wave" Margin="2" Click="sendWaveButton_Click"/>
+					<TextBlock TextWrapping="Wrap" Text="{Binding ModelDebugInfo, Mode=OneWay}"/>
+					
 				</StackPanel>
 			</GroupBox>
 			<GroupBox Header="Joystick">
@@ -78,7 +82,7 @@
 			<StatusBarItem x:Name="statusBarLastPing" Width="80" Content="{Binding EmergencyStop, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
 		</StatusBar>
 		<Canvas x:Name="visCanvas" Margin="0,28,0,31" Background="White">
-			<TextBlock Canvas.Left="10" TextWrapping="Wrap" Text="{Binding ModelDebugInfo, Mode=OneWay}" Canvas.Top="10" Height="230" Width="500"/>
+			
 		</Canvas>
 	</Grid>
 </Window>
