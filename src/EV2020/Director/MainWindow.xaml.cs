@@ -114,7 +114,8 @@ namespace EV2020.Director
 
 		private void getStatusButton_Click(object sender, RoutedEventArgs e)
 		{
-			Data.ctr.GetStatus();
+			if (Data.ctr != null)
+				Data.ctr.GetStatus();
 		}
 
 		private void Window_KeyDown(object sender, KeyEventArgs e)
