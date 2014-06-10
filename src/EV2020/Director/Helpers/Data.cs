@@ -15,12 +15,33 @@ namespace EV2020.Director
 	/// </summary>
     public static class Data
     {
+		/// <summary>
+		/// Configuration unit
+		/// </summary>
 		static public Settings cfg;
+		/// <summary>
+		/// Serial communication interface
+		/// </summary>
         static public SerialInterface com;
+		/// <summary>
+		/// GUI visualization
+		/// </summary>
         static public Visualization vis;
+		/// <summary>
+		/// Apple Maps for revolutionary car navigation
+		/// </summary>
 		static public INavigator nav;
+		/// <summary>
+		/// Controller class
+		/// </summary>
         static public Controller ctr;
+		/// <summary>
+		/// Misc data bindings structure used for visualization
+		/// </summary>
         public static Databindings db = new Databindings();
+		/// <summary>
+		/// Matlab wrapper (not used)
+		/// </summary>
         public static MATLABWrapper matlab;
 		//public static Observer obsvr;		
     }

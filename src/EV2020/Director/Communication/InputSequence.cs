@@ -37,6 +37,12 @@ namespace EV2020.Director
 			}
 		}
 		
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="Driving">The driving command</param>
+		/// <param name="Steering">The steering command</param>
+		/// <param name="Multiplier">Multiplier on GetCurrentDriving and GetCurrentSteering values</param>
 		public InputSequence(Sequence Driving, Sequence Steering, double Multiplier=1)
 		{
 			if (Driving.Length != Steering.Length)
@@ -47,11 +53,19 @@ namespace EV2020.Director
 			driving.Rewind();
 			steering.Rewind();
 			multiplier = Multiplier;
-		}		
+		}
+		/// <summary>
+		/// The last measured driving from the car
+		/// </summary>
+		/// <returns></returns>
 		public double GetCurrentDriving()
 		{
 			return (driving.DataElement * multiplier).Clamp(Controller.DrivingMin, Controller.DrivingMax);
 		}
+		/// <summary>
+		/// The last measured steering from the car
+		/// </summary>
+		/// <returns></returns>
 		public double GetCurrentSteering()
 		{
 			return (steering.DataElement * multiplier).Clamp(Controller.SteeringMin, Controller.SteeringMax);

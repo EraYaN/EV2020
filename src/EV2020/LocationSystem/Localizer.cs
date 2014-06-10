@@ -12,6 +12,9 @@ using System.Timers;
 
 namespace EV2020.LocationSystem
 {
+	/// <summary>
+	/// 2D location algorithm class
+	/// </summary>
 	public class Localizer : IDisposable
 	{
 		//speed of sound
@@ -41,6 +44,10 @@ namespace EV2020.LocationSystem
 		int[] _inputChannels;
 		int[] _outputChannels;
 
+		/// <summary>
+		/// Constructor for the 2D location algorithm class
+		/// </summary>
+		/// <param name="mics">List of observable microphones</param>
 		public Localizer(List<Microphone> mics, int DriverIndex, double FieldWidth = 1, double FieldHeight = 1, double FieldMargin = 1,
 			double SampleWindow = 1, double SampleLength = 2400, double BeaconHeight = 0.28, bool MatchedFilterEnabled = false)
 		{
@@ -62,6 +69,11 @@ namespace EV2020.LocationSystem
 			matchedFilterEnabled = MatchedFilterEnabled;
 		}
 
+		/// <summary>
+		/// Creates the Toupitz matrix used for the circular convolution
+		/// </summary>
+		/// <param name="UseMeasuredSignal">Whether the generated refsignal (no transmission channel) or the measured audio will be used as reference</param>
+		/// <returns></returns>
 		public bool GenerateFilterMatrix(bool UseMeasuredSignal = false)
 		{
 			if (matchedFilterEnabled)
@@ -119,6 +131,10 @@ namespace EV2020.LocationSystem
 			return true;
 		}
 
+		/// <summary>
+		/// Init the ASIO driver to be used for recording
+		/// </summary>
+		/// <returns>True if the matched filter is initialized correctly</returns>
 		public bool InitializeDriver()
 		{
 			if (matchedfilter == null)
@@ -146,6 +162,9 @@ namespace EV2020.LocationSystem
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+		/// <summary>
+		/// Record the microphones
+		/// </summary>
 		void performMeasurement()
 		{
 			if (asio == null)
@@ -214,6 +233,12 @@ namespace EV2020.LocationSystem
 			OnLocationUpdated(this, new LocationUpdatedEventArgs(lpos));
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="samplemaxes">Sample numbers of all microphones (one per microphone)</param>
+		/// <param name="lat">Latencies which are retrieved from the ASIO driver</param>
+		/// <returns></returns>
 		protected Position3D Localize(int[] samplemaxes, ASIOLatencies lat)
 		{
 			//Working vars
@@ -282,7 +307,7 @@ namespace EV2020.LocationSystem
 						d2 = samplemaxes[2] * c / ASIO.Fs; // Y-direction
 						d3 = samplemaxes[0] * c / ASIO.Fs; // X-direction
 					}
-
+					// !This is where the magic happens!: calculate the time difference between the transmission of the audio and the start time of the sampling (absolute time at sample index 0), this was found using the Matlab equation solver
 					C =
 					(
 						(fieldWidth * Complex.Pow(d1, 3) - Complex.Pow(fieldWidth, 3) * d1 + Complex.Pow(fieldWidth, 3) * d2 - fieldHeight * Complex.Pow(d1, 3) + 2 * d1 *
@@ -460,16 +485,27 @@ namespace EV2020.LocationSystem
 			_disposed = true;
 		}
 
+		/// <summary>
+		/// Show ASIO's control panel to change setttings
+		/// </summary>
 		public void ShowASIOControlPanel()
 		{
 			asio.ShowControlPanel();
 		}
 
+		/// <summary>
+		/// Get the handware latencies that ASIO detects while recording
+		/// </summary>
+		/// <returns></returns>
 		public ASIOLatencies GetASIOLatencies()
 		{
 			return asio.GetLatencies();
 		}
 	}
+
+	/// <summary>
+	/// Wrapper for 3D position
+	/// </summary>
 	public class LocationUpdatedEventArgs : EventArgs
 	{
 		public readonly Position3D Position;
