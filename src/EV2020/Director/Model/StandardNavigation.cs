@@ -70,7 +70,7 @@ namespace EV2020.Director
 			{
 				c.Steering = -15;
 			}
-			c.Driving = output.Maginitude();
+			c.Driving = output.Magnitude();
 			return c;
 		}
 		public string GetDebugInfo() {

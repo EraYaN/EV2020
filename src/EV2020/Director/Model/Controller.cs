@@ -10,20 +10,20 @@ namespace EV2020.Director
 	/// </summary>
 	public class Controller
 	{
-		const int BatteryThreshold = 12000;
-		const int DrivingMin = -15;
-		const int DrivingMax = 15;
-		const int SteeringMin = -50;
-		const int SteeringMax = 50;
-		const int SteeringNeutral = 153;
-		const int DrivingNeutral = 150;
-		const int DrivingOffsetUp = 3;
-		const int DrivingOffsetDown = -6;
-		const int CollisionThreshold = 0;
-		const int TimerPeriod = 100;
-		const int BatteryHistoryPoints = 600;
-		const int DistanceHistoryPoints = 300;
-		const int ControlHistoryPoints = 300;
+		public const int BatteryThreshold = 12000;
+		public const int DrivingMin = -15;
+		public const int DrivingMax = 15;
+		public const int SteeringMin = -50;
+		public const int SteeringMax = 50;
+		public const int SteeringNeutral = 153;
+		public const int DrivingNeutral = 150;
+		public const int DrivingOffsetUp = 3;
+		public const int DrivingOffsetDown = -6;
+		public const int CollisionThreshold = 0;
+		public const int TimerPeriod = 100;
+		public const int BatteryHistoryPoints = 600;
+		public const int DistanceHistoryPoints = 300;
+		public const int ControlHistoryPoints = 300;
 
 		private bool _isReceivingLine = false;
 		private int _linesReceived = 0;
@@ -55,31 +55,49 @@ namespace EV2020.Director
 			get { return distanceHistory; }
 		}
 		private OutputSequence controlHistory = new OutputSequence(ControlHistoryPoints);
+		/// <summary>
+		/// This is the sequence containing the control signals history
+		/// </summary>
 		public OutputSequence ControlHistory
 		{
 			get { return controlHistory; }
 		}
 		private InputSequence _fixedInputSequence;
+		/// <summary>
+		/// The current index in the fixed input sequence
+		/// </summary>
 		public long FixedInputSequenceExecutingIndex
 		{
 			get { return _fixedInputSequence.Index; }
 		}
+		/// <summary>
+		/// The length of the current fixed input sequence
+		/// </summary>
 		public long FixedInputSequenceExecutingLength
 		{
 			get { return _fixedInputSequence.Length; }
 		}
 		private bool _fixedInputSequenceExecuting = false;
+		/// <summary>
+		/// Gets the fixed input sequence status
+		/// </summary>
 		public bool IsFixedInputSequenceExecuting
 		{
 			get { return _fixedInputSequenceExecuting; }
 		}
 
 		private bool _emergencyStop = false;
+		/// <summary>
+		/// Gets the emergency stop status 
+		/// </summary>
 		public bool IsEmergencyStop
 		{
 			get { return _emergencyStop; }
 		}
 		private int _emergencyErrorCount = 0;
+		/// <summary>
+		/// The amount of emergency stop errors.
+		/// </summary>
 		public int EmergencyErrorCount
 		{
 			get { return _emergencyErrorCount; }
@@ -91,51 +109,79 @@ namespace EV2020.Director
 		private int driving = 0;
 		private int steering = 0;
 		private int audioState = 0;
-
+		/// <summary>
+		/// The driving signal
+		/// </summary>
 		public int Driving
 		{
 			get { return driving; }
 		}
+		/// <summary>
+		/// The steering signal
+		/// </summary>
 		public int Steering
 		{
 			get { return steering; }
 		}
+		/// <summary>
+		/// The audio beacon state
+		/// </summary>
 		public int AudioState
 		{
 			get { return audioState; }
 		}
 
 		private int currentDriving = 0;
+		/// <summary>
+		/// The current driving signal
+		/// </summary>
 		public int CurrentDriving
 		{
 			get { return currentDriving; }
 		}
 		private int currentSteering = 0;
+		/// <summary>
+		/// The current steering signal
+		/// </summary>
 		public int CurrentSteering
 		{
 			get { return currentSteering; }
 		}
 		private int currentLeftDistance = 0;
+		/// <summary>
+		/// The current left sensor distance
+		/// </summary>
 		public int CurrentLeftDistance
 		{
 			get { return currentLeftDistance; }
 		}
 		private int currentRightDistance = 0;
+		/// <summary>
+		/// The current right sensor distance
+		/// </summary>
 		public int CurrentRightDistance
 		{
 			get { return currentRightDistance; }
 		}
 		private int currentBatteryVoltage = 0;
+		/// <summary>
+		/// The current battery voltage
+		/// </summary>
 		public int CurrentBatteryVoltage
 		{
 			get { return currentBatteryVoltage; }
 		}
 		private int currentAudioState = 0;
+		/// <summary>
+		/// The current audio beacon state
+		/// </summary>
 		public int CurrentAudioState
 		{
 			get { return currentAudioState; }
 		}		
-
+		/// <summary>
+		/// Initializes the Controller class
+		/// </summary>
 		public Controller()
 		{
 			Data.com.SerialDataEvent += com_SerialDataEvent;
@@ -145,7 +191,7 @@ namespace EV2020.Director
 			_receivingBuffer = new StringBuilder();
 			_replyStopwatch = new Stopwatch();
 		}
-
+		#region Internal Processing methods
 		void sendInstructions_Elapsed(object sender, ElapsedEventArgs e)
 		{
 			//TODO figure out audio.
@@ -409,6 +455,7 @@ namespace EV2020.Director
 				Center();
 			}
 		}
+		#endregion
 
 		#region Private command methods
 		private void sendCommand(String line)
@@ -449,6 +496,9 @@ namespace EV2020.Director
 		#endregion
 
 		#region Public command methods
+		/// <summary>
+		/// Toggles the Audio beacon state
+		/// </summary>
 		public void ToggleAudio()
 		{
 			if (audioState == 0)
@@ -460,6 +510,11 @@ namespace EV2020.Director
 				disableAudio();
 			}
 		}
+		/// <summary>
+		/// Sets the new driving and steering signals
+		/// </summary>
+		/// <param name="_driving">The driving signal</param>
+		/// <param name="_steering">The steering signal</param>
 		public void SetDrivingSteering(int _driving, int _steering){
 			if (!_fixedInputSequenceExecuting)
 			{
@@ -472,6 +527,10 @@ namespace EV2020.Director
 				steering = _steering.Clamp(SteeringMin, SteeringMax);				
 			}
 		}
+		/// <summary>
+		/// Sets the new driving signal
+		/// </summary>
+		/// <param name="_driving">The driving signal</param>
 		public void SetDriving(int _driving){
 			//Anti Deadzone	of the car.		
 			if (_driving > 0)
@@ -482,15 +541,25 @@ namespace EV2020.Director
 			driving = _driving.Clamp(DrivingMin, DrivingMax);
 			sendDriveSteering();
 		}
+		/// <summary>
+		/// Sets the new steering signal
+		/// </summary>
+		/// <param name="_steering">The steering signal</param>
 		public void SetSteering(int _steering){
 			steering = _steering.Clamp(SteeringMin, SteeringMax);
 			sendDriveSteering();
 		}
+		/// <summary>
+		/// Stops the car.
+		/// </summary>
 		public void Stop()
 		{
 			driving = 0;
 			sendDriveSteering();
 		}
+		/// <summary>
+		/// Not Implemented, maybe later
+		/// </summary>
 		public void Brake()
 		{
 			//Disabled.
@@ -508,46 +577,77 @@ namespace EV2020.Director
 				driving = 0;
 			}*/
 		}
+		/// <summary>
+		/// Makes the current driving signal higher
+		/// </summary>
+		/// <param name="amount">The amount</param>
 		public void Faster(int amount = 1)
 		{
 			driving+=amount;
 			driving=driving.Clamp(DrivingMin, DrivingMax);
 		}
+		/// <summary>
+		/// Makes the current driving signal lower
+		/// </summary>
+		/// <param name="amount">The amount</param>
 		public void Slower(int amount = 1)
 		{
 			driving -= amount; 
 			driving=driving.Clamp(DrivingMin, DrivingMax);
 		}
+		/// <summary>
+		/// Makes the current steering signal higher
+		/// </summary>
+		/// <param name="amount">The amount</param>
 		public void Left(int amount = 1)
 		{
 			steering += amount; 
 			steering=steering.Clamp(SteeringMin, SteeringMax);
 		}
+		/// <summary>
+		/// Makes the current steering signal lower
+		/// </summary>
+		/// <param name="amount">The amount</param>
 		public void Right(int amount = 1)
 		{
 			steering -= amount; 
 			steering=steering.Clamp(SteeringMin, SteeringMax);
 		}
+		/// <summary>
+		/// Centers the steering signal
+		/// </summary>
 		public void Center()
 		{
 			steering = 0;
 		}
+		/// <summary>
+		/// Retrieves the status
+		/// </summary>
 		public void GetStatus()
 		{
 			sendStatusRequest();
 		}
-
+		/// <summary>
+		/// Resets the emergency stop
+		/// </summary>
 		public void ResetEmergencyStop()
 		{
 			_emergencyErrorCount = 0;
 			_emergencyStop = false;
 			Data.db.UpdateProperty("EmergencyStop");			
 		}
+		/// <summary>
+		/// Starts a fixed input sequence
+		/// </summary>
+		/// <param name="FixedInputSequence">The sequence to be played back to the car.</param>
 		public void StartFixedInputSequence(ref InputSequence FixedInputSequence)
 		{
 			_fixedInputSequence = FixedInputSequence;
 			_fixedInputSequenceExecuting = true;
 		}
+		/// <summary>
+		/// Halt the current fixed input sequence.
+		/// </summary>
 		public void StopFixedInputSequence()
 		{			
 			_fixedInputSequenceExecuting = false;

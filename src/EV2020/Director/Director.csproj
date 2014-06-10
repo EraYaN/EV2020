@@ -105,7 +105,6 @@
     <Compile Include="Communication\OutputSequence.cs" />
     <Compile Include="Model\PDDefaultModel.cs" />
     <Compile Include="Model\PDEpicModel.cs" />
-    <Compile Include="Model\PIDModel.cs" />
     <Compile Include="Communication\Sequence.cs" />
     <Compile Include="Settings\ConfigurationViewModel.cs" />
     <Compile Include="Visualization\Visualization.cs" />

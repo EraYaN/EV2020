@@ -19,6 +19,9 @@ namespace EV2020.Director
 	/// </summary>
 	public partial class AboutWindow : Window
 	{
+		/// <summary>
+		/// Initializes the AboutWindows
+		/// </summary>
 		public AboutWindow()
 		{
 			InitializeComponent();
