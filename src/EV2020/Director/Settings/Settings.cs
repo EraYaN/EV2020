@@ -11,10 +11,10 @@ using System.Text;
 namespace EV2020.Director
 {
 	[Serializable]
-	public class Configuration : ISerializable
+	public class Settings : ISerializable
 	{
 		[System.ComponentModel.DefaultValueAttribute("COM10")]
-		public string ComPort
+		public string Comport
 		{
 			get;
 			set;
@@ -97,13 +97,13 @@ namespace EV2020.Director
 			get;
 			set;
 		}
-		public Configuration()
+		public Settings()
 		{
 			_microphones = new ObservableCollection<Microphone>();
 		}
-		protected Configuration(SerializationInfo info, StreamingContext context)
+		protected Settings(SerializationInfo info, StreamingContext context)
 		{
-			try { ComPort = info.GetString("ComPort"); }
+			try { Comport = info.GetString("Comport"); }
 			catch { }
 			try { BaudRate = info.GetInt32("BaudRate"); }
 			catch { }
@@ -144,7 +144,7 @@ namespace EV2020.Director
 
 		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("ComPort", ComPort);
+			info.AddValue("Comport", Comport);
 			info.AddValue("BaudRate", BaudRate);
 			info.AddValue("SelectedDriver", SelectedDriver);
 			info.AddValue("FieldWidth", FieldWidth);

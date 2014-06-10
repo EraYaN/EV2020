@@ -35,8 +35,8 @@
 			</GroupBox>
 			<GroupBox Header="Target">
 				<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-					<TextBox TextWrapping="Wrap" Name="TargetX" Margin="2"/>
-					<TextBox TextWrapping="Wrap" Name="TargetY" Margin="2"/>
+					<TextBox Name="TargetX" Margin="2"/>
+					<TextBox Name="TargetY" Margin="2"/>
 					<Button x:Name="setTargetButton" Content="Set Target" Margin="2" Click="setTargetButton_Click"/>
 				</StackPanel>
 			</GroupBox>

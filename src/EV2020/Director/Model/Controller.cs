@@ -10,20 +10,20 @@ namespace EV2020.Director
 	/// </summary>
 	public class Controller
 	{
-		public const int BatteryThreshold = 12000;
-		public const int DrivingMin = -15;
-		public const int DrivingMax = 15;
-		public const int SteeringMin = -50;
-		public const int SteeringMax = 50;
-		public const int SteeringNeutral = 153;
-		public const int DrivingNeutral = 150;
-		public const int DrivingOffsetUp = 3;
-		public const int DrivingOffsetDown = -6;
-		public const int CollisionThreshold = 0;
-		public const int TimerPeriod = 100;
-		public const int BatteryHistoryPoints = 600;
-		public const int DistanceHistoryPoints = 300;
-		public const int ControlHistoryPoints = 300;
+		const int BatteryThreshold = 12000;
+		const int DrivingMin = -15;
+		const int DrivingMax = 15;
+		const int SteeringMin = -50;
+		const int SteeringMax = 50;
+		const int SteeringNeutral = 153;
+		const int DrivingNeutral = 150;
+		const int DrivingOffsetUp = 3;
+		const int DrivingOffsetDown = -6;
+		const int CollisionThreshold = 0;
+		const int TimerPeriod = 100;
+		const int BatteryHistoryPoints = 600;
+		const int DistanceHistoryPoints = 300;
+		const int ControlHistoryPoints = 300;
 
 		private bool _isReceivingLine = false;
 		private int _linesReceived = 0;
@@ -31,16 +31,25 @@ namespace EV2020.Director
 		private Stopwatch _replyStopwatch;
 		private long _lastPing = -1;
 		private bool replyTimerRunning = false;
+		/// <summary>
+		/// The last measured delay in the communication with the car.
+		/// </summary>
 		public long LastPing
 		{
 			get { return _lastPing; }
 		}
 		private Sequence outputBatteryVoltageHistory = new Sequence(BatteryHistoryPoints);
+		/// <summary>
+		/// This is the sequence containing the battery history
+		/// </summary>
 		public Sequence OutputBatteryVoltageHistory
 		{
 			get { return outputBatteryVoltageHistory; }
 		}
 		private OutputSequence distanceHistory = new OutputSequence(DistanceHistoryPoints);
+		/// <summary>
+		/// This is the sequence containing the distance (ultrasound sensor) history
+		/// </summary>
 		public OutputSequence DistanceHistory
 		{
 			get { return distanceHistory; }
@@ -157,9 +166,9 @@ namespace EV2020.Director
 				{
 					//TODO NAV tick
 					CarCommand command = Data.nav.Tick(currentLeftDistance,currentRightDistance);
-					//double d = Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100); //using average of the sensor values.
-					//double d = Data.obsvr.Tick(Math.Min(currentLeftDistance, currentRightDistance), Target * 100); //using minimum of the sensor values.
-					//double d = Data.obsvr.Tick(currentLeftDistance, Target * 100); //using left sensor value.
+					//double _driving = Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100); //using average of the sensor values.
+					//double _driving = Data.obsvr.Tick(Math.Min(currentLeftDistance, currentRightDistance), Target * 100); //using minimum of the sensor values.
+					//double _driving = Data.obsvr.Tick(currentLeftDistance, Target * 100); //using left sensor value.
 					//TODO
 					double d = 0;
 					//Set Driving for sending to car.
@@ -451,30 +460,30 @@ namespace EV2020.Director
 				disableAudio();
 			}
 		}
-		public void SetDrivingSteering(int d, int s){
+		public void SetDrivingSteering(int _driving, int _steering){
 			if (!_fixedInputSequenceExecuting)
 			{
 				//anti deadzone
-				if (d > 0)
-					d += DrivingOffsetUp;
-				else if (d < 0)
-					d -= DrivingOffsetDown;
-				driving = d.Clamp(DrivingMin, DrivingMax);
-				steering = s.Clamp(SteeringMin, SteeringMax);				
+				if (_driving > 0)
+					_driving += DrivingOffsetUp;
+				else if (_driving < 0)
+					_driving -= DrivingOffsetDown;
+				driving = _driving.Clamp(DrivingMin, DrivingMax);
+				steering = _steering.Clamp(SteeringMin, SteeringMax);				
 			}
 		}
-		public void SetDriving(int d){
+		public void SetDriving(int _driving){
 			//Anti Deadzone	of the car.		
-			if (d > 0)
-				d += DrivingOffsetUp;
-			else if (d < 0)
-				d += DrivingOffsetDown;
+			if (_driving > 0)
+				_driving += DrivingOffsetUp;
+			else if (_driving < 0)
+				_driving += DrivingOffsetDown;
 		
-			driving = d.Clamp(DrivingMin, DrivingMax);
+			driving = _driving.Clamp(DrivingMin, DrivingMax);
 			sendDriveSteering();
 		}
-		public void SetSteering(int s){
-			steering = s.Clamp(SteeringMin, SteeringMax);
+		public void SetSteering(int _steering){
+			steering = _steering.Clamp(SteeringMin, SteeringMax);
 			sendDriveSteering();
 		}
 		public void Stop()
@@ -491,8 +500,8 @@ namespace EV2020.Director
 				driving = 0;
 				if (_fixedInputSequenceExecuting)
 					StopFixedInputSequence();
-				InputSequence fis = new InputSequence( Sequence.Pulse(20, 0, 10, (1.5*-currentDriving).Clamp(-DrivingMax, DrivingMax), 0),new Sequence(20));
-				StartFixedInputSequence(ref fis);
+				InputSequence FixedInputSequence = new InputSequence( Sequence.Pulse(20, 0, 10, (1.5*-currentDriving).Clamp(-DrivingMax, DrivingMax), 0),new Sequence(20));
+				StartFixedInputSequence(ref FixedInputSequence);
 			}
 			else
 			{
@@ -534,9 +543,9 @@ namespace EV2020.Director
 			_emergencyStop = false;
 			Data.db.UpdateProperty("EmergencyStop");			
 		}
-		public void StartFixedInputSequence(ref InputSequence fis)
+		public void StartFixedInputSequence(ref InputSequence FixedInputSequence)
 		{
-			_fixedInputSequence = fis;
+			_fixedInputSequence = FixedInputSequence;
 			_fixedInputSequenceExecuting = true;
 		}
 		public void StopFixedInputSequence()

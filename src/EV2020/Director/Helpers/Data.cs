@@ -15,7 +15,7 @@ namespace EV2020.Director
 	/// </summary>
     public static class Data
     {
-		static public Configuration cfg;
+		static public Settings cfg;
         static public SerialInterface com;
         static public Visualization vis;
 		static public INavigator nav;

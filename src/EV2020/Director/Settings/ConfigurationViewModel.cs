@@ -33,7 +33,7 @@ namespace EV2020.Director
 		#endregion
 
 		#region Properties
-		public ObservableCollection<string> ComPorts
+		public ObservableCollection<string> Comports
 		{
 			get
 			{
@@ -64,13 +64,13 @@ namespace EV2020.Director
 				_baudRates = value;
 			}
 		}
-		public string CurrentComPort
+		public string CurrentComport
 		{
 			get
 			{
 				if (Data.cfg != null)
 				{
-					return Data.cfg.ComPort;
+					return Data.cfg.Comport;
 				}
 				return String.Empty;
 			}
@@ -78,10 +78,10 @@ namespace EV2020.Director
 			{
 				if (Data.cfg != null)
 				{
-					if (Data.cfg.ComPort != value)
+					if (Data.cfg.Comport != value)
 					{
-						Data.cfg.ComPort = value;
-						RaisePropertyChanged("CurrentComPort");
+						Data.cfg.Comport = value;
+						RaisePropertyChanged("CurrentComport");
 					}
 				}
 			}

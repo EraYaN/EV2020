@@ -99,31 +99,37 @@
     <OutDir>$(ProjectDir)..\..\..\..\out\MKL\Windows\x86\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>MathNet.Numerics.MKL</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Intel_SSA|Win32'">
     <OutDir>$(ProjectDir)..\..\..\..\out\MKL\Windows\x86\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>MathNet.Numerics.MKL</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)..\..\..\..\out\MKL\Windows\x64\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>MathNet.Numerics.MKL</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Intel_SSA|x64'">
     <OutDir>$(ProjectDir)..\..\..\..\out\MKL\Windows\x64\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>MathNet.Numerics.MKL</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(ProjectDir)..\..\..\..\out\MKL\Windows\x86\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>MathNet.Numerics.MKL</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)..\..\..\..\out\MKL\Windows\x64\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>MathNet.Numerics.MKL</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

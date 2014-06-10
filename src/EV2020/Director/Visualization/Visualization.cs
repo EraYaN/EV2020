@@ -34,14 +34,20 @@ namespace EV2020.Director
 		const double marginStrokeThickness = 1;
 		readonly Brush marginBorder = Brushes.Green;
 		//car
-		
+		/// <summary>
+		/// Initializes the Visualization class
+		/// </summary>
+		/// <param name="_c">The field canvas</param>
+		/// <param name="_jc">THe joystick canvas</param>
 		public Visualization(Canvas _c, Canvas _jc)
 		{
 			//Constructor
 			c = _c;
 			jc = _jc;
 		}	
-
+		/// <summary>
+		/// This updates the joystick position
+		/// </summary>
 		public void drawJoystick(){
 			//Check for access to the UI thread.
 			if (jc.Dispatcher.CheckAccess())
@@ -69,7 +75,9 @@ namespace EV2020.Director
 				}
 			}
 		}
-
+		/// <summary>
+		/// This mehtod draws the Field on the Canvas in the UI
+		/// </summary>
 		public void drawField()
 		{
 			if (c.Dispatcher.CheckAccess())
@@ -94,8 +102,8 @@ namespace EV2020.Director
 				Rectangle margins = new Rectangle();
 				margins.Width = (Data.cfg.FieldWidth + 2 * Data.cfg.FieldMargin) * scalingfactorx;
 				margins.Height = (Data.cfg.FieldHeight + 2 * Data.cfg.FieldMargin) * scalingfactory;
-				margins.Stroke = fieldBorder;
-				margins.StrokeThickness = fieldStrokeThickness;
+				margins.Stroke = marginBorder;
+				margins.StrokeThickness = marginStrokeThickness;
 				c.Children.Add(margins);
 				margins.SetValue(Canvas.LeftProperty, canvasPadding);
 				margins.SetValue(Canvas.TopProperty, canvasPadding);

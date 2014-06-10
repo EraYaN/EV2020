@@ -42,12 +42,12 @@ namespace EV2020.Director
 					IFormatter formatter = new BinaryFormatter();
 					using (Stream stream = new FileStream("cfg.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
 					{
-						Data.cfg = (Configuration)formatter.Deserialize(stream);
+						Data.cfg = (Settings)formatter.Deserialize(stream);
 					}
 				}
 				catch
 				{
-					Data.cfg = new Configuration();
+					Data.cfg = new Settings();
 				}
 				finally
 				{
@@ -55,7 +55,7 @@ namespace EV2020.Director
 			}
 			else
 			{
-				Data.cfg = new Configuration();
+				Data.cfg = new Settings();
 			}
 			settingsWindow = new SettingsWindow();
 			Data.vis = new Visualization(visCanvas, joystickCanvas);
@@ -71,9 +71,9 @@ namespace EV2020.Director
 			Data.nav = new StandardNavigation();
 			
 
-			if (Data.cfg.ComPort != "" && Data.cfg.BaudRate > 0)
+			if (Data.cfg.Comport != "" && Data.cfg.BaudRate > 0)
 			{
-				Data.com = new SerialInterface(Data.cfg.ComPort, Data.cfg.BaudRate);
+				Data.com = new SerialInterface(Data.cfg.Comport, Data.cfg.BaudRate);
 				int res = Data.com.OpenPort();
 				Data.ctr = new Controller();
 				if (res != 0)

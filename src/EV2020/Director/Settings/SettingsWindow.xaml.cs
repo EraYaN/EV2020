@@ -33,7 +33,7 @@ namespace EV2020.Director
 			string[] ports = SerialPort.GetPortNames();
 			foreach (string s in ports)
 			{				
-				((ConfigurationViewModel)DataContext).ComPorts.Add(s);
+				((ConfigurationViewModel)DataContext).Comports.Add(s);
 			}
 			//DataContext = this;
 		}
