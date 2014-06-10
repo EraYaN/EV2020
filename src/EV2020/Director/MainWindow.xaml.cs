@@ -14,6 +14,7 @@ using BlueWave.Interop.Asio;
 using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 
 namespace EV2020.Director
 {
@@ -32,6 +33,8 @@ namespace EV2020.Director
 			statusBarEmergencyStop.DataContext = Data.db;
 			statusBarFixedInputSequence.DataContext = Data.db;*/
 			MathNet.Numerics.Control.LinearAlgebraProvider = new MklLinearAlgebraProvider();
+			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+			Thread.CurrentThread.Priority = ThreadPriority.Highest;
 			if (File.Exists("cfg.bin"))
 			{
 				try
@@ -55,6 +58,8 @@ namespace EV2020.Director
 				Data.cfg = new Configuration();
 			}
 			settingsWindow = new SettingsWindow();
+			Data.vis = new Visualization(visCanvas, joystickCanvas);
+			Data.vis.drawField();
 		}
 
 		private void initButton_Click(object sender, RoutedEventArgs e)
@@ -64,7 +69,7 @@ namespace EV2020.Director
 			//Init classes			
 			//Data.obsvr = new Observer(new PDEpicModel());
 			Data.nav = new StandardNavigation();
-			Data.vis = new Visualization(visCanvas, joystickCanvas);
+			
 
 			if (Data.cfg.ComPort != "" && Data.cfg.BaudRate > 0)
 			{
@@ -95,9 +100,7 @@ namespace EV2020.Director
 			destroyButton.IsEnabled = false;
 			destroyButton.Refresh();
 			initButton.IsEnabled = true;
-			Data.ctr = null;			
-			if (Data.vis != null)
-				Data.vis = null;
+			Data.ctr = null;	
 			if (Data.nav != null)
 				Data.nav = null;
 			if (Data.matlab != null)
@@ -246,6 +249,25 @@ namespace EV2020.Director
 		{
 			AboutWindow aboutWindow = new AboutWindow();
 			aboutWindow.ShowDialog();
+		}
+
+		private void RedrawFieldMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			if (Data.vis != null)
+				Data.vis.drawField();
+		}
+
+		private void setTargetButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (Data.nav != null)
+			{
+				try
+				{
+					Data.nav.GoToPosition(DenseVector.OfArray(new double[] { Convert.ToDouble(TargetX.Text), Convert.ToDouble(TargetY.Text) }));
+				} catch(ArgumentOutOfRangeException ex){
+					MessageBox.Show("Can't set target.\n"+ex.ToString());
+				}
+			} 
 		}
 	}
 }

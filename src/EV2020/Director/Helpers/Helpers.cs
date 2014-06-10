@@ -19,9 +19,9 @@ namespace EV2020.Director
 		}
 		public static Matrix<double> Clamp(this Matrix<double> val, double min, double max)
 		{
-			for (int i = 0; i < val.ColumnCount; i++)
+			for (int i = 0; i < val.RowCount; i++)
 			{
-				for (int j = 0; j < val.RowCount; j++)
+				for (int j = 0; j < val.ColumnCount; j++)
 				{
 					val[i, j] = val[i, j].Clamp(min,max);					
 				}
@@ -45,9 +45,9 @@ namespace EV2020.Director
 		}
 		public static Matrix<double> Deadzone(this Matrix<double> val, double lowerBound, double upperBound)
 		{
-			for (int i = 0; i < val.ColumnCount; i++)
+			for (int i = 0; i < val.RowCount; i++)
 			{
-				for (int j = 0; j < val.RowCount; j++)
+				for (int j = 0; j < val.ColumnCount; j++)
 				{
 					val[i, j] = val[i, j].Deadzone(lowerBound, upperBound);
 				}

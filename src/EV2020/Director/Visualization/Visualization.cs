@@ -78,16 +78,27 @@ namespace EV2020.Director
 					return;
 				//draw field
 				c.Children.Clear();
-				double cH = c.ActualHeight-2*canvasPadding;
-				double cW = c.ActualWidth-2*canvasPadding;
-				double scalingfactor = Math.Min(cH / (Data.cfg.FieldHeight + 2 * Data.cfg.FieldMargin), cW / (Data.cfg.FieldWidth + 2 * Data.cfg.FieldMargin));
+				double cH = Math.Max(c.ActualHeight-2*canvasPadding,0);
+				double cW = Math.Max(c.ActualWidth-2*canvasPadding,0);
+				double scalingfactory = cH / (Data.cfg.FieldHeight + 2 * Data.cfg.FieldMargin);
+				double scalingfactorx = cW / (Data.cfg.FieldWidth + 2 * Data.cfg.FieldMargin);
 				Rectangle field = new Rectangle();
-				field.Width = Data.cfg.FieldWidth * scalingfactor;
-				field.Height = Data.cfg.FieldHeight * scalingfactor;
+				field.Width = Data.cfg.FieldWidth * scalingfactorx;
+				field.Height = Data.cfg.FieldHeight * scalingfactory;
 				field.Stroke = fieldBorder;
 				field.StrokeThickness = fieldStrokeThickness;
-				field.SetValue(Canvas.LeftProperty, 0);
-				field.SetValue(Canvas.TopProperty, 0);
+				c.Children.Add(field);
+				field.SetValue(Canvas.LeftProperty, Data.cfg.FieldMargin*scalingfactorx+canvasPadding);
+				field.SetValue(Canvas.TopProperty, Data.cfg.FieldMargin * scalingfactory+canvasPadding);
+
+				Rectangle margins = new Rectangle();
+				margins.Width = (Data.cfg.FieldWidth + 2 * Data.cfg.FieldMargin) * scalingfactorx;
+				margins.Height = (Data.cfg.FieldHeight + 2 * Data.cfg.FieldMargin) * scalingfactory;
+				margins.Stroke = fieldBorder;
+				margins.StrokeThickness = fieldStrokeThickness;
+				c.Children.Add(margins);
+				margins.SetValue(Canvas.LeftProperty, canvasPadding);
+				margins.SetValue(Canvas.TopProperty, canvasPadding);
 			}
 			else
 			{

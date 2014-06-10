@@ -83,9 +83,9 @@ namespace EV2020.Director
 			}
 			if (pos[0] < 0||pos[1]<0||pos[0]>Data.cfg.FieldWidth||pos[1]>Data.cfg.FieldHeight)
 			{
-				throw new ArgumentException("Position is outside the field.");
+				throw new ArgumentOutOfRangeException("pos",pos,"Position is outside the field.");
 			}
-			Target = pos;
+			Target = pos*100;
 		}
 		public bool Pause() {
 			if (_paused)
