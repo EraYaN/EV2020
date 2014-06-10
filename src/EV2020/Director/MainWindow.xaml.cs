@@ -28,7 +28,7 @@ namespace EV2020.Director
 		{
 			this.DataContext = Data.db;
 			InitializeComponent();
-			/*statusBarComPort.DataContext = Data.db;
+			/*statusBarComport.DataContext = Data.db;
 			statusBarLastPing.DataContext = Data.db;
 			statusBarEmergencyStop.DataContext = Data.db;
 			statusBarFixedInputSequence.DataContext = Data.db;*/
@@ -66,12 +66,10 @@ namespace EV2020.Director
 		{
 			initButton.IsEnabled = false;
 			initButton.Refresh();
-			//Init classes			
-			//Data.obsvr = new Observer(new PDEpicModel());
-			Data.nav = new StandardNavigation();
-			
+			//Init classes				
+			Data.nav = new StandardNavigation();			
 
-			if (Data.cfg.Comport != "" && Data.cfg.BaudRate > 0)
+			if (!String.IsNullOrEmpty(Data.cfg.Comport) && Data.cfg.BaudRate > 0)
 			{
 				Data.com = new SerialInterface(Data.cfg.Comport, Data.cfg.BaudRate);
 				int res = Data.com.OpenPort();

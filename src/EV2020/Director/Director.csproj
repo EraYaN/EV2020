@@ -107,6 +107,7 @@
     <Compile Include="Model\PDEpicModel.cs" />
     <Compile Include="Communication\Sequence.cs" />
     <Compile Include="Settings\ConfigurationViewModel.cs" />
+    <Compile Include="Visualization\Car.cs" />
     <Compile Include="Visualization\Visualization.cs" />
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
@@ -200,7 +201,7 @@
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties IncrementInformational="False" IncrementOnRebuild="True" IncrementOnBuild="True" IncrementAction="2" Versioning="1" StartAt="635297472000000000" BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties/AssemblyInfo.cs" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties/AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" StartAt="635297472000000000" Versioning="1" IncrementAction="2" IncrementOnBuild="True" IncrementOnRebuild="True" IncrementInformational="False" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

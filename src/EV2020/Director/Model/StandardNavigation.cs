@@ -4,6 +4,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace EV2020.Director
 		PlotWindow pw;
 		BackgroundWorker bw_generate = new BackgroundWorker();
 		double bearing;
+		int _iter = 0;
+		long lastTimestamp = 0;
 		public double CarX
 		{
 			get { return Position[0]; }
@@ -30,6 +33,14 @@ namespace EV2020.Director
 		public double CarY
 		{
 			get { return Position[1]; }
+		}
+		public double TargetX
+		{
+			get { return Target[0]; }
+		}
+		public double TargetY
+		{
+			get { return Target[1]; }
 		}
 		public double CarBearing
 		{
@@ -42,6 +53,7 @@ namespace EV2020.Director
 			model.Init(0.50,0.50);
 			Position = DenseVector.OfArray(new double[] { .50, .50 });
 			Target = DenseVector.OfArray(new double[] { .50, .50 });
+			bearing = Math.PI / 2;
 		}
 		~StandardNavigation()
 		{
@@ -71,10 +83,11 @@ namespace EV2020.Director
 				c.Steering = -15;
 			}
 			c.Driving = output.Magnitude();
-			return c;
+			UpdateField();
+			return c;			
 		}
 		public string GetDebugInfo() {
-			return model.GetDebugInfo();
+			return model.GetDebugInfo() + "\n" + Position.ToString() + "\n" + Target.ToString() + "\n" + CarBearing.ToString();
 		}
 		public void GoToPosition(Vector<double> pos) {
 			if (pos.Count != 2)
@@ -86,6 +99,7 @@ namespace EV2020.Director
 				throw new ArgumentOutOfRangeException("pos",pos,"Position is outside the field.");
 			}
 			Target = pos*100;
+			UpdateField();
 		}
 		public bool Pause() {
 			if (_paused)
@@ -136,8 +150,22 @@ namespace EV2020.Director
 			Vector<double> difference = lastPosition - Position;
 			bearing = difference.Angle();
 			
-			
 			//posistionLog.ScrollToEnd();
+			UpdateField();
+		}
+
+		private void UpdateField(){
+			if (Data.vis != null && _iter % 100 == 0)
+			{
+				Debug.WriteLine("Drawing field: {0} ms ago was last time", (DateTime.Now.Ticks - (double)lastTimestamp)/TimeSpan.TicksPerMillisecond);
+				Data.vis.drawField();
+				lastTimestamp = DateTime.Now.Ticks;
+				_iter++;
+				if (_iter > 100)
+				{
+					_iter = 0;
+				}
+			}
 		}
 		
 		#region BackgroundWorker

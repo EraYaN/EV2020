@@ -210,15 +210,10 @@ namespace EV2020.Director
 			{
 				if (Data.nav != null)
 				{
-					//TODO NAV tick
-					CarCommand command = Data.nav.Tick(currentLeftDistance,currentRightDistance);
-					//double _driving = Data.obsvr.Tick(((double)currentLeftDistance+currentRightDistance)/2.0, Target*100); //using average of the sensor values.
-					//double _driving = Data.obsvr.Tick(Math.Min(currentLeftDistance, currentRightDistance), Target * 100); //using minimum of the sensor values.
-					//double _driving = Data.obsvr.Tick(currentLeftDistance, Target * 100); //using left sensor value.
-					//TODO
-					double d = 0;
-					//Set Driving for sending to car.
-					SetDriving((int)Math.Round(d));
+					CarCommand command = Data.nav.Tick(currentLeftDistance,currentRightDistance);				
+				
+					//Set Driving and Steering for sending to car.
+					SetDrivingSteering((int)Math.Round(command.Driving), (int)Math.Round(command.Steering));
 				}
 
 			}

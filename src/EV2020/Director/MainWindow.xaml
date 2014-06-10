@@ -84,13 +84,15 @@
 			</StackPanel>
 		</StackPanel>
 		<StatusBar Grid.ColumnSpan="2" Height="26" VerticalAlignment="Bottom">
-			<StatusBarItem Width="40" Content="{Binding SerialPortStatus, Mode=OneWay}" Foreground="{Binding SerialPortStatusColor, Mode=OneWay}" x:Name="statusBarComPort" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
+			<StatusBarItem Width="40" Content="{Binding SerialPortStatus, Mode=OneWay}" Foreground="{Binding SerialPortStatusColor, Mode=OneWay}" x:Name="statusBarComport" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 			<StatusBarItem x:Name="statusBarEmergencyStop" Width="80" Content="{Binding LastPing, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 			<StatusBarItem x:Name="statusBarFixedInputSequence" Width="120" Content="{Binding FixedInputSequence, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 			<StatusBarItem x:Name="statusBarLastPing" Width="80" Content="{Binding EmergencyStop, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
 		</StatusBar>
-		<Canvas x:Name="visCanvas" Margin="0,28,0,31" Background="White">
-			
+		<Canvas x:Name="visCanvas" Margin="10,28,10,31" Background="White">
+			<Canvas.LayoutTransform>
+				<ScaleTransform ScaleY="-1" />
+			</Canvas.LayoutTransform>			
 		</Canvas>
 	</Grid>
 </Window>

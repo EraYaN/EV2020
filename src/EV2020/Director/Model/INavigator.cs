@@ -13,6 +13,11 @@ namespace EV2020.Director
 	/// </summary>
 	public interface INavigator
 	{
+		double CarX { get; }
+		double CarY { get; }
+		double TargetX { get; }
+		double TargetY { get; }
+		double CarBearing { get; }
 		void Init();
 		CarCommand Tick(double LeftSensor, double RightSensor);
 		string GetDebugInfo();
