@@ -77,28 +77,4 @@ Therefore, most of the time, the perceived frequency deviation will be even less
 Besides that, the sensor uses square waves, which consist of an infinite amount of frequencies instead of a single one.
 Therefore, a changed frequency spectrum does not affect the measurement at all as it only checks for the rising edge of the reflected audio signal.
 
-\subsection{Datasheet}
-
-A couple of parameters have been left out of the KITT datasheet. Below, in table \ref{table:parameters}, we've listed the unknown parameters. 
-The Bluetooth parameters were found at the official Bluetooth website %\cite{Bluetooth}. 
-The ultrasonic sensor parameters were found in the datasheet and determined from observations. 
-To determine the turning radius, the car's front wheels were set to the maximum angle in order to drive in a circle. Subsequently the radius could be measured. 
-After running 30 ping measurements, the maximum command refresh time was 0.202614 seconds. 
-The average refresh time is 0.1244 seconds.
-
-\begin{table}[H]
-\begin{center}
-\begin{tabular}{ | l | l |}
-    \hline
-    Bluetooth operating frequency & 2.4 GHz \\ \hline
-    Bluetooth operating range & 10 meter \\\hline
-    Ultrasonic sensor resolution    & 3 mm \\\hline
-    Ultrasonic sensor distance	         & 300 cm \\\hline
-    Turning radius & 165 cm \\\hline
-    Max. Command refresh time & 0.202614 s\\\hline
-\end{tabular}
-\caption{Operating ratings}
-\end{center}
-\end{table}
-\label{table:parameters}
 \end{document}
