@@ -63,17 +63,24 @@ namespace EV2020.Director
 			}
 		}
 
-		public void Init() {  }
-		public CarCommand Tick(double LeftSensor, double RightSensor) {
+		public void Init() {
+			bw_generate.DoWork += bw_generate_DoWork;
+			bw_generate.WorkerReportsProgress = true;
+			bw_generate.ProgressChanged += bw_generate_ProgressChanged;
+			bw_generate.RunWorkerCompleted += bw_generate_RunWorkerCompleted;
+			bw_generate.RunWorkerAsync();
+		}
+		public CarCommand Tick(double LeftSensor, double RightSensor)
+		{
 			CarCommand c = new CarCommand(0, 0);
 			if (_paused)
 				return c;
-			Vector<double> output = model.Tick(Position*100, Target*100);
+			Vector<double> output = model.Tick(Position * 100, Target * 100);
 			Data.db.UpdateProperty("ModelDebugInfo");
 			double modelbearing = output.Angle();
 			Vector<double> targetd = Position - Target;
 			double targetbearing = targetd.Angle();
-			double bearingd = targetbearing - (bearing+modelbearing)/2;
+			double bearingd = targetbearing - (bearing + modelbearing) / 2;
 			if (bearingd > 0)
 			{
 				c.Steering = 15;
@@ -84,8 +91,9 @@ namespace EV2020.Director
 			}
 			c.Driving = output.Magnitude();
 			UpdateField();
-			return c;			
-		}
+			return c;
+		}		
+		
 		public string GetDebugInfo() {
 			return model.GetDebugInfo() + "\n" + Position.ToString() + "\n" + Target.ToString() + "\n" + CarBearing.ToString();
 		}
@@ -172,8 +180,8 @@ namespace EV2020.Director
 		[STAThread]
 		void bw_generate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			localizer.InitializeDriver();
 			localizer.OnLocationUpdated += localizer_OnLocationUpdated;
+			//localizer.OnLocationUpdated += localizer_OnLocationUpdated;
 		}
 		[STAThread]
 		void bw_generate_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -183,8 +191,10 @@ namespace EV2020.Director
 
 		void bw_generate_DoWork(object sender, DoWorkEventArgs e)
 		{
-			localizer = new Localizer(Data.cfg.Microphones.ToList(), (int)e.Argument, Data.cfg.FieldWidth, Data.cfg.FieldHeight, Data.cfg.FieldMargin, Data.cfg.SampleWindow, Data.cfg.SampleLength, Data.cfg.BeaconHeight, Data.cfg.MatchedFilterEnabled, Data.cfg.MatchedFilterToep);
+			localizer = new Localizer(Data.cfg.Microphones.ToList(), Data.cfg.FieldWidth, Data.cfg.FieldHeight, Data.cfg.FieldMargin, Data.cfg.SampleWindow, Data.cfg.SampleLength, Data.cfg.BeaconHeight, Data.cfg.MatchedFilterEnabled, Data.cfg.MatchedFilterToep);
 			localizer.GenerateFilterMatrix(Data.cfg.UseMeasuredSignal);
+			localizer.InitializeDriver();
+			
 		}
 		#endregion
 	}

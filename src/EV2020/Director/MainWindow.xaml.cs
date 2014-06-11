@@ -81,6 +81,7 @@ namespace EV2020.Director
 			{
 				MessageBox.Show("COM Port or Baud Rate not valid.", "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
+			Data.nav.Init();
 
 			//MATLAB is for now not needed.
 			/*if(Data.matlab==null)

@@ -306,6 +306,28 @@ namespace EV2020.Director
 				}
 			}
 		}
+		public bool MatchedFilterToep
+		{
+			get
+			{
+				if (Data.cfg != null)
+				{
+					return Data.cfg.MatchedFilterToep;
+				}
+				return false;
+			}
+			set
+			{
+				if (Data.cfg != null)
+				{
+					if (Data.cfg.MatchedFilterToep != value)
+					{
+						Data.cfg.MatchedFilterToep = value;
+						RaisePropertyChanged("MatchedFilterToep");
+					}
+				}
+			}
+		}
 		public bool UseMeasuredSignal
 		{
 			get

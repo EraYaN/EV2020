@@ -50,11 +50,11 @@ namespace EV2020.LocationSystem
 		/// Constructor for the 2D location algorithm class
 		/// </summary>
 		/// <param name="mics">List of observable microphones</param>
-		public Localizer(List<Microphone> mics, int DriverIndex, double FieldWidth = 1, double FieldHeight = 1, double FieldMargin = 1,
+		public Localizer(List<Microphone> mics, double FieldWidth = 1, double FieldHeight = 1, double FieldMargin = 1,
 			double SampleWindow = 1, double SampleLength = 2400, double BeaconHeight = 0.28, bool MatchedFilterEnabled = false, bool MatchedFilterToep = false)
 		{
 			Microphones = mics;
-			_driverIndex = DriverIndex;
+			
 			int[] ins = new int[mics.Count];
 			for (int i = 0; i < mics.Count; i++)
 			{
@@ -161,13 +161,15 @@ namespace EV2020.LocationSystem
 		{
 			if (matchedfilter == null)
 				return false;
-			asio = new ASIO(_driverIndex, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
+
+			asio = new ASIO(_inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
 			//TODO back to 250 ms
-			timer = new System.Timers.Timer(sampleLength * 1000 * (matchedFilterEnabled && !matchedFilterToep ? 8 : 1)); // TEST: 8 times longer
+			timer = new System.Timers.Timer(sampleLength * 1000 * (matchedFilterEnabled && !matchedFilterToep ? 4 : 1)); // TEST: 8 times longer
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
 			asio.IsInputEnabled = true;
+			asio.Init();
 			return true;
 		}
 
