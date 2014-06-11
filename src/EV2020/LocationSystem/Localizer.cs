@@ -1,6 +1,6 @@
-﻿using MathNet.Numerics.LinearAlgebra;
+﻿using BlueWave.Interop.Asio;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using MicroMvvm;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,16 +42,16 @@ namespace EV2020.LocationSystem
 		public Matrix<double> lastData;
 		public int[] lastMaxes;
 		Vector<double> beaconsignal;
-		int _driverIndex;
 		int[] _inputChannels;
 		int[] _outputChannels;
+		bool _running = false; //Is there a running measurement
 
 		/// <summary>
 		/// Constructor for the 2D location algorithm class
 		/// </summary>
 		/// <param name="mics">List of observable microphones</param>
 		public Localizer(List<Microphone> mics, double FieldWidth = 1, double FieldHeight = 1, double FieldMargin = 1,
-			double SampleWindow = 1, double SampleLength = 2400, double BeaconHeight = 0.28, bool MatchedFilterEnabled = false, bool MatchedFilterToep = false)
+			double SampleWindow = 2400, double SampleLength = 0.25, double BeaconHeight = 0.28, bool MatchedFilterEnabled = false, bool MatchedFilterToep = false)
 		{
 			Microphones = mics;
 			
@@ -77,6 +77,7 @@ namespace EV2020.LocationSystem
 		/// </summary>
 		/// <param name="UseMeasuredSignal">Whether the generated refsignal (no transmission channel) or the measured audio will be used as reference</param>
 		/// <returns></returns>
+		[STAThread]
 		public bool GenerateFilterMatrix(bool UseMeasuredSignal = false)
 		{
 			if (matchedFilterEnabled)
@@ -157,25 +158,33 @@ namespace EV2020.LocationSystem
 		/// Init the ASIO driver to be used for recording
 		/// </summary>
 		/// <returns>True if the matched filter is initialized correctly</returns>
-		public bool InitializeDriver()
+		[STAThread]
+		public bool InitializeDriver(InstalledDriver driver)
 		{
-			if (matchedfilter == null)
-				return false;
-
-			asio = new ASIO(_inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
+			Debug.WriteLine("State {2}: {0} ({1})", Thread.CurrentThread.GetApartmentState(), Thread.CurrentThread.ManagedThreadId, System.Reflection.MethodBase.GetCurrentMethod().Name);
+			asio = new ASIO(driver, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
 			//TODO back to 250 ms
 			timer = new System.Timers.Timer(sampleLength * 1000 * (matchedFilterEnabled && !matchedFilterToep ? 4 : 1)); // TEST: 8 times longer
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
 			asio.IsInputEnabled = true;
-			asio.Init();
 			return true;
 		}
-
+		
 		void timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			performMeasurement();
+			Debug.WriteLine("State {2}: {0} ({1})", Thread.CurrentThread.GetApartmentState(), Thread.CurrentThread.ManagedThreadId, System.Reflection.MethodBase.GetCurrentMethod().Name);
+			if (!_running)
+			{
+				_running = true;
+				performMeasurement();
+				_running = false;
+			}
+			else
+			{
+				Debug.WriteLine("Localization Timer bounced.");
+			}
 		}
 		~Localizer()
 		{
@@ -189,8 +198,10 @@ namespace EV2020.LocationSystem
 		/// <summary>
 		/// Record the microphones
 		/// </summary>
+		[STAThread]
 		void performMeasurement()
 		{
+			Debug.WriteLine("State {2}: {0} ({1})", Thread.CurrentThread.GetApartmentState(), Thread.CurrentThread.ManagedThreadId,System.Reflection.MethodBase.GetCurrentMethod().Name);
 			if (asio == null)
 				return;
 			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -198,11 +209,12 @@ namespace EV2020.LocationSystem
 
 			ASIOLatencies lat = GetASIOLatencies();
 			Debug.WriteLine("Latencies; IN: {0}, OUT: {1}", lat.Input, lat.Output);
-			Thread.Sleep(new TimeSpan(Convert.ToInt64(((lat.Input + matchedfilterVector.Count) * ASIO.T) * TimeSpan.TicksPerSecond)));
+			int measurementSamples = (int)Math.Round(sampleLength * ASIO.Fs);
+			Thread.Sleep(new TimeSpan(Convert.ToInt64(((lat.Input + measurementSamples) * ASIO.T) * TimeSpan.TicksPerSecond)));
 			//get all channels in a matrix (every column is a channel)
 			if (asio == null)
 				return;
-			Matrix<double> responses = asio.getAllInputSamplesMatrix(matchedfilterVector.Count); //MATCHED Filter way
+			Matrix<double> responses = asio.getAllInputSamplesMatrix(measurementSamples); //MATCHED Filter way
 			//asio.IsInputEnabled = false;
 			//Matrix multiply way
 			int[] samplemaxes = new int[responses.ColumnCount];
@@ -220,30 +232,31 @@ namespace EV2020.LocationSystem
 					double[,] responsesArray = new double[responses.RowCount, responses.ColumnCount];
 					for (int i = 0; i < responses.RowCount; i++)
 						for (int j = 0; j < responses.ColumnCount; j++)
-							responsesArray[j, i] = responses[j, i];
+							responsesArray[i, j] = responses[i, j];
 
 					// Perform convolution
 					//Matrix<double> result = new DenseMatrix(5, 30000);
 					long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-					for (int i = 0; i < 5; i++)
+					for (int i = 0; i < responses.ColumnCount; i++)
 					{
 						double maxval = 0;
 						int start, end;
 						if (i == 0)
 						{
 							start = 0;
-							end = responsesArray.Length - matchedfilterVector.Count;
+							end = responses.RowCount;
 						}
 						else
 						{
 							start = Math.Max(samplemaxes[0] - (int)sampleWindow / 2, 0);
-							end = Math.Min(samplemaxes[0] + (int)sampleWindow / 2, responsesArray.Length - matchedfilterVector.Count);
+							end = Math.Min(samplemaxes[0] + (int)sampleWindow / 2, responses.RowCount - matchedfilterVector.Count);
 						}
 						for (int j = start; j < end; j++)
 						{
 							double val = 0;
-							for (int k = 0; k < matchedfilterVector.Count; k++)
+							double convsamp = Math.Min(matchedfilterVector.Count, end-j);
+							for (int k = 0; k < convsamp; k++)
 								val += responsesArray[j + k, i] * matchedfilterVector[k];
 							if (Math.Abs(val) > maxval)
 							{
@@ -295,22 +308,32 @@ namespace EV2020.LocationSystem
 				Debug.WriteLine("Channel {2} delta is {0:f2} ms at @ {1} samples.", Math.Abs(samplemaxes[0] - samplemaxes[1]) * ASIO.T * 1000, samplemaxes[i], i);
 			}
 			//lastData = responses.Append(filteredResponses);
-			//lastData = responses;
+			lastData = responses;
 			//lastData = filteredResponses;
 			lastMaxes = samplemaxes;
 			List<Position3D> l = new List<Position3D>();
 			Position3D loc1 = Localize(samplemaxes, lat);
 			Debug.WriteLine("Loc1: " + loc1.ToString());
-			l.Add(loc1);
+			//l.Add(loc1);
 			Position3D loc2 = Localize2(samplemaxes, lat);
 			Debug.WriteLine("Loc2: " + loc2.ToString());
 			//l.Add(loc2);
-			Debug.WriteLine(l[0]);
+			//Debug.WriteLine(l[0]);
 			//Debug.WriteLine(l[1]);
-			Position3D lpos = GetAveragePosition(l);
-			Debug.WriteLine(lpos);
-
-			OnLocationUpdated(this, new LocationUpdatedEventArgs(lpos));
+			//Position3D lpos = GetAveragePosition(l);
+			//Debug.WriteLine(lpos);
+			if (loc1 != null)
+			{
+				OnLocationUpdated(this, new LocationUpdatedEventArgs(loc1));
+			}
+			else if (loc2 != null)
+			{
+				OnLocationUpdated(this, new LocationUpdatedEventArgs(loc2));
+			}
+			else
+			{
+				Debug.WriteLine("No location could be found.");
+			}
 		}
 
 		/// <summary>
@@ -326,8 +349,11 @@ namespace EV2020.LocationSystem
 
 			int nmics = Math.Min(Microphones.Count, asio.InChannels);
 			int row = 0;
-
-			Matrix<double> a = DenseMatrix.Create(nmics * (nmics - 1), nmics - 1, 0);
+			if (nmics * (nmics - 1) < nmics + 1) {
+				Debug.WriteLine("Inconclusive.");
+				return null;
+			}
+			Matrix<double> a = DenseMatrix.Create(nmics * (nmics - 1), nmics + 1, 0);
 			Vector<double> b = DenseVector.Create(nmics * (nmics - 1), 0);
 
 

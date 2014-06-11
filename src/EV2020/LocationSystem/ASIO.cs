@@ -182,9 +182,9 @@ namespace EV2020.LocationSystem
 			{
 				for (int j = 0; j < nSamples; j++)
 				{
-					while (sampleBuffersIn[i].Size == 0)
+					if (sampleBuffersIn[i].Size == 0)
 					{
-						;
+						break;
 					}
 					try
 					{

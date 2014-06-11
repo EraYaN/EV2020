@@ -60,6 +60,7 @@ namespace EV2020.Director
 			settingsWindow = new SettingsWindow();
 			Data.vis = new Visualization(visCanvas, joystickCanvas);
 			Data.vis.drawField();
+			Debug.WriteLine("State #1: {0}", Thread.CurrentThread.GetApartmentState());
 		}
 
 		private void initButton_Click(object sender, RoutedEventArgs e)

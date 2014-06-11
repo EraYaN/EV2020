@@ -1,4 +1,5 @@
-﻿using EV2020.LocationSystem;
+﻿using BlueWave.Interop.Asio;
+using EV2020.LocationSystem;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
@@ -7,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EV2020.Director
@@ -62,7 +64,7 @@ namespace EV2020.Director
 				pw.Close();
 			}
 		}
-
+		[STAThread]
 		public void Init() {
 			bw_generate.DoWork += bw_generate_DoWork;
 			bw_generate.WorkerReportsProgress = true;
@@ -70,6 +72,7 @@ namespace EV2020.Director
 			bw_generate.RunWorkerCompleted += bw_generate_RunWorkerCompleted;
 			bw_generate.RunWorkerAsync();
 		}
+		[STAThread]
 		public CarCommand Tick(double LeftSensor, double RightSensor)
 		{
 			CarCommand c = new CarCommand(0, 0);
@@ -125,9 +128,11 @@ namespace EV2020.Director
 			_paused = false;
 			return true;
 		}
-
+		[STAThread]
 		void localizer_OnLocationUpdated(object sender, LocationUpdatedEventArgs e)
 		{
+			Debug.WriteLine("State {2}: {0} ({1})", Thread.CurrentThread.GetApartmentState(), Thread.CurrentThread.ManagedThreadId, System.Reflection.MethodBase.GetCurrentMethod().Name);
+			
 			if (localizer != null)
 			{
 				if (localizer.lastData != null)
@@ -161,7 +166,7 @@ namespace EV2020.Director
 			//posistionLog.ScrollToEnd();
 			UpdateField();
 		}
-
+		[STAThread]
 		private void UpdateField(){
 			if (Data.vis != null && _iter % 100 == 0)
 			{
@@ -180,21 +185,20 @@ namespace EV2020.Director
 		[STAThread]
 		void bw_generate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			localizer.OnLocationUpdated += localizer_OnLocationUpdated;
-			//localizer.OnLocationUpdated += localizer_OnLocationUpdated;
+			
+			localizer.InitializeDriver(AsioDriver.InstalledDrivers.Find(Data.cfg.SelectedDriver));
+			localizer.OnLocationUpdated += localizer_OnLocationUpdated;			
 		}
 		[STAThread]
 		void bw_generate_ProgressChanged(object sender, ProgressChangedEventArgs e)
 		{
 			//throw new NotImplementedException();
 		}
-
+		[STAThread]
 		void bw_generate_DoWork(object sender, DoWorkEventArgs e)
 		{
 			localizer = new Localizer(Data.cfg.Microphones.ToList(), Data.cfg.FieldWidth, Data.cfg.FieldHeight, Data.cfg.FieldMargin, Data.cfg.SampleWindow, Data.cfg.SampleLength, Data.cfg.BeaconHeight, Data.cfg.MatchedFilterEnabled, Data.cfg.MatchedFilterToep);
-			localizer.GenerateFilterMatrix(Data.cfg.UseMeasuredSignal);
-			localizer.InitializeDriver();
-			
+			localizer.GenerateFilterMatrix(Data.cfg.UseMeasuredSignal);	
 		}
 		#endregion
 	}
