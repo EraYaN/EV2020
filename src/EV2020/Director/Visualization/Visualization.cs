@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
@@ -41,7 +40,7 @@ namespace EV2020.Director
 		const double micMarkerSize = 0.1; //in meters
 		readonly Brush micMarkerFill = Brushes.Black;
 		//target
-		const double targetSize = 0.3; //in meters
+		const double targetSize = 0.25; //in meters
 		readonly Brush targetFill = Brushes.Red;
 		//car
 		const double carStrokeThickness = 3;
@@ -60,84 +59,6 @@ namespace EV2020.Director
 			//Constructor
 			c = _c;
 			jc = _jc;
-
-			// TEST!! convolution speed
-			/*Vector<double> matchedfilter = new DenseVector(500);
-			for (int i = 0; i < matchedfilter.Count; i++)
-				matchedfilter[i] = 2341.13341;
-			//Matrix<double> matrix = new DenseMatrix(5, 10000);
-			Matrix<double> responses = new DenseMatrix(12000, 5);
-			double rnd = 0.2354332;
-			for (int i = 0; i < 5; i++)
-			{
-				for (int j = 0; j < 12000; j++)
-				{
-					rnd = (rnd * 34123.32412312 + 0.32412255234) % 1;
-					responses[j, i] = rnd;
-				}
-			}
-
-			for (int i = 0; i < 5; i++)
-			{
-				for (int j = 0; j < 500; j++)
-				{
-					rnd = (rnd * 34123.32412312 + 0.32412255234) % 1;
-					responses[j + 1000, i] = matchedfilter[j] - rnd/2;
-				}
-			}
-
-			//Matrix<double> result = new DenseMatrix(5, 30000);
-			long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-			double[,] responsesArray = new double[12000, 5];
-
-			for (int i = 0; i < 5; i++)
-				for (int j = 0; j < 12000; j++)
-					responsesArray[j, i] = responses[j, i];
-
-			int[] samplemaxes = new int[5];
-			double[] maxes = new double[5];
-			Matrix<double> filteredResponses = new DenseMatrix(responses.RowCount, responses.ColumnCount);
-			for (int i = 0; i < 5; i++)
-			{
-				double maxval = 0;
-				int start, end;
-				if (i == 0)
-				{
-					start = 0;
-					end = responsesArray.GetLength(0) - matchedfilter.Count;
-				}
-				else
-				{
-					start = Math.Max(samplemaxes[0] - 500, 0);
-					end = Math.Min(samplemaxes[0] + 500, responsesArray.GetLength(0) - matchedfilter.Count);
-				}
-				for (int j = start; j < end; j++)
-				{
-					//double val = 0;
-					/*for (int k = 0; k < matchedfilter.Count; k++)
-						filteredResponses[j, i] += responsesArray[j + k, i] * matchedfilter[k];
-					if (filteredResponses[j, i] > maxval)
-					{
-						maxval = filteredResponses[j, i];
-						maxes[i] = Math.Abs(filteredResponses[j, i]);
-						samplemaxes[i] = j;
-					}*/
-
-					/*double val = 0;
-					for (int k = 0; k < matchedfilter.Count; k++)
-						val += responsesArray[j + k, i] * matchedfilter[k];
-					if (val > maxval)
-					{
-						maxval = val;
-						maxes[i] = Math.Abs(val);
-						samplemaxes[i] = j;
-					}
-				}
-			}
-
-			long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds;
-			time = time;*/
 		}	
 		/// <summary>
 		/// This updates the joystick position

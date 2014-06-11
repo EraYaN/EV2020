@@ -104,7 +104,7 @@ namespace EV2020.LocationSystem
 				}
 				else
 				{
-					//Own Code: e65a20e5b37ac60d
+					//Own Code: e65a 20e5 b37a c60d
 					beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat10Hz, "e65a20e5", ASIO.Fs);
 					
 					Debug.WriteLine("Used reference data for beaconsignal.");
