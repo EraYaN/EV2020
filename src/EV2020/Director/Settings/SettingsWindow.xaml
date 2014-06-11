@@ -38,21 +38,21 @@
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
 							<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<Label Target="{Binding ElementName=fieldWidthTextBox}" Content="Field Width:" Height="16" Padding="0" Margin="2,0"/>
+								<Label Target="{Binding ElementName=fieldWidthTextBox}" Content="Field Width: (meters)" Height="16" Padding="0" Margin="2,0"/>
 								<TextBox x:Name="fieldWidthTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding Path=FieldWidth}"/>
-								<Label Target="{Binding ElementName=fieldMarginTextBox}" Content="Field Margin:" Height="16" Padding="0" Margin="2,0"/>
+								<Label Target="{Binding ElementName=fieldMarginTextBox}" Content="Field Margin: (meters)" Height="16" Padding="0" Margin="2,0"/>
 								<TextBox x:Name="fieldMarginTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding Path=FieldMargin}"/>
-								<Label Target="{Binding ElementName=beaconHeightTextBox}" Content="Beacon Height:" Height="16" Padding="0" Margin="2,0"/>
+								<Label Target="{Binding ElementName=beaconHeightTextBox}" Content="Beacon Height: (meters)" Height="16" Padding="0" Margin="2,0"/>
 								<TextBox x:Name="beaconHeightTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding Path=BeaconHeight}"/>
 								<Label Target="{Binding ElementName=smoothFactorTextBox}" Content="Smooth Factor:" Height="16" Padding="0" Margin="2,0"/>
 								<TextBox x:Name="smoothFactorTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding Path=SmoothFactor}"/>
 							</StackPanel>
 							<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1">
-								<Label Target="{Binding ElementName=fieldHeightTextBox}" Content="Field Height:" Height="16" Padding="0" Margin="2,0"/>
+								<Label Target="{Binding ElementName=fieldHeightTextBox}" Content="Field Height: (meters)" Height="16" Padding="0" Margin="2,0"/>
 								<TextBox x:Name="fieldHeightTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding Path=FieldHeight}"/>
-								<Label Target="{Binding ElementName=sampleLengthTextBox}" Content="Sample Length:" Height="16" Padding="0" Margin="2,0"/>
+								<Label Target="{Binding ElementName=sampleLengthTextBox}" Content="Sample Length: (seconds)" Height="16" Padding="0" Margin="2,0"/>
 								<TextBox x:Name="sampleLengthTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding Path=SampleLength}"/>
-								<Label Target="{Binding ElementName=sampleWindowTextBox}" Content="Sample Window:" Height="16" Padding="0" Margin="2,0"/>
+								<Label Target="{Binding ElementName=sampleWindowTextBox}" Content="Sample Window: (samples)" Height="16" Padding="0" Margin="2,0"/>
 								<TextBox x:Name="sampleWindowTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding Path=SampleWindow}"/>
 							</StackPanel>
 
@@ -75,24 +75,24 @@
 										</DataTemplate>
 									</GridViewColumn.CellTemplate>
 								</GridViewColumn>
-								<GridViewColumn Header="X" Width="50">
+								<GridViewColumn Header="X (meters)" Width="70">
 									<GridViewColumn.CellTemplate>
 										<DataTemplate>
-											<TextBox Text="{Binding X}" HorizontalAlignment="Stretch" Width="38" TextWrapping="Wrap"/>
+											<TextBox Text="{Binding X}" HorizontalAlignment="Stretch" Width="58" TextWrapping="Wrap"/>
 										</DataTemplate>
 									</GridViewColumn.CellTemplate>
 								</GridViewColumn>
-								<GridViewColumn Header="Y" Width="50">
+								<GridViewColumn Header="Y (meters)" Width="70">
 									<GridViewColumn.CellTemplate>
 										<DataTemplate>
-											<TextBox Text="{Binding Y}" HorizontalAlignment="Stretch" Width="38" TextWrapping="Wrap"/>
+											<TextBox Text="{Binding Y}" HorizontalAlignment="Stretch" Width="58" TextWrapping="Wrap"/>
 										</DataTemplate>
 									</GridViewColumn.CellTemplate>
 								</GridViewColumn>
-								<GridViewColumn Header="Z" Width="50">
+								<GridViewColumn Header="Z (meters)" Width="70">
 									<GridViewColumn.CellTemplate>
 										<DataTemplate>
-											<TextBox Text="{Binding Z}" HorizontalAlignment="Stretch" Width="38" TextWrapping="Wrap"/>
+											<TextBox Text="{Binding Z}" HorizontalAlignment="Stretch" Width="58" TextWrapping="Wrap"/>
 										</DataTemplate>
 									</GridViewColumn.CellTemplate>
 								</GridViewColumn>

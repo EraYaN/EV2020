@@ -47,18 +47,9 @@ namespace EV2020.LocationSystem
 		public bool IsInputEnabled = false;
 		AsioDriver driver;
 		bool _disposed;
-		public ASIO(int DriverIndex, int[] InputChannels, int[] OutputChannels, int QueueDepth = DefaultQueueDepth)
+		public ASIO(InstalledDriver instdriver, int[] InputChannels, int[] OutputChannels, int QueueDepth = DefaultQueueDepth)
 		{
-			InstalledDriver instdriver;
-			if (DriverIndex >= 0 && DriverIndex < AsioDriver.InstalledDrivers.Length)
-			{
-				instdriver = AsioDriver.InstalledDrivers[DriverIndex];
-			}
-			else
-			{
-				throw new ArgumentException("The DriverIndex does not exist.", "DriverIndex");
-			}
-			
+				
 			System.Diagnostics.Debug.WriteLine("ASIO driver: {0}", instdriver);
 			driver = AsioDriver.SelectDriver(instdriver);			
 			driver.BufferUpdate += new EventHandler(AsioDriver_BufferUpdate);		
@@ -191,9 +182,9 @@ namespace EV2020.LocationSystem
 			{
 				for (int j = 0; j < nSamples; j++)
 				{
-					while (sampleBuffersIn[i].Size == 0)
+					if (sampleBuffersIn[i].Size == 0)
 					{
-						;
+						break;
 					}
 					try
 					{

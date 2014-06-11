@@ -62,7 +62,7 @@ namespace EV2020.Director
 		public Vector<double> Tick(Vector<double> Position, Vector<double> Target)
 		{			
 			//Calculate the feedback. And clamp the value to the maximum values to be send to the car the "back" value is higher for faster braking.
-			Matrix<double> feedback = (-K * x).Clamp(-9, 5);
+			Matrix<double> feedback = (-K * x).Clamp(-1, 1);
 
 			// Dead zone. Non-symmetrical
 			feedback = feedback.Deadzone(-1,1.5);

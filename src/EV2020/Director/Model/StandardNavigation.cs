@@ -1,4 +1,5 @@
-﻿using EV2020.LocationSystem;
+﻿using BlueWave.Interop.Asio;
+using EV2020.LocationSystem;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
@@ -7,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EV2020.Director
@@ -26,6 +28,9 @@ namespace EV2020.Director
 		double bearing;
 		int _iter = 0;
 		long lastTimestamp = 0;
+
+		object _localizerLock = new object();
+
 		public double CarX
 		{
 			get { return Position[0]; }
@@ -62,18 +67,30 @@ namespace EV2020.Director
 				pw.Close();
 			}
 		}
-
-		public void Init() {  }
-		public CarCommand Tick(double LeftSensor, double RightSensor) {
+		[STAThread]
+		public void Init() {
+			lock (_localizerLock)
+			{
+				localizer = new Localizer(Data.cfg.Microphones.ToList(), Data.cfg.FieldWidth, Data.cfg.FieldHeight, Data.cfg.FieldMargin, Data.cfg.SampleWindow, Data.cfg.SampleLength, Data.cfg.BeaconHeight, Data.cfg.MatchedFilterEnabled, Data.cfg.MatchedFilterToep);
+			}
+			bw_generate.DoWork += bw_generate_DoWork;
+			bw_generate.WorkerReportsProgress = true;
+			bw_generate.ProgressChanged += bw_generate_ProgressChanged;
+			bw_generate.RunWorkerCompleted += bw_generate_RunWorkerCompleted;
+			bw_generate.RunWorkerAsync();
+		}
+		[STAThread]
+		public CarCommand Tick(double LeftSensor, double RightSensor)
+		{
 			CarCommand c = new CarCommand(0, 0);
 			if (_paused)
 				return c;
-			Vector<double> output = model.Tick(Position*100, Target*100);
+			Vector<double> output = model.Tick(Position * 100, Target * 100);
 			Data.db.UpdateProperty("ModelDebugInfo");
 			double modelbearing = output.Angle();
 			Vector<double> targetd = Position - Target;
 			double targetbearing = targetd.Angle();
-			double bearingd = targetbearing - (bearing+modelbearing)/2;
+			double bearingd = targetbearing - (bearing + modelbearing) / 2;
 			if (bearingd > 0)
 			{
 				c.Steering = 15;
@@ -84,8 +101,9 @@ namespace EV2020.Director
 			}
 			c.Driving = output.Magnitude();
 			UpdateField();
-			return c;			
-		}
+			return c;
+		}		
+		
 		public string GetDebugInfo() {
 			return model.GetDebugInfo() + "\n" + Position.ToString() + "\n" + Target.ToString() + "\n" + CarBearing.ToString();
 		}
@@ -98,7 +116,7 @@ namespace EV2020.Director
 			{
 				throw new ArgumentOutOfRangeException("pos",pos,"Position is outside the field.");
 			}
-			Target = pos*100;
+			Target = pos;
 			UpdateField();
 		}
 		public bool Pause() {
@@ -117,30 +135,40 @@ namespace EV2020.Director
 			_paused = false;
 			return true;
 		}
-
+		[STAThread]
 		void localizer_OnLocationUpdated(object sender, LocationUpdatedEventArgs e)
 		{
-			if (localizer != null)
+			if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
 			{
-				if (localizer.lastData != null)
+				lock (_localizerLock)
 				{
-					List<string> legend = new List<string>();
-					for (int i = 0; i < localizer.lastData.ColumnCount; i++)
+					if (localizer != null)
 					{
-						legend.Add(String.Format("Channel {0}", i + 1));
-					}
-					if (pw != null)
-					{
-						if (pw.IsLoaded)
-							pw.Update("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
-					}
-					else
-					{
-						pw = new PlotWindow("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
-						pw.Show();
-					}
+						if (localizer.lastData != null)
+						{
+							List<string> legend = new List<string>();
+							for (int i = 0; i < localizer.lastData.ColumnCount; i++)
+							{
+								legend.Add(String.Format("Channel {0}", i + 1));
+							}
+							if (pw != null)
+							{
+								if (pw.IsLoaded)
+									pw.Update("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
+							}
+							else
+							{
+								pw = new PlotWindow("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
+								pw.Show();
+							}
 
+						}
+					}
 				}
+			}
+			else
+			{
+				Debug.WriteLine("Could not display PlotWindow due to ThreadApartment");
 			}
 			//Debug.WriteLine(e.Position);
 			//Position3D pos = new Position3D() { X = (lpos.X * 2 + e.Position.X) / 3, Y = (lpos.Y * 2 + e.Position.Y) / 3, Z = 0 };
@@ -153,38 +181,43 @@ namespace EV2020.Director
 			//posistionLog.ScrollToEnd();
 			UpdateField();
 		}
-
+		[STAThread]
 		private void UpdateField(){
-			if (Data.vis != null && _iter % 100 == 0)
-			{
+			/*if (Data.vis != null && _iter % 10 == 0)
+			{*/
 				Debug.WriteLine("Drawing field: {0} ms ago was last time", (DateTime.Now.Ticks - (double)lastTimestamp)/TimeSpan.TicksPerMillisecond);
 				Data.vis.drawField();
 				lastTimestamp = DateTime.Now.Ticks;
-				_iter++;
-				if (_iter > 100)
+			/*	_iter++;
+				if (_iter > 10)
 				{
 					_iter = 0;
 				}
-			}
+			}*/
 		}
 		
 		#region BackgroundWorker
 		[STAThread]
 		void bw_generate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			localizer.InitializeDriver();
-			localizer.OnLocationUpdated += localizer_OnLocationUpdated;
+			lock (_localizerLock)
+			{
+				localizer.InitializeDriver(AsioDriver.InstalledDrivers.Find(Data.cfg.SelectedDriver));
+				localizer.OnLocationUpdated += localizer_OnLocationUpdated;
+			}
 		}
 		[STAThread]
 		void bw_generate_ProgressChanged(object sender, ProgressChangedEventArgs e)
 		{
 			//throw new NotImplementedException();
 		}
-
+		[STAThread]
 		void bw_generate_DoWork(object sender, DoWorkEventArgs e)
 		{
-			localizer = new Localizer(Data.cfg.Microphones.ToList(), (int)e.Argument, Data.cfg.FieldWidth, Data.cfg.FieldHeight, Data.cfg.FieldMargin, Data.cfg.SampleWindow, Data.cfg.SampleLength, Data.cfg.BeaconHeight, Data.cfg.MatchedFilterEnabled, Data.cfg.MatchedFilterToep);
-			localizer.GenerateFilterMatrix(Data.cfg.UseMeasuredSignal);
+			lock (_localizerLock)
+			{
+				localizer.GenerateFilterMatrix(Data.cfg.UseMeasuredSignal);
+			}
 		}
 		#endregion
 	}
