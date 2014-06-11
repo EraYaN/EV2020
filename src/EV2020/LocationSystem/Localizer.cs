@@ -153,7 +153,7 @@ namespace EV2020.LocationSystem
 			asio = new ASIO(_driverIndex, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
 			//TODO back to 250 ms
-			timer = new System.Timers.Timer(sampleLength * 1000);
+			timer = new System.Timers.Timer(sampleLength * 1000 * 8); // TEST: 8 times longer
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
 			asio.IsInputEnabled = true;
@@ -226,15 +226,16 @@ namespace EV2020.LocationSystem
 					}
 					for (int j = start; j < end; j++)
 					{
-						//double val = 0;
+						double val = 0;
 						for (int k = 0; k < matchedfilter.Count; k++)
-							filteredResponses[j, i] += responsesArray[j + k, i] * matchedfilter[k];
-						if (Math.Abs(filteredResponses[j, i]) > maxval)
+							val += responsesArray[j + k, i] * matchedfilter[k];
+						if (Math.Abs(val) > maxval)
 						{
-							maxval = filteredResponses[j, i];
-							maxes[i] = Math.Abs(filteredResponses[j, i]);
+							maxval = val;
+							maxes[i] = Math.Abs(val);
 							samplemaxes[i] = j;
 						}
+						filteredResponses[j, i] = val;
 					}
 				}
 
