@@ -62,7 +62,7 @@ namespace EV2020.Director
 			jc = _jc;
 
 			// TEST!! convolution speed
-			/*Vector<double> matchedfilter = new DenseVector(500);
+			Vector<double> matchedfilter = new DenseVector(500);
 			for (int i = 0; i < matchedfilter.Count; i++)
 				matchedfilter[i] = 2341.13341;
 			//Matrix<double> matrix = new DenseMatrix(5, 10000);
@@ -115,7 +115,7 @@ namespace EV2020.Director
 						samplemaxes[i] = j;
 					}*/
 
-					/*double val = 0;
+					double val = 0;
 					for (int k = 0; k < matchedfilter.Count; k++)
 						val += responsesArray[j + k, i] * matchedfilter[k];
 					if (val > maxval)
@@ -128,7 +128,7 @@ namespace EV2020.Director
 			}
 
 			long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds;
-			time = time;*/
+			time = time;
 		}	
 		/// <summary>
 		/// This updates the joystick position

@@ -23,6 +23,7 @@ namespace EV2020.LocationSystem
 		double sampleLength = 0.25; //in seconds
 		double fieldMargin = 1;
 		bool matchedFilterEnabled = false;
+		bool matchedFilterToep = false;
 		//Width and Height of the rectangle field
 		double fieldHeight = 7.4;
 		double fieldWidth = 7;
@@ -31,7 +32,8 @@ namespace EV2020.LocationSystem
 		#endregion
 		double sampleWindow = ASIO.Fs / 5;
 		ASIO asio;
-		Vector<double> matchedfilter;
+		Matrix<double> matchedfilter;
+		Vector<double> matchedfilterVector;
 		bool _disposed;
 		public delegate void LocationUpdatedHandler(object sender, LocationUpdatedEventArgs e);
 		public event LocationUpdatedHandler OnLocationUpdated;
@@ -106,19 +108,19 @@ namespace EV2020.LocationSystem
 				Debug.WriteLine("Generating Toeplitz matrix.");
 
 				// Get the matchedfilter convolution vector
-				matchedfilter = new DenseVector(500); // WAS: Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength))
+				matchedfilterVector = new DenseVector(500); // WAS: Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength))
 				int samplenumber = 0;
 				foreach (double d in beaconsignal.Reverse())
 				{
-					matchedfilter[samplenumber] = d;
+					matchedfilterVector[samplenumber] = d;
 					samplenumber++;
-					if (samplenumber == matchedfilter.Count)
+					if (samplenumber == matchedfilterVector.Count)
 						break;
 				}
 
 				//Figure out corrent matchedfilter matrix
-				/*Vector<double> bsreverse = new DenseVector(Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength)));
-				int samplenumber = 0;
+				Vector<double> bsreverse = new DenseVector(Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength)));
+				samplenumber = 0;
 				foreach (double d in beaconsignal.Reverse())
 				{
 					bsreverse[samplenumber] = d;
@@ -133,7 +135,7 @@ namespace EV2020.LocationSystem
 				bsreverse = null;
 				Debug.WriteLine("Generating matched filter matrix.");
 				//X is a circulant matrix.
-				matchedfilter = X;*/
+				matchedfilter = X;
 			}
 			else
 			{
@@ -185,11 +187,11 @@ namespace EV2020.LocationSystem
 
 			ASIOLatencies lat = GetASIOLatencies();
 			Debug.WriteLine("Latencies; IN: {0}, OUT: {1}", lat.Input, lat.Output);
-			Thread.Sleep(new TimeSpan(Convert.ToInt64(((lat.Input + matchedfilter.Count) * ASIO.T) * TimeSpan.TicksPerSecond)));
+			Thread.Sleep(new TimeSpan(Convert.ToInt64(((lat.Input + matchedfilterVector.Count) * ASIO.T) * TimeSpan.TicksPerSecond)));
 			//get all channels in a matrix (every column is a channel)
 			if (asio == null)
 				return;
-			Matrix<double> responses = asio.getAllInputSamplesMatrix(matchedfilter.Count); //MATCHED Filter way
+			Matrix<double> responses = asio.getAllInputSamplesMatrix(matchedfilterVector.Count); //MATCHED Filter way
 			//asio.IsInputEnabled = false;
 			//Matrix multiply way
 			int[] samplemaxes = new int[responses.ColumnCount];
@@ -198,49 +200,53 @@ namespace EV2020.LocationSystem
 			Matrix<double> filteredResponses = new DenseMatrix(responses.RowCount, responses.ColumnCount);
 			if (matchedFilterEnabled)
 			{
-				//filteredResponses = matchedfilter * responses;
-
-				// TODO
-				double[,] responsesArray = new double[responses.RowCount, responses.ColumnCount];
-				for (int i = 0; i < responses.RowCount; i++)
-					for (int j = 0; j < responses.ColumnCount; j++)
-						responsesArray[j, i] = responses[j, i];
-
-				// Perform convolution
-				//Matrix<double> result = new DenseMatrix(5, 30000);
-				long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-				for (int i = 0; i < 5; i++)
+				if (matchedFilterToep)
 				{
-					double maxval = 0;
-					int start, end;
-					if (i == 0)
-					{
-						start = 0;
-						end = responsesArray.Length - matchedfilter.Count;
-					}
-					else
-					{
-						start = Math.Max(samplemaxes[0] - 500, 0);
-						end = Math.Min(samplemaxes[0] + 500, responsesArray.Length - matchedfilter.Count);
-					}
-					for (int j = start; j < end; j++)
-					{
-						double val = 0;
-						for (int k = 0; k < matchedfilter.Count; k++)
-							val += responsesArray[j + k, i] * matchedfilter[k];
-						if (Math.Abs(val) > maxval)
-						{
-							maxval = val;
-							maxes[i] = Math.Abs(val);
-							samplemaxes[i] = j;
-						}
-						filteredResponses[j, i] = val;
-					}
+					filteredResponses = matchedfilter * responses;
 				}
+				else
+				{
+					double[,] responsesArray = new double[responses.RowCount, responses.ColumnCount];
+					for (int i = 0; i < responses.RowCount; i++)
+						for (int j = 0; j < responses.ColumnCount; j++)
+							responsesArray[j, i] = responses[j, i];
 
-				long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds;
-				//time = time;
+					// Perform convolution
+					//Matrix<double> result = new DenseMatrix(5, 30000);
+					long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+					for (int i = 0; i < 5; i++)
+					{
+						double maxval = 0;
+						int start, end;
+						if (i == 0)
+						{
+							start = 0;
+							end = responsesArray.Length - matchedfilterVector.Count;
+						}
+						else
+						{
+							start = Math.Max(samplemaxes[0] - 500, 0);
+							end = Math.Min(samplemaxes[0] + 500, responsesArray.Length - matchedfilterVector.Count);
+						}
+						for (int j = start; j < end; j++)
+						{
+							double val = 0;
+							for (int k = 0; k < matchedfilterVector.Count; k++)
+								val += responsesArray[j + k, i] * matchedfilterVector[k];
+							if (Math.Abs(val) > maxval)
+							{
+								maxval = val;
+								maxes[i] = Math.Abs(val);
+								samplemaxes[i] = j;
+							}
+							filteredResponses[j, i] = val;
+						}
+					}
+
+					long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds;
+					//time = time;
+				}
 			}
 			else
 			{
@@ -278,8 +284,12 @@ namespace EV2020.LocationSystem
 			//lastData = filteredResponses;
 			lastMaxes = samplemaxes;
 			List<Position3D> l = new List<Position3D>();
-			l.Add(Localize(samplemaxes, lat));
-			//l.Add(Localize2(samplemaxes, lat));
+			Position3D loc1 = Localize(samplemaxes, lat);
+			Debug.WriteLine("Loc1: " + loc1);
+			l.Add(loc1);
+			Position3D loc2 = Localize2(samplemaxes, lat);
+			Debug.WriteLine("Loc2: " + loc2);
+			//l.Add(loc2);
 			Debug.WriteLine(l[0]);
 			//Debug.WriteLine(l[1]);
 			Position3D lpos = GetAveragePosition(l);

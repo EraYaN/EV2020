@@ -182,7 +182,7 @@ namespace EV2020.Director
 		}
 
 		void bw_generate_DoWork(object sender, DoWorkEventArgs e)
-		{			
+		{
 			localizer = new Localizer(Data.cfg.Microphones.ToList(), (int)e.Argument, Data.cfg.FieldWidth, Data.cfg.FieldHeight, Data.cfg.FieldMargin, Data.cfg.SampleWindow, Data.cfg.SampleLength, Data.cfg.BeaconHeight, Data.cfg.MatchedFilterEnabled);
 			localizer.GenerateFilterMatrix(Data.cfg.UseMeasuredSignal);
 		}
