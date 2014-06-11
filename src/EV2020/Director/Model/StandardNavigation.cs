@@ -28,6 +28,9 @@ namespace EV2020.Director
 		double bearing;
 		int _iter = 0;
 		long lastTimestamp = 0;
+
+		object _localizerLock = new object();
+
 		public double CarX
 		{
 			get { return Position[0]; }
@@ -66,6 +69,10 @@ namespace EV2020.Director
 		}
 		[STAThread]
 		public void Init() {
+			lock (_localizerLock)
+			{
+				localizer = new Localizer(Data.cfg.Microphones.ToList(), Data.cfg.FieldWidth, Data.cfg.FieldHeight, Data.cfg.FieldMargin, Data.cfg.SampleWindow, Data.cfg.SampleLength, Data.cfg.BeaconHeight, Data.cfg.MatchedFilterEnabled, Data.cfg.MatchedFilterToep);
+			}
 			bw_generate.DoWork += bw_generate_DoWork;
 			bw_generate.WorkerReportsProgress = true;
 			bw_generate.ProgressChanged += bw_generate_ProgressChanged;
@@ -109,7 +116,7 @@ namespace EV2020.Director
 			{
 				throw new ArgumentOutOfRangeException("pos",pos,"Position is outside the field.");
 			}
-			Target = pos*100;
+			Target = pos;
 			UpdateField();
 		}
 		public bool Pause() {
@@ -131,29 +138,37 @@ namespace EV2020.Director
 		[STAThread]
 		void localizer_OnLocationUpdated(object sender, LocationUpdatedEventArgs e)
 		{
-			Debug.WriteLine("State {2}: {0} ({1})", Thread.CurrentThread.GetApartmentState(), Thread.CurrentThread.ManagedThreadId, System.Reflection.MethodBase.GetCurrentMethod().Name);
-			
-			if (localizer != null)
+			if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
 			{
-				if (localizer.lastData != null)
+				lock (_localizerLock)
 				{
-					List<string> legend = new List<string>();
-					for (int i = 0; i < localizer.lastData.ColumnCount; i++)
+					if (localizer != null)
 					{
-						legend.Add(String.Format("Channel {0}", i + 1));
-					}
-					if (pw != null)
-					{
-						if (pw.IsLoaded)
-							pw.Update("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
-					}
-					else
-					{
-						pw = new PlotWindow("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
-						pw.Show();
-					}
+						if (localizer.lastData != null)
+						{
+							List<string> legend = new List<string>();
+							for (int i = 0; i < localizer.lastData.ColumnCount; i++)
+							{
+								legend.Add(String.Format("Channel {0}", i + 1));
+							}
+							if (pw != null)
+							{
+								if (pw.IsLoaded)
+									pw.Update("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
+							}
+							else
+							{
+								pw = new PlotWindow("Data", localizer.lastData, legend, ASIO.T, localizer.lastMaxes);
+								pw.Show();
+							}
 
+						}
+					}
 				}
+			}
+			else
+			{
+				Debug.WriteLine("Could not display PlotWindow due to ThreadApartment");
 			}
 			//Debug.WriteLine(e.Position);
 			//Position3D pos = new Position3D() { X = (lpos.X * 2 + e.Position.X) / 3, Y = (lpos.Y * 2 + e.Position.Y) / 3, Z = 0 };
@@ -168,26 +183,28 @@ namespace EV2020.Director
 		}
 		[STAThread]
 		private void UpdateField(){
-			if (Data.vis != null && _iter % 100 == 0)
-			{
+			/*if (Data.vis != null && _iter % 10 == 0)
+			{*/
 				Debug.WriteLine("Drawing field: {0} ms ago was last time", (DateTime.Now.Ticks - (double)lastTimestamp)/TimeSpan.TicksPerMillisecond);
 				Data.vis.drawField();
 				lastTimestamp = DateTime.Now.Ticks;
-				_iter++;
-				if (_iter > 100)
+			/*	_iter++;
+				if (_iter > 10)
 				{
 					_iter = 0;
 				}
-			}
+			}*/
 		}
 		
 		#region BackgroundWorker
 		[STAThread]
 		void bw_generate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			
-			localizer.InitializeDriver(AsioDriver.InstalledDrivers.Find(Data.cfg.SelectedDriver));
-			localizer.OnLocationUpdated += localizer_OnLocationUpdated;			
+			lock (_localizerLock)
+			{
+				localizer.InitializeDriver(AsioDriver.InstalledDrivers.Find(Data.cfg.SelectedDriver));
+				localizer.OnLocationUpdated += localizer_OnLocationUpdated;
+			}
 		}
 		[STAThread]
 		void bw_generate_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -197,8 +214,10 @@ namespace EV2020.Director
 		[STAThread]
 		void bw_generate_DoWork(object sender, DoWorkEventArgs e)
 		{
-			localizer = new Localizer(Data.cfg.Microphones.ToList(), Data.cfg.FieldWidth, Data.cfg.FieldHeight, Data.cfg.FieldMargin, Data.cfg.SampleWindow, Data.cfg.SampleLength, Data.cfg.BeaconHeight, Data.cfg.MatchedFilterEnabled, Data.cfg.MatchedFilterToep);
-			localizer.GenerateFilterMatrix(Data.cfg.UseMeasuredSignal);	
+			lock (_localizerLock)
+			{
+				localizer.GenerateFilterMatrix(Data.cfg.UseMeasuredSignal);
+			}
 		}
 		#endregion
 	}

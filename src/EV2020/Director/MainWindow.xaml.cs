@@ -60,7 +60,7 @@ namespace EV2020.Director
 			settingsWindow = new SettingsWindow();
 			Data.vis = new Visualization(visCanvas, joystickCanvas);
 			Data.vis.drawField();
-			Debug.WriteLine("State #1: {0}", Thread.CurrentThread.GetApartmentState());
+			Debug.WriteLine("State Const {2}: {0} ({1})", Thread.CurrentThread.GetApartmentState(), Thread.CurrentThread.ManagedThreadId, System.Reflection.MethodBase.GetCurrentMethod().Name);
 		}
 
 		private void initButton_Click(object sender, RoutedEventArgs e)
@@ -264,8 +264,14 @@ namespace EV2020.Director
 				try
 				{
 					Data.nav.GoToPosition(DenseVector.OfArray(new double[] { Convert.ToDouble(TargetX.Text), Convert.ToDouble(TargetY.Text) }));
-				} catch(ArgumentOutOfRangeException ex){
-					MessageBox.Show("Can't set target.\n"+ex.ToString());
+				}
+				catch (ArgumentOutOfRangeException ex)
+				{
+					MessageBox.Show("Can't set target.\n" + ex.ToString());
+				}
+				catch (ArgumentException ex)
+				{
+					MessageBox.Show("Can't set target.\n" + ex.ToString());
 				}
 			} 
 		}

@@ -53,6 +53,7 @@ namespace EV2020.LocationSystem
 		public Localizer(List<Microphone> mics, double FieldWidth = 1, double FieldHeight = 1, double FieldMargin = 1,
 			double SampleWindow = 2400, double SampleLength = 0.25, double BeaconHeight = 0.28, bool MatchedFilterEnabled = false, bool MatchedFilterToep = false)
 		{
+			Debug.WriteLine("State CONSt LOc {2}: {0} ({1})", Thread.CurrentThread.GetApartmentState(), Thread.CurrentThread.ManagedThreadId, System.Reflection.MethodBase.GetCurrentMethod().Name);
 			Microphones = mics;
 			
 			int[] ins = new int[mics.Count];
@@ -161,7 +162,6 @@ namespace EV2020.LocationSystem
 		[STAThread]
 		public bool InitializeDriver(InstalledDriver driver)
 		{
-			Debug.WriteLine("State {2}: {0} ({1})", Thread.CurrentThread.GetApartmentState(), Thread.CurrentThread.ManagedThreadId, System.Reflection.MethodBase.GetCurrentMethod().Name);
 			asio = new ASIO(driver, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
 			//TODO back to 250 ms
@@ -171,20 +171,19 @@ namespace EV2020.LocationSystem
 			asio.IsInputEnabled = true;
 			return true;
 		}
-		
+		[STAThread]
 		void timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			Debug.WriteLine("State {2}: {0} ({1})", Thread.CurrentThread.GetApartmentState(), Thread.CurrentThread.ManagedThreadId, System.Reflection.MethodBase.GetCurrentMethod().Name);
-			if (!_running)
+			/*if (!_running)
 			{
-				_running = true;
+				_running = true;*/
 				performMeasurement();
-				_running = false;
+			/*	_running = false;
 			}
 			else
 			{
 				Debug.WriteLine("Localization Timer bounced.");
-			}
+			}*/
 		}
 		~Localizer()
 		{
@@ -201,25 +200,23 @@ namespace EV2020.LocationSystem
 		[STAThread]
 		void performMeasurement()
 		{
-			Debug.WriteLine("State {2}: {0} ({1})", Thread.CurrentThread.GetApartmentState(), Thread.CurrentThread.ManagedThreadId,System.Reflection.MethodBase.GetCurrentMethod().Name);
 			if (asio == null)
 				return;
 			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			//asio.ClearInput();		
 
 			ASIOLatencies lat = GetASIOLatencies();
-			Debug.WriteLine("Latencies; IN: {0}, OUT: {1}", lat.Input, lat.Output);
+			//Debug.WriteLine("Latencies; IN: {0}, OUT: {1}", lat.Input, lat.Output);
 			int measurementSamples = (int)Math.Round(sampleLength * ASIO.Fs);
 			Thread.Sleep(new TimeSpan(Convert.ToInt64(((lat.Input + measurementSamples) * ASIO.T) * TimeSpan.TicksPerSecond)));
 			//get all channels in a matrix (every column is a channel)
 			if (asio == null)
 				return;
 			Matrix<double> responses = asio.getAllInputSamplesMatrix(measurementSamples); //MATCHED Filter way
-			//asio.IsInputEnabled = false;
-			//Matrix multiply way
+			//asio.IsInputEnabled = false;			
 			int[] samplemaxes = new int[responses.ColumnCount];
 			double[] maxes = new double[responses.ColumnCount];
-			//Filter that shit.
+			//Filter dat shit.
 			Matrix<double> filteredResponses = new DenseMatrix(responses.RowCount, responses.ColumnCount);
 			if (matchedFilterEnabled)
 			{
@@ -234,8 +231,7 @@ namespace EV2020.LocationSystem
 						for (int j = 0; j < responses.ColumnCount; j++)
 							responsesArray[i, j] = responses[i, j];
 
-					// Perform convolution
-					//Matrix<double> result = new DenseMatrix(5, 30000);
+					// Perform convolution					
 					long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
 					for (int i = 0; i < responses.ColumnCount; i++)
@@ -313,10 +309,16 @@ namespace EV2020.LocationSystem
 			lastMaxes = samplemaxes;
 			List<Position3D> l = new List<Position3D>();
 			Position3D loc1 = Localize(samplemaxes, lat);
-			Debug.WriteLine("Loc1: " + loc1.ToString());
+			if (loc1 != null)
+			{
+				Debug.WriteLine("Loc1: " + loc1.ToString());
+			}
 			//l.Add(loc1);
 			Position3D loc2 = Localize2(samplemaxes, lat);
-			Debug.WriteLine("Loc2: " + loc2.ToString());
+			if (loc2 != null)
+			{
+				Debug.WriteLine("Loc2: " + loc2.ToString());
+			}
 			//l.Add(loc2);
 			//Debug.WriteLine(l[0]);
 			//Debug.WriteLine(l[1]);
@@ -373,7 +375,16 @@ namespace EV2020.LocationSystem
 
 			Vector<double> y = a.Solve(b);
 			loc = new Position3D() { X = y[0], Y = y[1], Z = 0 };
-			return loc;
+			if (!Double.IsNaN(loc.X) && !Double.IsNaN(loc.Y))
+			{
+				return loc;
+			}
+			else
+			{
+				Debug.WriteLine("Inconclusive (NaN).");
+				return null;
+			}
+
 		}
 		protected Position3D Localize2(int[] samplemaxes, ASIOLatencies lat)
 		{
