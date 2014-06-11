@@ -6,6 +6,20 @@
 \begin{document}
 \begin{appendices}
 \renewcommand{\chapternumber}{\appendixname\space\thechapter} 
+\chapter{Wireless charging}
+\label{app:wireless}
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{resources/DC-AC-rc.pdf}
+	\caption{DC-AC subcircuit}
+	\label{fig:DC-AC}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{resources/AC-DC-rc.pdf}
+	\caption{AC-DC subcircuit}
+	\label{fig:AC-DC}
+\end{figure}
+
 \chapter{Model}
 \label{app:model}
 \begin{figure}[H]
@@ -14,6 +28,7 @@
     	\caption{The model used to simulate the observer and controller}
     	\label{app:model}
 \end{figure}
+
 \chapter{Source}
 \label{app:source}
 \subimport{../../}{sourcecode}
