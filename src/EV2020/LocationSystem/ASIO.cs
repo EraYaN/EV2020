@@ -192,7 +192,7 @@ namespace EV2020.LocationSystem
 					}
 					catch
 					{
-						//TODO handle exception for emtpy buffer
+						break;
 					}
 				}
 			}

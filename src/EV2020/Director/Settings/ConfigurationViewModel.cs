@@ -284,6 +284,28 @@ namespace EV2020.Director
 				}
 			}
 		}
+		public double ChargeVoltageThreshold
+		{
+			get
+			{
+				if (Data.cfg != null)
+				{
+					return Data.cfg.ChargeVoltageThreshold;
+				}
+				return 0;
+			}
+			set
+			{
+				if (Data.cfg != null)
+				{
+					if (Data.cfg.ChargeVoltageThreshold != value)
+					{
+						Data.cfg.ChargeVoltageThreshold = value;
+						RaisePropertyChanged("ChargeVoltageThreshold");
+					}
+				}
+			}
+		}
 		public bool MatchedFilterEnabled
 		{
 			get

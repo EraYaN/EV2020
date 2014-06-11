@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace EV2020.LocationSystem
@@ -72,7 +73,7 @@ namespace EV2020.LocationSystem
 			matchedFilterEnabled = MatchedFilterEnabled;
 			matchedFilterToep = MatchedFilterToep;
 		}
-
+		#region Preparation methods
 		/// <summary>
 		/// Creates the Toupitz matrix used for the circular convolution
 		/// </summary>
@@ -88,7 +89,7 @@ namespace EV2020.LocationSystem
 				FileInfo beaconfile = new FileInfo(@"resources/beaconfile.bin");
 				if (beaconfile.Exists && UseMeasuredSignal)
 				{
-					long samples = 500; //singles : beaconfile.Length / 4
+					long samples = beaconfile.Length / 4; //singles
 					beaconsignal = DenseVector.Create(Convert.ToInt32(samples), 0);
 					using (BinaryReader br = new BinaryReader(beaconfile.OpenRead()))
 					{
@@ -104,24 +105,35 @@ namespace EV2020.LocationSystem
 				else
 				{
 					//Own Code: e65a20e5b37ac60d
-					beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat5Hz, "e65a20e5", ASIO.Fs);
+					beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat10Hz, "e65a20e5", ASIO.Fs);
+					
 					Debug.WriteLine("Used reference data for beaconsignal.");
 				}
+				int endpoint = beaconsignal.Count-1;
+				while (beaconsignal[endpoint] == 0 && endpoint > 0)
+				{
+					endpoint--;
+				}
+				int startpoint = 0;
+				while (beaconsignal[startpoint] == 0 && startpoint < endpoint)
+				{
+					startpoint++;
+				}
+				beaconsignal = beaconsignal.SubVector(startpoint, endpoint - startpoint); //Trimmed
 				int samplenumber = 0;
+				Vector<double> bsreverse = new DenseVector(beaconsignal.Count); // WAS: Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength))
+				//samplenumber = 0;
+				foreach (double d in beaconsignal.Reverse())
+				{
+					bsreverse[samplenumber] = d;
+					samplenumber++;
+					if (samplenumber == bsreverse.Count)
+						break;
+				}
 				if (!matchedFilterToep)
 				{
-
 					// Get the matchedfilter convolution vector
-					matchedfilterVector = new DenseVector(500); // WAS: Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength))
-					
-					foreach (double d in beaconsignal.Reverse())
-					{
-						matchedfilterVector[samplenumber] = d;
-						samplenumber++;
-						if (samplenumber == matchedfilterVector.Count)
-							break;
-					}
-
+					matchedfilterVector = bsreverse; 
 				}
 				else
 				{
@@ -129,15 +141,7 @@ namespace EV2020.LocationSystem
 					Debug.WriteLine("Generating Toeplitz matrix.");
 
 					//Figure out corrent matchedfilter matrix
-					Vector<double> bsreverse = new DenseVector(500); // WAS: Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength))
-					//samplenumber = 0;
-					foreach (double d in beaconsignal.Reverse())
-					{
-						bsreverse[samplenumber] = d;
-						samplenumber++;
-						if (samplenumber == bsreverse.Count)
-							break;
-					}
+					
 					//Normal Convolution
 					//Matrix<double> X = Tools.Toep(bsreverse, bsreverse.Count*2-1, bsreverse.Count, false);
 					//Circulant Convolution
@@ -154,7 +158,7 @@ namespace EV2020.LocationSystem
 			}
 			return true;
 		}
-
+		
 		/// <summary>
 		/// Init the ASIO driver to be used for recording
 		/// </summary>
@@ -165,12 +169,13 @@ namespace EV2020.LocationSystem
 			asio = new ASIO(driver, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
 			//TODO back to 250 ms
-			timer = new System.Timers.Timer(sampleLength * 1000 * (matchedFilterEnabled && !matchedFilterToep ? 4 : 1)); // TEST: 8 times longer
+			timer = new System.Timers.Timer(sampleLength * 1000 * (matchedFilterEnabled && !matchedFilterToep ? 1 : 1)); // TEST: 8 times longer
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
 			asio.IsInputEnabled = true;
 			return true;
 		}
+		#endregion
 		[STAThread]
 		void timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
@@ -185,19 +190,9 @@ namespace EV2020.LocationSystem
 				Debug.WriteLine("Localization Timer bounced.");
 			}*/
 		}
-		~Localizer()
-		{
-			Dispose(false);
-		}
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
 		/// <summary>
 		/// Record the microphones
 		/// </summary>
-		[STAThread]
 		void performMeasurement()
 		{
 			if (asio == null)
@@ -226,46 +221,93 @@ namespace EV2020.LocationSystem
 				}
 				else
 				{
-					double[,] responsesArray = new double[responses.RowCount, responses.ColumnCount];
-					for (int i = 0; i < responses.RowCount; i++)
-						for (int j = 0; j < responses.ColumnCount; j++)
-							responsesArray[i, j] = responses[i, j];
-
+					Stopwatch convTime = Stopwatch.StartNew();
 					// Perform convolution					
-					long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-					for (int i = 0; i < responses.ColumnCount; i++)
+					//Task based (Around 450 ms with 604 samples).
+					if (true)
 					{
-						double maxval = 0;
-						int start, end;
-						if (i == 0)
+						if (responses.ColumnCount > 0)
 						{
+							double maxval = 0;
+							int start, end;
+							//Do first run
 							start = 0;
 							end = responses.RowCount;
-						}
-						else
-						{
+							int i = 0;
+							double[] firstCol = responses.Column(0).ToArray();
+							double[] mf = matchedfilterVector.ToArray();
+							for (int j = start; j < end; j++)
+							{
+								double val = 0;
+								double convsamp = Math.Min(mf.Length, end - j);
+								for (int k = 0; k < convsamp; k++)
+									val += firstCol[j + k] * mf[k];
+								if (Math.Abs(val) > maxval)
+								{
+									maxval = val;
+									maxes[i] = Math.Abs(val);
+									samplemaxes[i] = j;
+								}
+								//filteredResponses[j, i] = val;
+							}
+							//Set sample window
 							start = Math.Max(samplemaxes[0] - (int)sampleWindow / 2, 0);
 							end = Math.Min(samplemaxes[0] + (int)sampleWindow / 2, responses.RowCount - matchedfilterVector.Count);
-						}
-						for (int j = start; j < end; j++)
-						{
-							double val = 0;
-							double convsamp = Math.Min(matchedfilterVector.Count, end-j);
-							for (int k = 0; k < convsamp; k++)
-								val += responsesArray[j + k, i] * matchedfilterVector[k];
-							if (Math.Abs(val) > maxval)
+							Func<object, int> convFunc = ConvMax;
+							Task<int>[] tasks = new Task<int>[responses.ColumnCount - 1];
+							object samplemaxesLock = new object();
+							for (i = 1; i < responses.ColumnCount; i++)
 							{
-								maxval = val;
-								maxes[i] = Math.Abs(val);
-								samplemaxes[i] = j;
+								tasks[i - 1] = Task.Factory.StartNew(convFunc, new ConvolutionParameters() { 
+									Start = start,
+									End = end,
+									Operant = matchedfilterVector.ToArray(),
+									Data = responses.Column(i).ToArray() 
+								});
 							}
-							filteredResponses[j, i] = val;
+							Task.WaitAll(tasks, 1000);
+							for (int taskn = 0; taskn < tasks.Length; taskn++)
+								samplemaxes[taskn] = tasks[taskn].Result;
 						}
 					}
-
-					long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds;
-					Debug.WriteLine("Conv time: " + time.ToString() + " ms");
+					else
+					{
+						//Sequential (Around 650 ms with 604 samples).
+						double[,] responsesArray = new double[responses.RowCount, responses.ColumnCount];
+						for (int i = 0; i < responses.RowCount; i++)
+							for (int j = 0; j < responses.ColumnCount; j++)
+								responsesArray[i, j] = responses[i, j];
+						for (int i = 0; i < responses.ColumnCount; i++)
+						{
+							double maxval = 0;
+							int start, end;
+							if (i == 0)
+							{
+								start = 0;
+								end = responses.RowCount;
+							}
+							else
+							{
+								start = Math.Max(samplemaxes[0] - (int)sampleWindow / 2, 0);
+								end = Math.Min(samplemaxes[0] + (int)sampleWindow / 2, responses.RowCount - matchedfilterVector.Count);
+							}
+							for (int j = start; j < end; j++)
+							{
+								double val = 0;
+								double convsamp = Math.Min(matchedfilterVector.Count, end - j);
+								for (int k = 0; k < convsamp; k++)
+									val += responsesArray[j + k, i] * matchedfilterVector[k];
+								if (Math.Abs(val) > maxval)
+								{
+									maxval = val;
+									maxes[i] = Math.Abs(val);
+									samplemaxes[i] = j;
+								}
+								filteredResponses[j, i] = val;
+							}
+						}
+					}
+					Debug.WriteLine("Conv time: {0:f1} ms", convTime.ElapsedMilliseconds);
 					//time = time;
 				}
 			}
@@ -298,13 +340,13 @@ namespace EV2020.LocationSystem
 				}
 			}
 			
-			Debug.WriteLine("Channel 0 is the 'zero' at @ {0} samples.", samplemaxes[0]);
+			/*Debug.WriteLine("Channel 0 is the 'zero' at @ {0} samples.", samplemaxes[0]);
 			for (int i = 1; i < samplemaxes.Length; i++)
 			{
 				Debug.WriteLine("Channel {2} delta is {0:f2} ms at @ {1} samples.", Math.Abs(samplemaxes[0] - samplemaxes[1]) * ASIO.T * 1000, samplemaxes[i], i);
-			}
+			}*/
 			//lastData = responses.Append(filteredResponses);
-			lastData = responses;
+			//lastData = responses;
 			//lastData = filteredResponses;
 			lastMaxes = samplemaxes;
 			List<Position3D> l = new List<Position3D>();
@@ -337,7 +379,7 @@ namespace EV2020.LocationSystem
 				Debug.WriteLine("No location could be found.");
 			}
 		}
-
+		#region Location algo 1
 		/// <summary>
 		/// 
 		/// </summary>
@@ -386,6 +428,8 @@ namespace EV2020.LocationSystem
 			}
 
 		}
+		#endregion
+		#region Location algo 2
 		protected Position3D Localize2(int[] samplemaxes, ASIOLatencies lat)
 		{
 
@@ -576,7 +620,40 @@ namespace EV2020.LocationSystem
 			else { return new Position3D(); }
 
 		}
-
+#endregion
+		private static int ConvMax(object parameters)
+		{
+			ConvolutionParameters p = parameters as ConvolutionParameters;
+			double max = 0;
+			int samplemax = 0;
+			//int end = p.End - p.Start;
+			double val = 0;
+			double absval = 0;
+			for (int j = p.Start; j < p.End; j++)
+			//for (int j = 0; j < p.End; j++)
+			{
+				val = 0;
+				double convsamp = Math.Min(p.Operant.Length, p.End - j);
+				for (int k = 0; k < convsamp; k++)
+					val += p.Data[j + k] * p.Operant[k];
+				absval = Math.Abs(val);
+				if (absval > max)
+				{
+					max = absval;
+					samplemax = j;
+				}
+			}
+			return samplemax;
+		}
+		~Localizer()
+		{
+			Dispose(false);
+		}
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 		protected virtual void Dispose(bool disposing)
 		{
 			if (_disposed)
@@ -601,6 +678,7 @@ namespace EV2020.LocationSystem
 
 			_disposed = true;
 		}
+
 
 		/// <summary>
 		/// Show ASIO's control panel to change setttings

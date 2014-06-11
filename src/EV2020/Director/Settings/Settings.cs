@@ -67,6 +67,12 @@ namespace EV2020.Director
 			get;
 			set;
 		}
+		[System.ComponentModel.DefaultValueAttribute(18.0)]
+		public double ChargeVoltageThreshold
+		{
+			get;
+			set;
+		}
 		[System.ComponentModel.DefaultValueAttribute(false)]
 		public bool MatchedFilterEnabled
 		{
@@ -127,7 +133,9 @@ namespace EV2020.Director
 			catch { }
 			try { BeaconHeight = info.GetDouble("BeaconHeight"); }
 			catch { }
-			try { SmoothFactor = info.GetDouble("SmoothFactor"); }
+			try { SmoothFactor = info.GetDouble("SmoothFactor"); }				
+			catch { }
+			try { ChargeVoltageThreshold = info.GetDouble("ChargeVoltageThreshold"); }				
 			catch { }
 			try { MatchedFilterEnabled = info.GetBoolean("MatchedFilterEnabled"); }
 			catch { }
@@ -162,6 +170,7 @@ namespace EV2020.Director
 			info.AddValue("SampleLength", SampleLength);
 			info.AddValue("BeaconHeight", BeaconHeight);
 			info.AddValue("SmoothFactor", SmoothFactor);
+			info.AddValue("ChargeVoltageThreshold", ChargeVoltageThreshold);
 			info.AddValue("MatchedFilterEnabled", MatchedFilterEnabled);
 			info.AddValue("MatchedFilterToep", MatchedFilterToep);
 			info.AddValue("UseMeasuredSignal", UseMeasuredSignal);

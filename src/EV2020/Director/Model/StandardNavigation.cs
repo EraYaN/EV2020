@@ -175,7 +175,7 @@ namespace EV2020.Director
 			//posistionLog.AppendText(pos.ToString() + "\n");
 			Vector<double> lastPosition = Position;
 			Position = (Position * Data.cfg.SmoothFactor + DenseVector.OfArray(new double[] { e.Position.X, e.Position.Y })) / (1 + Data.cfg.SmoothFactor);
-			Vector<double> difference = lastPosition - Position;
+			Vector<double> difference = Position - lastPosition;
 			bearing = difference.Angle();
 			
 			//posistionLog.ScrollToEnd();
@@ -185,9 +185,9 @@ namespace EV2020.Director
 		private void UpdateField(){
 			/*if (Data.vis != null && _iter % 10 == 0)
 			{*/
-				Debug.WriteLine("Drawing field: {0} ms ago was last time", (DateTime.Now.Ticks - (double)lastTimestamp)/TimeSpan.TicksPerMillisecond);
+				//Debug.WriteLine("Drawing field: {0} ms ago was last time", (DateTime.Now.Ticks - (double)lastTimestamp)/TimeSpan.TicksPerMillisecond);
 				Data.vis.drawField();
-				lastTimestamp = DateTime.Now.Ticks;
+				//lastTimestamp = DateTime.Now.Ticks;
 			/*	_iter++;
 				if (_iter > 10)
 				{

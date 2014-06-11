@@ -260,6 +260,21 @@ namespace EV2020.Director
 			}
 		}
 
+		public String ControllerState
+		{
+			get
+			{
+				if (Data.ctr != null)
+				{
+					return Data.ctr.State.ToString();
+				}
+				else
+				{
+					return "ctr is null";
+				}
+			}
+		}
+
 		public void UpdateProperty(string name)
 		{
 			OnPropertyChanged(name);

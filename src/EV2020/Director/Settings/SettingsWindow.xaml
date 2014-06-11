@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:local="clr-namespace:EV2020.Director"
-        Title="EV2020 Settings" Height="350" Width="450" Closing="Window_Closing" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize">
+        Title="EV2020 Settings" Height="350" Width="388" Closing="Window_Closing" SizeToContent="Height" ResizeMode="CanMinimize">
 	<Window.DataContext>
 		<local:ConfigurationViewModel/>
 	</Window.DataContext>
@@ -15,7 +15,8 @@
 						<ComboBox x:Name="comPortsComboBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" ItemsSource="{Binding Comports}" SelectedItem="{Binding Path=CurrentComport}"/>
 						<Label Target="{Binding ElementName=baudRateComboBox}" Content="Baudrate:" Height="16" Padding="0" Margin="2,0"/>
 						<ComboBox x:Name="baudRateComboBox" Height="20" Margin="2" Padding="4,0,0,0" VerticalContentAlignment="Center" ItemsSource="{Binding BaudRates}" SelectedItem="{Binding Path=CurrentBaudRate}"/>
-
+						<Label Target="{Binding ElementName=chargeVoltageThresholdTextBox}" Content="Charge Voltage Threshold: (volts)" Height="16" Padding="0" Margin="2,0"/>
+						<TextBox x:Name="chargeVoltageThresholdTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding Path=ChargeVoltageThreshold}"/>
 					</StackPanel>
 				</Grid>
 			</TabItem>

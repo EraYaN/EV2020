@@ -133,12 +133,20 @@ namespace EV2020.Director
 			{
 				throw new ArgumentException("Vector needs to be 2D.");
 			}
-			if (val[0] == 0)
+			if (val[0] != 0)
 			{
-				return Math.Atan(val[1] / val[0]);
+				if (val[0] >= 0)
+				{
+					return Math.Atan(val[1] / val[0]);
+				}				
+				else
+				{
+					return Math.Atan(val[1] / val[0]) + Math.PI;
+				}	
 			}
 			else
 			{
+				//Tan of infinity
 				if (val[1] >= 0)
 				{
 					return 0.5 * Math.PI;
@@ -148,7 +156,7 @@ namespace EV2020.Director
 					return -0.5 * Math.PI;
 				}
 			}
-		}
+		}		
 		/// <summary>
 		/// The magnitude of a 2D vector
 		/// </summary>

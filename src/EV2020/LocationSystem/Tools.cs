@@ -72,7 +72,8 @@ namespace EV2020.LocationSystem
 					}
 				}
 			}
-			for(int i = 0; i<samples; i++){
+			for (int i = 0; i < samples; i++)
+			{
 				double carrier = Math.Round(Math.Cos(2 * Math.PI * f0 / Fs * i) / 2 + 0.5);
 				signal[i] *= carrier;
 			}
@@ -85,14 +86,14 @@ namespace EV2020.LocationSystem
 			{
 				throw new ArgumentException("x0's length should be equal or less than N.", "x0");
 			}
-			Matrix<double> X;			
+			Matrix<double> X;
 			try
 			{
 				//faster
 				X = DenseMatrix.Create(N, L, 0);
 				Debug.WriteLine("Used DenseMatrix for Toeplitz matrix.");
 			}
-			catch(OutOfMemoryException)
+			catch (OutOfMemoryException)
 			{
 				//slower
 				X = SparseMatrix.Create(N, L, 0);
@@ -103,7 +104,7 @@ namespace EV2020.LocationSystem
 				for (int j = 0; j < L; j++)
 				{
 					int index = (i + 1) - (j + 1);
-					
+
 					if (circulant)
 					{
 						//weirdo matlab modulo
@@ -114,8 +115,8 @@ namespace EV2020.LocationSystem
 					else
 					{
 						index = index % N;
-					}					
-					if (index>=0 && index < N0)
+					}
+					if (index >= 0 && index < N0)
 					{
 						X[i, j] = x0[index];
 					}
@@ -128,5 +129,13 @@ namespace EV2020.LocationSystem
 			int N0 = x0.Count;
 			return Toep(x0, N, N - N0 + 1, circulant);
 		}
+	}
+
+	public class ConvolutionParameters
+	{
+		public int Start;
+		public int End;
+		public double[] Operant;
+		public double[] Data;
 	}
 }

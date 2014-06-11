@@ -275,5 +275,25 @@ namespace EV2020.Director
 				}
 			} 
 		}
+
+		private void chargeButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (Data.ctr != null)
+			{
+				Data.ctr.Stop();
+				Data.ctr.Center();
+				Data.ctr.State = ControllerState.Charging;
+			}
+		}
+
+		private void navigateButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (Data.ctr != null)
+			{
+				Data.ctr.Stop();
+				Data.ctr.Center();
+				Data.ctr.State = ControllerState.Navigating;
+			}
+		}
 	}
 }

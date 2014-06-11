@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Timers;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace EV2020.Director
 {
@@ -31,6 +32,29 @@ namespace EV2020.Director
 		private Stopwatch _replyStopwatch;
 		private long _lastPing = -1;
 		private bool replyTimerRunning = false;
+		private ControllerState state;
+		private int _emergencyErrorCountThreshold = 2;
+		Timer sendInstructions;
+		private int driving = 0;
+		private int steering = 0;
+		private int audioState = 0;
+		#region Public properties
+		public ControllerState State
+		{
+			get
+			{
+				return state;
+			}
+			set
+			{
+				if (value != state)
+				{
+					state = value;
+					Data.db.UpdateProperty("ControllerState");
+				}
+			}
+		}
+
 		/// <summary>
 		/// The last measured delay in the communication with the car.
 		/// </summary>
@@ -85,14 +109,12 @@ namespace EV2020.Director
 		{
 			get { return _fixedInputSequenceExecuting; }
 		}
-
-		private bool _emergencyStop = false;
 		/// <summary>
 		/// Gets the emergency stop status 
 		/// </summary>
 		public bool IsEmergencyStop
 		{
-			get { return _emergencyStop; }
+			get { return state == ControllerState.EmergencyStop; }
 		}
 		private int _emergencyErrorCount = 0;
 		/// <summary>
@@ -102,13 +124,6 @@ namespace EV2020.Director
 		{
 			get { return _emergencyErrorCount; }
 		}
-		private int _emergencyErrorCountThreshold = 2;
-
-		Timer sendInstructions;
-
-		private int driving = 0;
-		private int steering = 0;
-		private int audioState = 0;
 		/// <summary>
 		/// The driving signal
 		/// </summary>
@@ -178,7 +193,8 @@ namespace EV2020.Director
 		public int CurrentAudioState
 		{
 			get { return currentAudioState; }
-		}		
+		}	
+		#endregion
 		/// <summary>
 		/// Initializes the Controller class
 		/// </summary>
@@ -190,51 +206,75 @@ namespace EV2020.Director
 			sendInstructions.Start();
 			_receivingBuffer = new StringBuilder();
 			_replyStopwatch = new Stopwatch();
+			state = ControllerState.Idle;
 		}
 		#region Internal Processing methods
 		void sendInstructions_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			//TODO figure out audio.
-	
 			//Check if we are sending a predefined sequence.
-			if (_fixedInputSequenceExecuting)
+			if (state == ControllerState.Navigating)
 			{
-				if (_fixedInputSequence.IsEndOfSignal) 
-					_fixedInputSequenceExecuting = false;
-				//advace the pointer in the sequence
-				_fixedInputSequence.Forward();
-				//Set the current values for sending to car.
-				SetDrivingSteering((int)Math.Round(_fixedInputSequence.GetCurrentDriving()),(int)Math.Round(_fixedInputSequence.GetCurrentSteering()));
-			}
-			else
-			{
-				if (Data.nav != null)
+				if (_fixedInputSequenceExecuting)
 				{
-					CarCommand command = Data.nav.Tick(currentLeftDistance,currentRightDistance);				
-				
-					//Set Driving and Steering for sending to car.
-					SetDrivingSteering((int)Math.Round(command.Driving), (int)Math.Round(command.Steering));
+					if (_fixedInputSequence.IsEndOfSignal)
+						_fixedInputSequenceExecuting = false;
+					//advace the pointer in the sequence
+					_fixedInputSequence.Forward();
+					//Set the current values for sending to car.
+					SetDrivingSteering((int)Math.Round(_fixedInputSequence.GetCurrentDriving()), (int)Math.Round(_fixedInputSequence.GetCurrentSteering()));
 				}
+				else
+				{
+					if (Data.nav != null)
+					{
+						CarCommand command = Data.nav.Tick(currentLeftDistance, currentRightDistance);
 
+						//Set Driving and Steering for sending to car.
+						SetDrivingSteering((int)Math.Round(command.Driving), (int)Math.Round(command.Steering));
+					}
+
+				}
+				Data.db.UpdateProperty("FixedInputSequence");
+
+				//Add data to graph
+				outputBatteryVoltageHistory.AddToFront((double)currentBatteryVoltage / 1000.0);
+				Data.db.UpdateProperty("BatteryGraphPoints");
+				distanceHistory.AddToFront(currentLeftDistance, currentRightDistance);
+				Data.db.UpdateProperty("DistanceLeftGraphPoints");
+				Data.db.UpdateProperty("DistanceRightGraphPoints");
+				//controlHistory.AddToFront(currentDriving, currentSteering);
+				controlHistory.AddToFront(driving, steering);
+				Data.db.UpdateProperty("ControlDrivingGraphPoints");
+				Data.db.UpdateProperty("ControlSteeringGraphPoints");
 			}
-			Data.db.UpdateProperty("FixedInputSequence");
-
-			//Add data to graph
-			outputBatteryVoltageHistory.AddToFront((double)currentBatteryVoltage / 1000.0);
-			Data.db.UpdateProperty("BatteryGraphPoints");
-			distanceHistory.AddToFront(currentLeftDistance, currentRightDistance);
-			Data.db.UpdateProperty("DistanceLeftGraphPoints");
-			Data.db.UpdateProperty("DistanceRightGraphPoints");
-			//controlHistory.AddToFront(currentDriving, currentSteering);
-			controlHistory.AddToFront(driving, steering);
-			Data.db.UpdateProperty("ControlDrivingGraphPoints");
-			Data.db.UpdateProperty("ControlSteeringGraphPoints");
+			else if (state == ControllerState.Charging)
+			{
+				if (currentBatteryVoltage > Data.cfg.ChargeVoltageThreshold*1000)
+				{
+					double distance = 1;
+					//Set target to one meter in front of the car.
+					Data.nav.GoToPosition(DenseVector.OfArray(new double[] { Data.nav.CarX + Math.Cos(Data.nav.CarBearing) * distance, Data.nav.CarY + Math.Sin(Data.nav.CarBearing) * distance }));
+					//Set public property to update UI
+					State = ControllerState.Navigating;
+				}
+			}
+			else if (state == ControllerState.EmergencyStop)
+			{
+				//nothing
+			}
+			else if (state == ControllerState.Error)
+			{
+				//nothing
+			}
+			else if (state == ControllerState.Unknown)
+			{
+				//nothing
+			}
 			sendDriveSteering();
 			sendStatusRequest();
 			if (Data.vis != null)
 				Data.vis.drawJoystick();
 		}
-
 		void com_SerialDataEvent(object sender, Communication.SerialDataEventArgs e)
 		{			
 			foreach (char c in e.Data)
@@ -281,7 +321,6 @@ namespace EV2020.Director
 				}
 			}
 		}
-
 		void processReply(String line)
 		{
 			if (line == String.Empty)
@@ -374,7 +413,7 @@ namespace EV2020.Director
 						{
 							//TODO handle (bogus data)
 						}
-						if (currentLeftDistance == 999)
+						if (currentLeftDistance > 300) //instead of == 999
 						{
 							//TODO handle (too far)
 							currentLeftDistance = 300;
@@ -383,7 +422,7 @@ namespace EV2020.Director
 						{
 							//TODO handle (proper data)	
 						}
-						if (currentRightDistance == 999)
+						if (currentRightDistance > 300) //instead of == 999
 						{
 							//TODO handle (too far)
 							currentRightDistance = 300;
@@ -392,26 +431,8 @@ namespace EV2020.Director
 						{
 							//TODO handle (proper data)
 						}
-						
-						/*if ((currentRightDistance < CollisionThreshold || currentLeftDistance < CollisionThreshold)&&currentDriving>0)
-						{							
-							_emergencyErrorCount++;
-							if (_emergencyErrorCount > _emergencyErrorCountThreshold)
-							{
-								_emergencyStop = true;
-								Brake();
-								Center();
-							}								
-							Data.db.UpdateProperty("EmergencyStop");
-						}
-						else
-						{
-							if (_emergencyErrorCount > 0)
-							{
-								_emergencyErrorCount = 0;
-								Data.db.UpdateProperty("EmergencyStop");
-							}
-						}*/
+
+						CheckEmergencyStop();
 						tmps = null;
 					}
 					else if (line.Substring(0, 2) == "Au")
@@ -439,7 +460,7 @@ namespace EV2020.Director
 						}
 						if (currentBatteryVoltage < BatteryThreshold)
 						{
-							//TODO hanlde voltage too low
+							//TODO handle voltage too low
 						}
 					}
 			}
@@ -453,6 +474,30 @@ namespace EV2020.Director
 		#endregion
 
 		#region Private command methods
+		private void CheckEmergencyStop()
+		{
+			//Maybe set the current position as target?
+			
+			if ((currentRightDistance < CollisionThreshold || currentLeftDistance < CollisionThreshold) && currentDriving > 0)
+			{
+				_emergencyErrorCount++;
+				if (_emergencyErrorCount > _emergencyErrorCountThreshold)
+				{
+					state = ControllerState.EmergencyStop;
+					Data.db.UpdateProperty("EmergencyStop");
+					Brake();
+					Center();
+				}
+			}
+			else
+			{
+				if (_emergencyErrorCount > 0)
+				{
+					_emergencyErrorCount = 0;
+					Data.db.UpdateProperty("EmergencyStop");
+				}
+			}
+		}
 		private void sendCommand(String line)
 		{
 			if (Data.com == null)
@@ -476,7 +521,7 @@ namespace EV2020.Director
 		}
 		private void sendDriveSteering()
 		{
-			if (_emergencyStop)				
+			if (IsEmergencyStop)				
 			{
 				driving = 0;
 				steering = 0;					
@@ -628,7 +673,7 @@ namespace EV2020.Director
 		public void ResetEmergencyStop()
 		{
 			_emergencyErrorCount = 0;
-			_emergencyStop = false;
+			State = ControllerState.Idle;
 			Data.db.UpdateProperty("EmergencyStop");			
 		}
 		/// <summary>
@@ -648,5 +693,6 @@ namespace EV2020.Director
 			_fixedInputSequenceExecuting = false;
 		}
 		#endregion
+
 	}
 }
