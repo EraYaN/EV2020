@@ -77,6 +77,15 @@ namespace EV2020.Director
 				}
 			}
 
+			for (int i = 0; i < 5; i++)
+			{
+				for (int j = 0; j < 500; j++)
+				{
+					rnd = (rnd * 34123.32412312 + 0.32412255234) % 1;
+					responses[j + 1000, i] = matchedfilter[j] - rnd/2;
+				}
+			}
+
 			//Matrix<double> result = new DenseMatrix(5, 30000);
 			long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 

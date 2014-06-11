@@ -6,7 +6,87 @@
 \begin{document}
 
 \chapter{Localization}
+\section{Beacon signal}
+To pick the optimal beacon signal, it is important to look at the autocorrelation, which is defined as:
 
+\begin{equation}
+	R_x(n) = x(-n) * x(n)
+\end{equation}
 
+The autocorrelation must ideally be a delta peak to achieve the best matched filter results since the following approximation is used in matched filtering:
+
+\begin{equation}
+	x(-n) * y(n) = h(n) * R_x(n) \approx h(n) * \delta (n)
+\end{equation}
+
+To define an alternative beacon signal, more criteria were introduced.
+Firstly, the first and last bit of the code must be ones and the second and before-last be zeros to have a clear start and ending of the signal.
+Secondly, the code must vary enough between zeros and ones, but not in a certain pattern.
+This criteria, plus the original criteria of the delta-like autocorrelation resulted in the code \emph{e65a20e5}.
+\\ \\
+The default autocorrelation is displayed in Figure \ref{fig:default-correlation} and the alternative in Figure \ref{fig:own-correlation}.
+The default autocorrelation shows a slimmer autocorrelation, but it contains high peaks around its main peak.
+These peaks are way more likely to cause errors because they are almost as high as at thesame location as the main peak, causing a relatively lower peak when matched filtering.
+For that reason, we allowed more smaller peaks further away from the main peak to reduce the peak height near the main peak.
+This way, the main peak is more prominent, likely to result in better matched filter results later on.
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/default-correlation.tikz}
+	\caption{Autocorrelation of the default beacon signal.}
+	\label{fig:default-correlation}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.8\linewidth}
+	\input{resources/own-correlation.tikz}
+	\caption{Autocorrelation of the alternative beacon signal.}
+	\label{fig:own-correlation}
+\end{figure}
+
+\section{Matched filter}
+A matched filter is used to filter the received audio data from the microphones to the desired signal.
+The desired signal will be the beacon signal and the noise that is also present in the received audio data must ideally be removed.
+In order to get the noise filtered out, a convolution is used.
+This works under the assumption that the desired signal's autocorrelation function is shaped like a delta impulse as described in the previous section.
+Since the beacon signal is designed to fit this criterion as much as possible, a reasonable matched filter should be able to be designed.
+\\ \\
+The matched filter result describes the correlation between the recorded signal from the microphone and the desired signal, which is the beacon signal.
+The location in the recorded samples where the beacon signal is most alike the beacon signal will be indicated with a peak.
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{2cm}
+    	\setlength\figurewidth{0.4\textheight}
+	\begin{sideways}
+		\input{resources/orgref.tikz}
+	\end{sideways}
+	\caption{5-Point microphone sample data processed with orgref reference.}
+	\label{fig:default-correlation}
+\end{figure}
+
+\iffalse
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.4\linewidth}
+	\input{resources/toep.tikz}
+	\caption{5-Point microphone sample data processed with orgref reference.}
+	\label{fig:default-correlation}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{4cm}
+    	\setlength\figurewidth{0.4\linewidth}
+	\input{resources/no-toep.tikz}
+	\caption{5-Point microphone sample data processed with orgref reference.}
+	\label{fig:default-correlation}
+\end{figure}
+\fi
 
 \end{document}
