@@ -70,16 +70,25 @@ namespace EV2020.Director
 		{
 			return (steering.DataElement * multiplier).Clamp(Controller.SteeringMin, Controller.SteeringMax);
 		}
+		/// <summary>
+		/// Shift the index in the internal sequence one further
+		/// </summary>
 		public void Forward()
 		{
 			driving.Forward();
 			steering.Forward();
 		}
+		/// <summary>
+		/// Shift the index in the internal sequence one back
+		/// </summary>
 		public void Backward()
 		{
 			driving.Backward();
 			steering.Backward();
 		}
+		/// <summary>
+		/// Shift the index in the internal sequence to the start
+		/// </summary>
 		public void Rewind()
 		{
 			driving.Rewind();

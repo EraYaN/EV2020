@@ -31,7 +31,7 @@ namespace EV2020.LocationSystem
 		#endregion
 		double sampleWindow = ASIO.Fs / 5;
 		ASIO asio;
-		Matrix<double> matchedfilter;
+		Vector<double> matchedfilter;
 		bool _disposed;
 		public delegate void LocationUpdatedHandler(object sender, LocationUpdatedEventArgs e);
 		public event LocationUpdatedHandler OnLocationUpdated;
@@ -83,7 +83,7 @@ namespace EV2020.LocationSystem
 				FileInfo beaconfile = new FileInfo(@"resources/beaconfile.bin");
 				if (beaconfile.Exists && UseMeasuredSignal)
 				{
-					long samples = beaconfile.Length / 4; //singles
+					long samples = 500; //singles : beaconfile.Length / 4
 					beaconsignal = DenseVector.Create(Convert.ToInt32(samples), 0);
 					using (BinaryReader br = new BinaryReader(beaconfile.OpenRead()))
 					{
@@ -105,8 +105,19 @@ namespace EV2020.LocationSystem
 				//Circulant Convolution
 				Debug.WriteLine("Generating Toeplitz matrix.");
 
+				// Get the matchedfilter convolution vector
+				matchedfilter = new DenseVector(500); // WAS: Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength))
+				int samplenumber = 0;
+				foreach (double d in beaconsignal.Reverse())
+				{
+					matchedfilter[samplenumber] = d;
+					samplenumber++;
+					if (samplenumber == matchedfilter.Count)
+						break;
+				}
+
 				//Figure out corrent matchedfilter matrix
-				Vector<double> bsreverse = new DenseVector(Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength)));
+				/*Vector<double> bsreverse = new DenseVector(Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength)));
 				int samplenumber = 0;
 				foreach (double d in beaconsignal.Reverse())
 				{
@@ -122,7 +133,7 @@ namespace EV2020.LocationSystem
 				bsreverse = null;
 				Debug.WriteLine("Generating matched filter matrix.");
 				//X is a circulant matrix.
-				matchedfilter = X;
+				matchedfilter = X;*/
 			}
 			else
 			{
@@ -174,26 +185,68 @@ namespace EV2020.LocationSystem
 
 			ASIOLatencies lat = GetASIOLatencies();
 			Debug.WriteLine("Latencies; IN: {0}, OUT: {1}", lat.Input, lat.Output);
-			Thread.Sleep(new TimeSpan(Convert.ToInt64(((lat.Input + matchedfilter.ColumnCount) * ASIO.T) * TimeSpan.TicksPerSecond)));
+			Thread.Sleep(new TimeSpan(Convert.ToInt64(((lat.Input + matchedfilter.Count) * ASIO.T) * TimeSpan.TicksPerSecond)));
 			//get all channels in a matrix (every column is a channel)
 			if (asio == null)
 				return;
-			Matrix<double> responses = asio.getAllInputSamplesMatrix(matchedfilter.ColumnCount); //MATCHED Filter way
-			//asio.IsInputEnabled = false;						
+			Matrix<double> responses = asio.getAllInputSamplesMatrix(matchedfilter.Count); //MATCHED Filter way
+			//asio.IsInputEnabled = false;
 			//Matrix multiply way
 			int[] samplemaxes = new int[responses.ColumnCount];
 			double[] maxes = new double[responses.ColumnCount];
 			//Filter that shit.
-			Matrix<double> filteredResponses;
+			Matrix<double> filteredResponses = new DenseMatrix(responses.RowCount, responses.ColumnCount);
 			if (matchedFilterEnabled)
 			{
-				filteredResponses = matchedfilter * responses;
+				//filteredResponses = matchedfilter * responses;
+
+				// TODO
+				double[,] responsesArray = new double[responses.RowCount, responses.ColumnCount];
+				for (int i = 0; i < responses.RowCount; i++)
+					for (int j = 0; j < responses.ColumnCount; j++)
+						responsesArray[j, i] = responses[j, i];
+
+				// Perform convolution
+				//Matrix<double> result = new DenseMatrix(5, 30000);
+				long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+				for (int i = 0; i < 5; i++)
+				{
+					double maxval = 0;
+					int start, end;
+					if (i == 0)
+					{
+						start = 0;
+						end = responsesArray.Length - matchedfilter.Count;
+					}
+					else
+					{
+						start = Math.Max(samplemaxes[0] - 500, 0);
+						end = Math.Min(samplemaxes[0] + 500, responsesArray.Length - matchedfilter.Count);
+					}
+					for (int j = start; j < end; j++)
+					{
+						//double val = 0;
+						for (int k = 0; k < matchedfilter.Count; k++)
+							filteredResponses[j, i] += responsesArray[j + k, i] * matchedfilter[k];
+						if (Math.Abs(filteredResponses[j, i]) > maxval)
+						{
+							maxval = filteredResponses[j, i];
+							maxes[i] = Math.Abs(filteredResponses[j, i]);
+							samplemaxes[i] = j;
+						}
+					}
+				}
+
+				long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds;
+				//time = time;
 			}
 			else
 			{
 				filteredResponses = responses;
 			}
-			//loop over channels	
+
+			//loop over channels
 			double windowStart = 0;
 			double windowEnd = filteredResponses.RowCount;
 			for (int i = 0; i < filteredResponses.ColumnCount; i++)
@@ -213,6 +266,7 @@ namespace EV2020.LocationSystem
 					windowEnd = Math.Min(filteredResponses.RowCount, samplemaxes[i] + sampleWindow / 2);
 				}
 			}
+			
 			Debug.WriteLine("Channel 0 is the 'zero' at @ {0} samples.", samplemaxes[0]);
 			for (int i = 1; i < samplemaxes.Length; i++)
 			{
@@ -220,7 +274,7 @@ namespace EV2020.LocationSystem
 			}
 			//lastData = responses.Append(filteredResponses);
 			//lastData = responses;
-			lastData = filteredResponses;
+			//lastData = filteredResponses;
 			lastMaxes = samplemaxes;
 			List<Position3D> l = new List<Position3D>();
 			l.Add(Localize(samplemaxes, lat));
