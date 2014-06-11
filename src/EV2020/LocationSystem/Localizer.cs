@@ -105,38 +105,46 @@ namespace EV2020.LocationSystem
 					beaconsignal = Tools.refsignal(Tools.Timer0Freq.Carrier10kHz, Tools.Timer1Freq.Code2500Hz, Tools.Timer3Freq.Repeat5Hz, "e65a20e5", ASIO.Fs);
 					Debug.WriteLine("Used reference data for beaconsignal.");
 				}
-				//Circulant Convolution
-				Debug.WriteLine("Generating Toeplitz matrix.");
-
-				// Get the matchedfilter convolution vector
-				matchedfilterVector = new DenseVector(500); // WAS: Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength))
 				int samplenumber = 0;
-				foreach (double d in beaconsignal.Reverse())
+				if (!matchedFilterToep)
 				{
-					matchedfilterVector[samplenumber] = d;
-					samplenumber++;
-					if (samplenumber == matchedfilterVector.Count)
-						break;
-				}
 
-				//Figure out corrent matchedfilter matrix
-				Vector<double> bsreverse = new DenseVector(Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength)));
-				samplenumber = 0;
-				foreach (double d in beaconsignal.Reverse())
-				{
-					bsreverse[samplenumber] = d;
-					samplenumber++;
-					if (samplenumber == bsreverse.Count)
-						break;
+					// Get the matchedfilter convolution vector
+					matchedfilterVector = new DenseVector(500); // WAS: Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength))
+					
+					foreach (double d in beaconsignal.Reverse())
+					{
+						matchedfilterVector[samplenumber] = d;
+						samplenumber++;
+						if (samplenumber == matchedfilterVector.Count)
+							break;
+					}
+
 				}
-				//Normal Convolution
-				//Matrix<double> X = Tools.Toep(bsreverse, bsreverse.Count*2-1, bsreverse.Count, false);
-				//Circulant Convolution
-				Matrix<double> X = Tools.Toep(bsreverse, bsreverse.Count, bsreverse.Count);
-				bsreverse = null;
-				Debug.WriteLine("Generating matched filter matrix.");
-				//X is a circulant matrix.
-				matchedfilter = X;
+				else
+				{
+					//Circulant Convolution
+					Debug.WriteLine("Generating Toeplitz matrix.");
+
+					//Figure out corrent matchedfilter matrix
+					Vector<double> bsreverse = new DenseVector(500); // WAS: Convert.ToInt32(Math.Round(ASIO.Fs * sampleLength))
+					//samplenumber = 0;
+					foreach (double d in beaconsignal.Reverse())
+					{
+						bsreverse[samplenumber] = d;
+						samplenumber++;
+						if (samplenumber == bsreverse.Count)
+							break;
+					}
+					//Normal Convolution
+					//Matrix<double> X = Tools.Toep(bsreverse, bsreverse.Count*2-1, bsreverse.Count, false);
+					//Circulant Convolution
+					Matrix<double> X = Tools.Toep(bsreverse, bsreverse.Count, bsreverse.Count);
+					bsreverse = null;
+					Debug.WriteLine("Generating matched filter matrix.");
+					//X is a circulant matrix.
+					matchedfilter = X;
+				}
 			}
 			else
 			{

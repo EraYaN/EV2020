@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Director", "Director\Director.csproj", "{E0448722-8531-4064-99C2-DC31835987DF}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -78,14 +78,22 @@ Global
 		{E091CB2B-20FA-43C1-A595-1AB23320F97D}.Release-MKL|x64.Build.0 = Release|x64
 		{E091CB2B-20FA-43C1-A595-1AB23320F97D}.Release-MKL|x86.ActiveCfg = Release|x86
 		{E091CB2B-20FA-43C1-A595-1AB23320F97D}.Release-MKL|x86.Build.0 = Release|x86
-		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug-MKL|x64.ActiveCfg = Debug|Any CPU
-		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug-MKL|x86.ActiveCfg = Debug|Any CPU
-		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release|x64.ActiveCfg = Release|Any CPU
-		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release|x86.ActiveCfg = Release|Any CPU
-		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release-MKL|x64.ActiveCfg = Release|Any CPU
-		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release-MKL|x86.ActiveCfg = Release|Any CPU
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug|x64.ActiveCfg = Debug|x64
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug|x64.Build.0 = Debug|x64
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug|x86.ActiveCfg = Debug|x86
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug|x86.Build.0 = Debug|x86
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug-MKL|x64.ActiveCfg = Debug|x64
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug-MKL|x64.Build.0 = Debug|x64
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug-MKL|x86.ActiveCfg = Debug|x86
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Debug-MKL|x86.Build.0 = Debug|x86
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release|x64.ActiveCfg = Release|x64
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release|x64.Build.0 = Release|x64
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release|x86.ActiveCfg = Release|x86
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release|x86.Build.0 = Release|x86
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release-MKL|x64.ActiveCfg = Release|x64
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release-MKL|x64.Build.0 = Release|x64
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release-MKL|x86.ActiveCfg = Release|x86
+		{6A3B3FE4-8B03-4B34-9B4D-CACE5DCC8294}.Release-MKL|x86.Build.0 = Release|x86
 		{6DB00BA8-EFDE-4D3A-8983-F01857A36C1A}.Debug|x64.ActiveCfg = Debug|x64
 		{6DB00BA8-EFDE-4D3A-8983-F01857A36C1A}.Debug|x64.Build.0 = Debug|x64
 		{6DB00BA8-EFDE-4D3A-8983-F01857A36C1A}.Debug|x86.ActiveCfg = Debug|Win32
