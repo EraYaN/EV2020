@@ -51,7 +51,7 @@ namespace EV2020.LocationSystem
 		/// </summary>
 		/// <param name="mics">List of observable microphones</param>
 		public Localizer(List<Microphone> mics, int DriverIndex, double FieldWidth = 1, double FieldHeight = 1, double FieldMargin = 1,
-			double SampleWindow = 1, double SampleLength = 2400, double BeaconHeight = 0.28, bool MatchedFilterEnabled = false)
+			double SampleWindow = 1, double SampleLength = 2400, double BeaconHeight = 0.28, bool MatchedFilterEnabled = false, bool MatchedFilterToep = false)
 		{
 			Microphones = mics;
 			_driverIndex = DriverIndex;
@@ -69,6 +69,7 @@ namespace EV2020.LocationSystem
 			sampleLength = SampleLength;
 			beaconHeight = BeaconHeight;
 			matchedFilterEnabled = MatchedFilterEnabled;
+			matchedFilterToep = MatchedFilterToep;
 		}
 
 		/// <summary>
@@ -155,7 +156,7 @@ namespace EV2020.LocationSystem
 			asio = new ASIO(_driverIndex, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
 			//TODO back to 250 ms
-			timer = new System.Timers.Timer(sampleLength * 1000 * 8); // TEST: 8 times longer
+			timer = new System.Timers.Timer(sampleLength * 1000 * (matchedFilterEnabled && !matchedFilterToep ? 8 : 1)); // TEST: 8 times longer
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
 			asio.IsInputEnabled = true;
@@ -226,8 +227,8 @@ namespace EV2020.LocationSystem
 						}
 						else
 						{
-							start = Math.Max(samplemaxes[0] - 500, 0);
-							end = Math.Min(samplemaxes[0] + 500, responsesArray.Length - matchedfilterVector.Count);
+							start = Math.Max(samplemaxes[0] - (int)sampleWindow / 2, 0);
+							end = Math.Min(samplemaxes[0] + (int)sampleWindow / 2, responsesArray.Length - matchedfilterVector.Count);
 						}
 						for (int j = start; j < end; j++)
 						{
@@ -245,6 +246,7 @@ namespace EV2020.LocationSystem
 					}
 
 					long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds;
+					Debug.WriteLine("Conv time: " + time.ToString() + " ms");
 					//time = time;
 				}
 			}
@@ -253,24 +255,27 @@ namespace EV2020.LocationSystem
 				filteredResponses = responses;
 			}
 
-			//loop over channels
-			double windowStart = 0;
-			double windowEnd = filteredResponses.RowCount;
-			for (int i = 0; i < filteredResponses.ColumnCount; i++)
+			if ((matchedFilterToep && matchedFilterEnabled) || !matchedFilterEnabled)
 			{
-				//loop over samples in channel i	
-				for (int sample = (int)Math.Floor(windowStart); sample < Math.Ceiling(windowEnd); sample++)
+				//loop over channels
+				double windowStart = 0;
+				double windowEnd = filteredResponses.RowCount;
+				for (int i = 0; i < filteredResponses.ColumnCount; i++)
 				{
-					if (Math.Abs(filteredResponses[sample, i]) > maxes[i])
+					//loop over samples in channel i	
+					for (int sample = (int)Math.Floor(windowStart); sample < Math.Ceiling(windowEnd); sample++)
 					{
-						maxes[i] = Math.Abs(filteredResponses[sample, i]);
-						samplemaxes[i] = sample;
+						if (Math.Abs(filteredResponses[sample, i]) > maxes[i])
+						{
+							maxes[i] = Math.Abs(filteredResponses[sample, i]);
+							samplemaxes[i] = sample;
+						}
 					}
-				}
-				if (i == 0)
-				{
-					windowStart = Math.Max(0, samplemaxes[i] - sampleWindow / 2);
-					windowEnd = Math.Min(filteredResponses.RowCount, samplemaxes[i] + sampleWindow / 2);
+					if (i == 0)
+					{
+						windowStart = Math.Max(0, samplemaxes[i] - sampleWindow / 2);
+						windowEnd = Math.Min(filteredResponses.RowCount, samplemaxes[i] + sampleWindow / 2);
+					}
 				}
 			}
 			
@@ -285,10 +290,10 @@ namespace EV2020.LocationSystem
 			lastMaxes = samplemaxes;
 			List<Position3D> l = new List<Position3D>();
 			Position3D loc1 = Localize(samplemaxes, lat);
-			Debug.WriteLine("Loc1: " + loc1);
+			Debug.WriteLine("Loc1: " + loc1.ToString());
 			l.Add(loc1);
 			Position3D loc2 = Localize2(samplemaxes, lat);
-			Debug.WriteLine("Loc2: " + loc2);
+			Debug.WriteLine("Loc2: " + loc2.ToString());
 			//l.Add(loc2);
 			Debug.WriteLine(l[0]);
 			//Debug.WriteLine(l[1]);

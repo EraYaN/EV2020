@@ -74,6 +74,12 @@ namespace EV2020.Director
 			set;
 		}
 		[System.ComponentModel.DefaultValueAttribute(false)]
+		public bool MatchedFilterToep
+		{
+			get;
+			set;
+		}
+		[System.ComponentModel.DefaultValueAttribute(false)]
 		public bool UseMeasuredSignal
 		{
 			get;
@@ -125,6 +131,8 @@ namespace EV2020.Director
 			catch { }
 			try { MatchedFilterEnabled = info.GetBoolean("MatchedFilterEnabled"); }
 			catch { }
+			try { MatchedFilterToep = info.GetBoolean("MatchedFilterToep"); }
+			catch { }
 			try { UseMeasuredSignal = info.GetBoolean("UseMeasuredSignal"); }
 			catch { }
 			try
@@ -155,6 +163,7 @@ namespace EV2020.Director
 			info.AddValue("BeaconHeight", BeaconHeight);
 			info.AddValue("SmoothFactor", SmoothFactor);
 			info.AddValue("MatchedFilterEnabled", MatchedFilterEnabled);
+			info.AddValue("MatchedFilterToep", MatchedFilterToep);
 			info.AddValue("UseMeasuredSignal", UseMeasuredSignal);
 			info.AddValue("Microphones", Microphones);
 		}

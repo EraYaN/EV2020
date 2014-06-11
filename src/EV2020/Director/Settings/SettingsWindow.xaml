@@ -59,6 +59,7 @@
 						</Grid>
 						<CheckBox Content="Use matched filter" IsChecked="{Binding MatchedFilterEnabled}" Margin="2"/>
 						<CheckBox Content="Use measured signal" IsChecked="{Binding UseMeasuredSignal}" IsEnabled="{Binding MatchedFilterEnabled}" Margin="2"/>
+                        <CheckBox Content="Use toep" IsChecked="{Binding MatchedFilterToep}" IsEnabled="{Binding MatchedFilterEnabled}" Margin="2"/>
 					</StackPanel>
 				</Grid>
 			</TabItem>
