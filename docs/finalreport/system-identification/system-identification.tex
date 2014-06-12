@@ -242,12 +242,12 @@ Generally speaking the simulation is a pretty good approximation whereby the pha
 
 \section*{Task 4: Observer Design}
 In order to get accurate information about the velocity of the car, an observer is constructed.
-Both poles have been set to -10, which were determined by ajusting the poles untill the observer followed the actual velocity as good as possible.
-The main requirement is that the poles are located in the left complex halfplane.
+Both poles have been set to -10, which were determined by adjusting the poles until the observer followed the actual velocity as good as possible.
+The main requirement is that the poles are located in the left complex half plane.
 The more negative the real part of a pole is, the stronger the damping.
 However choosing the poles too far to the left is not practical since there are delays in the system.
 These delays could cause an oscillation when the correction is overly performed, resulting in large amounts of noise on the observer's distance and velocity.
-Using MatLab and setting the poles at -10 we calculated the following $L$ matrix:
+Using Matlab and setting the poles at -10 we calculated the following $L$ matrix:
 \begin{equation}
 L=
 \begin{bmatrix}
@@ -257,11 +257,11 @@ L=
 \end{equation}
 
 The observer was tested in an altered version of the Simulink model.
-This version replaced the input from the compensator to the car with a sequence of random driving commands in the range of -5 to 5, which updated every \unit[100]{ms}.
+This version replaced the input from the compensator to the car with a sequence of random driving commands in the range of -5 to 5, which updated every \SI{100}{\milli\second}.
 The objective was to follow the velocity as good as possible by measuring only the position of the car.
-The altered model kept the realistic delay of \unit[50]{ms} between the car and the observer.
+The altered model kept the realistic delay of \SI{50}{\milli\second} between the car and the observer.
 The results can be seen in Figures \ref{fig:observer_distance} and \ref{fig:observer_velocity} where the blue lines represent the actual distance and velocity and the red lines the observed distance and velocity.
-Both the distance and velocity are followed very good by the observer, even when the car started with a velocity of 5 m/s, which was unknown to the observer.
+Both the distance and velocity are followed very good by the observer, even when the car started with a velocity of \SI{5}{\metre\per\second}, which was unknown to the observer.
 
 \begin{figure} [H]
 \centering
@@ -333,10 +333,10 @@ Therefore, a good ratio between the two must be found.
 This can be achieved by placing the poles of the $K$ matrix, where multiple criteria must be fulfilled.
 Firstly, both poles must be located in the left half of the complex plane ($\operatorname{Re}(pole) < 0$).
 Secondly, the system must not be underdamped.
-Crittically damped would be the best option for an ideal system, but since the system experiences large delays, this might not be the perfect damping.
+Critically damped would be the best option for an ideal system, but since the system experiences large delays, this might not be the perfect damping.
 Overdamping the system creates a more stable situation since the actual state of the system is not defined errorless.
 Also, the system parameters such as the $B$ matrix are variable and not well-defined.
-When the supercap voltage is below the default \unit[20]{V}, the forward force on the car caused by a given drive command will be lower.
+When the supercap voltage is below the default \SI{20}{\volt}, the forward force on the car caused by a given drive command will be lower.
 The $K$ matrix poles were set to $-4$ and $-1.5$, resulting in the following matrix:
 
 \begin{equation}
@@ -347,9 +347,9 @@ K =
 \end{bmatrix}
 \end{equation}
 
-When simulating with this $K$ matrix, Figure \ref{fig:distances} displays the distance to wall, which is set to a target of \unit[6]{cm}.
-The blue line which represends KITT ends at 6 cm with a maximum variation of \unit[1]{cm} as for all other target locations.
-The red line will always ends near zero, since it represends the observer state's distance.
+When simulating with this $K$ matrix, Figure \ref{fig:distances} displays the distance to wall, which is set to a target of \SI{6}{\centi\metre}.
+The blue line which represents KITT ends at 6 cm with a maximum variation of \SI{1}{\centi\metre} as for all other target locations.
+The red line will always ends near zero, since it represents the observer state's distance.
 Since this distance is defined as KITT's actual distance minus the target location, the observer's distance always needs to converge to zero.
 
 \begin{figure} [H]
@@ -391,12 +391,13 @@ Since this distance is defined as KITT's actual distance minus the target locati
 \addlegendimage{/pgfplots/refstyle=Compensation}
 \addlegendentry{Compensation}
 
-\addplot [color=gray, mark=none] table [col sep=comma] {system-identification/resources/csv/final/drive.csv}; \label{Drive}
+\addplot [color=gray, mark=none] table [col sep=comma] {system-identification/resources/csv/final/drive.csv}; 
+\label{Drive}
 \addlegendentry{Drive}
  
 \end{axis}
 \end{tikzpicture}
-\caption{Driving to target location: \unit[6]{cm}}
+\caption{Driving to target location: \SI{6}{\centi\metre}}
 \label{fig:distances}
 \end{figure}
 

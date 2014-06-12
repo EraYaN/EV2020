@@ -9,6 +9,8 @@
 \label{ch:system-integration}
 We use a program written in C\# and C++ to control the car.
 The full source in included in Appendix listing \ref{app:source}.
+For a little bit of overview of the source, there is a code map included in Appendix \ref{app:code-map}, this contains all important classes.
+Only a couple are omitted.
 First, we will quickly explain the different components of the program.
 After that we will go into some extra detail on why we choose this approach.
 A system diagram is shown in figure \ref{fig:system-diagram}.
@@ -30,19 +32,22 @@ This is a short list of the current components.
 \item ASIO
 \end{itemize}
 \section{Controller}
+ASIO is the interface with the 8 channel capture card.
 The controller is the part that gives the car it's behavior.
 The Controller is parent to the Navigation and thus the Model.
 The navigation class is the class with the role of observer and the Model class in the class with the role of controller (in a state-space sense).
 We use a kind of double state-space model (the state is now a matrix), this gives us two ``driving'' signals one for the x and one for the y direction.
 From these two we can take the actual driving signal (the magnitude of the vector) and the steering signal (the difference with the current bearing).\\
 A problem arises when you want to estimate the bearing for previous measured position and the car is moving very slowly. 
-When the positions are very close to each other, the error might be bigger than the actual distance traveled. This makes the bearing determined completely wrong.
-The first thing we did to tackle this problem was, we made the car go faster and the position measurement rate lower (from 4 Hz to 2 Hz).
+When the positions are very close to each other, the error might be bigger than the actual distance traveled.
+This makes the bearing determined completely wrong.
+The first thing we did to tackle this problem was, we made the car go faster and the position measurement rate lower (from \SI{4}{\hertz} to \SI{2}{\hertz}).
 This helped a lot, the car now drives in a nice smooth arc to it's destination, it's a shame the steering signals were flipped in the demo.\\
 After all these small things, which could have been easily fixed with a bit more testing time, the car drives in a quite direct manner to it's destination.
 The controller does have an automatic emergency stop (anti-collision), when an object gets to close it brakes the car immediately.
 We take the previously measured position and set this as the target, the result is that the car nearly stops on the spot.
 This was also used, in a simpler form, in the wall driving test.
+
 
 \section{System response}
 In figure \ref{fig:system-response} you can see the data of a run towards the wall.

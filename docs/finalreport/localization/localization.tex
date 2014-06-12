@@ -107,7 +107,7 @@ The algorithms were developed simultaneously and supplement each other as someti
 Before going into TDOA estimation, it was assumed that the time it took for the sound to travel from the beacon to all microphones was known.
 This made the calculation a lot easier since it can be solved using two microphones only.
 \\ \\
-Figure \ref{fig:location} shows how the location of the car can be found when the locations of the microphones (and thus the distance between them, $a_1 + a_2$) and the time between transmission and arrivals at the two microphones $t_1$ and $t_2$, which can be converted into a distance using the speed of sound $c = 340~m/s$.
+Figure \ref{fig:location} shows how the location of the car can be found when the locations of the microphones (and thus the distance between them, $a_1 + a_2$) and the time between transmission and arrivals at the two microphones $t_1$ and $t_2$, which can be converted into a distance using the speed of sound $c \approx \SI{343.2}{\metre\per\second}$.
 Using this information, two possible locations can be found, the real location of the car and its mirrored version over the line between the two microphones as shown in Figure \ref{fig:location} as the dotted lines.
 
 \begin{figure} [H]
@@ -250,7 +250,7 @@ Now that the constant is known, the algorithm using two microphones and the arri
 It must however be noted that the height difference between the microphones and the beacon is not applied to the calculation of the constant time.
 Matlab could not find an explicit solution for the 3D situation, hence it was not included.
 This will lead to an error in the resulting location.
-However, the error will be very small when the beacon is not closeby the microphone, hence only one microphone can be compromised at once.
+However, the error will be very small when the beacon is not close by the microphone, hence only one microphone can be compromised at once.
 For that, the base of orthogonal microphones shift to all four possible combinations and check for the best basis with the least standard deviation between the subresulting locations.
 \\ \\
 The final Matlab script can be found in Appendix \ref{app:code}: location.m, which implements everything discussed so far in this chapter.
@@ -284,7 +284,7 @@ This is however when the TDOA information is nearly infinitely accurate, which w
 
 \subsection{Testing with non-ideal data}
 Errors will occur when the estimated speed of sound is not exactly correct since it varies with environment parameters such as temperature, humidity and air pressure.
-Using the test script from the previous subsection \ref{sec:testing} with an altered speed of sound with the input data generation, a certain error will occor.
+Using the test script from the previous subsection \ref{sec:testing} with an altered speed of sound with the input data generation, a certain error will occur.
 This was tested for the range of 1 to 5 percent deviation from the actual speed of sound, the results are shown in Table \ref{tab:c-errors}.
 
 \begin{table} [H]
@@ -304,12 +304,12 @@ This was tested for the range of 1 to 5 percent deviation from the actual speed 
 Besides errors in the speed of sound, errors will occur in determining the arrival times at the microphones.
 These errors can be simulated using a normal distribution with varying standard deviations, the results are displayed in Table \ref{tab:std-errors}.
 The noise standard deviation can be converted to standard deviation in distance by multiplying with the speed of sound.
-At 0.15 ms, which corresponds to 5.1 cm, about 5 cm accuracy is achieved.
+At \SI{0.15}{\milli\second}, which corresponds to \SI{5.1}{\centi\metre}, about \SI{5}{\centi\metre} accuracy is achieved.
 
 \begin{table} [H]
 \centering
 	\begin{tabular}{ c | c | c | c }
-  	Noise standard deviation (ms) & Error mean (cm) & Error standard deviation (cm) & Max error (cm) \\ \hline
+  	Noise standard deviation (\si{\milli\second}) & Error mean (\si{\centi\metre}) & Error standard deviation (\si{\centi\metre}) & Max error (\si{\centi\metre}) \\ \hline
 	0.1 & 3.34 & 1.88 & 11.88 \\
 	0.15 & 4.90 & 2.97 & 50.51 \\
 	0.2 & 6.70 & 5.00 & 125.76 \\
@@ -325,7 +325,7 @@ At 0.15 ms, which corresponds to 5.1 cm, about 5 cm accuracy is achieved.
 \begin{table} [H]
 \centering
 	\begin{tabular}{ c | c | c | c }
-  	Noise standard deviation (ms) & Error mean (mm) & Error standard deviation (mm) & Max error (mm) \\ \hline
+  	Noise standard deviation (\si{\milli\second}) & Error mean (\si{\milli\metre}) & Error standard deviation (\si{\milli\metre}) & Max error (\si{\milli\metre}) \\ \hline
   	0.1 & 10.0 & 5.5 & 35.9 \\
 	0.2 & 19.2 & 9.9 & 57.0 \\
 	0.3 & 27.8 & 14.9 & 92.6 \\
@@ -343,8 +343,8 @@ At 0.15 ms, which corresponds to 5.1 cm, about 5 cm accuracy is achieved.
 \fi
 
 \subsection{Testing with real measurement data}
-The final test with five microphones, four in a 2.9m x 2.9m square on 38 cm height and one microphone placed 2.4 m from the center of the square on 0.93 cm high.
-The car was placed on seven defined spots on the field, the first five at all microphones, the sixth at the center of the square and the last 1 m towards a corner of the square.
+The test with five microphones, four in a \SI{2.9}{\metre} x \SI{2.9}{\metre} square on \SI{38}{\centi\metre} height and one microphone placed \SI{2.4}{\metre} from the center of the square on \SI{0.93}{\centi\metre} high.
+The car was placed on seven defined spots on the field, the first five at all microphones, the sixth at the center of the square and the last \SI{1}{\metre} towards a corner of the square.
 The recordings from the microphones were saved to be processed later on using the matched filter.
 The results are shown in Figure \ref{fig:map}.
 \\ \\

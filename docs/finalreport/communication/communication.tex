@@ -10,13 +10,13 @@
 KITT will be communicating with a PC via Bluetooth. 
 This is set up using the windows Bluetooth settings.
 A precompiled communications library for Matlab was available at Blackboard, we however opted for a program written in C\#.
-WPF is used as UI library.
+WPF is used as the UI library.
 The reason for using C\# is that Matlab is not very well suited for serial communication.
 Besides, the program in C\# will run on any computer as opposed to the precompiled library. 
-A simulated joystick control UI was developed (instead of using keyboard), to gain better control over the car.
+A simulated joystick control UI was developed (instead of using keyboard), to gain better control of the car.
 \\
-To gather information about the communication speed the ping has been measured. 
-The ping is defined as the time that the last byte is send until the first byte is received.
+To gather information about the communication speed the ping (round-trip) has been measured. 
+The ping is defined as the time from when the last byte is send until the first byte is received.
 This way differences between processing time and packet length are eliminated.
 We also noticed a certain limit in the amount of commands send to the car.
 The main MCU couldn't handle that and would do nothing or send back garbled data.
@@ -26,11 +26,11 @@ One command per 'ping time' seems to be the maximum.
 \subsection{Limitations of the system}
 
 There are a couple of limitations to be considered regarding the HC-SR04 modules.\\
-According to the data sheet (\cite{HC-SR04}) the measurement range is \unit[2]{cm} - \unit[400]{cm}. 
-We could confirm that the device can't produce a distance measurement between 0 and \unit[2]{cm}. 
-The maximum measurement distance however turned out to be only \unit[300]{cm} in practice.\\ 
-The claimed ranging accuracy of \unit[3]{mm} turned out to be quite consistent over the whole measurement range.\\
-The measurement angle is about \unit[15]{degrees} to both the left and right side. 
+According to the data sheet (\cite{HC-SR04}) the measurement range is \SI{2}{\centi\metre} - \SI{400}{\centi\metre}. 
+We could confirm that the device can't produce a distance measurement between 0 and \SI{2}{\centi\metre}. 
+The maximum measurement distance however turned out to be only \SI{300}{\centi\metre} in practice.\\ 
+The claimed ranging accuracy of \SI{3}{\milli\metre} turned out to be quite consistent over the whole measurement range.\\
+The measurement angle is about \ang{15} to both the left and right side. 
 This could cause some inaccuracies in distance measurements.\\
 The two modules are mounted on the hood of the car and extend to both the left- and right hand side. 
 Because of the height at which they are located it might occur that very small objects on the ground are not detected. 
@@ -41,13 +41,13 @@ But considering that the objects have to be rather small to not be detected, the
 
 To perform measurements the car was placed in front of a closet covering the sensors measurement range. 
 Next, the distance as displayed on the car's screen and the distance measured with a tape measure were compared. 
-This was done for multiple distances and the average deviation was between 0.5 and \unit[1]{cm}. 
+This was done for multiple distances and the average deviation was between 0.5 and \SI{1}{\centi\metre}. 
 For our purposes these deviations are negligible. 
 Placing an obstacle, like a book, in front of one of the sensors would cause the same deviation.
 Placing the car in front of a table would result in the table leg being detected. 
 Thus, an object that doesn't cover a large surface is still detected.\\ 
 As observed from the car's screen and by performing multiple "get status" commands from Matlab, the sensors normally need a little time to adjust in the case of a changed surrounding. 
-For example, the distance between a sensor and an object might be \unit[75]{cm}, in this case, the sensor might flick between \unit[75]{cm} and \unit[74]{cm} for about a second.
+For example, the distance between a sensor and an object might be \SI{75}{\centi\metre}, in this case, the sensor might flick between \SI{75}{\centi\metre} and \SI{74}{\centi\metre} for about a second.
 
 
 \subsection{Dynamic measurement of the sensor}
@@ -55,7 +55,7 @@ For example, the distance between a sensor and an object might be \unit[75]{cm},
 Performing measurements with the vehicle in motion is more difficult. Driving the car at moderate pace while performing multiple "get status" commands results in seemingly useful data. 
 It is hard to say how accurate these distance measurements are.\\ 
 The Doppler effect is also considered. 
-If the source is moving away from the observer then the observed frequency can be calculated using equation \ref{eq:doppler}, otherwise equation \ref{eq:doppler_otherwise} can be used. Here $v$ is equal to the speed of sound and $v_{car}$ is equal to the maximum speed of the car (10 km/h).
+If the source is moving away from the observer then the observed frequency can be calculated using equation \ref{eq:doppler}, otherwise equation \ref{eq:doppler_otherwise} can be used. Here $v$ is equal to the speed of sound and $v_{car}$ is equal to the maximum speed of the car (\SI{10}{\kilo\metre\per\hour}).
 \begin{equation} 
 \label{eq:doppler}
 f = \dfrac{v}{v+v_{car}} \cdot f_{0} = \dfrac{340}{340 + 2,78} \cdot {40*10^3} = 39.68 \text{ kHz}

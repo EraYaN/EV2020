@@ -19,7 +19,7 @@ We had two reasons for this decision.
 \item Secondly, by looking at the current-voltage characteristics per frequency (\cite{OptiMOS2} \emph{:3 Safe operating area} and \cite{OptiMOS3} \emph{:3 Safe operating area}) we found out that the OptiMOS 3 performs better at higher frequencies than the OptiMOS 2.
 \end{enumerate}
 
-We also had to choose the diodes used on the secondary side of the tranformer. 
+We also had to choose the diodes used on the secondary side of the transformer. 
 The diodes will form a full bridge rectifier, which, in combination with a capacitor, will form a AC-DC converter.
 The candidates are the SB540 (datasheet: \cite{SB540}) and the SF61 (datasheet: \cite{SF61}).
 The forward voltage of the two diodes differ, the SB540's is lower. 
@@ -29,8 +29,6 @@ Lower reverse current makes the diode more ideal, since it should only conduct w
 The SB530 would be the better option when weighting these pros and cons since the reverse current is small enough with both diodes, but the forward voltage makes a rather large difference.
 However, we did not implement these diodes because we did not know the forward voltage was more important at that time.
 In the near future, we might replace the diodes with the SB540 to gain a better performance. \\
-
-
 
 
 The next step in designing our DC-DC converter was to design the air-coupled transformer. 
@@ -54,7 +52,7 @@ The results for these measurements are given in Table \ref{tab:inductances}.
 \end{table}
 
 We also measured the resistances of the two coils. 
-The primary coil has a resistance of 0.3 $\Omega$ and the secondary coil has a resistance of 0.1 $\Omega$.\\
+The primary coil has a resistance of \SI{0.3}{\ohm} and the secondary coil has a resistance of \SI{0.1}{\ohm}.\\
 
 When using the circuit shown in Figure 1.9 of \cite{epo4-manual} to model our circuit, the equations of the coupled inductors can be written as in Equation \ref{eq:matrix}.\\
 \begin{equation}
@@ -145,17 +143,17 @@ $$\Leftrightarrow C_{2} =  \frac{1}{\omega^2 L_{2}}$$
 Using these equations we found the following values for $C_1$ and $C_2$:
 \begin{equation}\
 \begin{array}{l}
-$$C_{1} =  \frac{1}{(2\pi\cdot(100\cdot10^3)) ^2 207\cdot10^-6}  = 12.2~$n$F $$
+$$C_{1} =  \frac{1}{(2\pi\cdot(100\cdot10^3)) ^2 207\cdot10^-6}  = \SI{12.2}{\nano\farad} $$
 \end{array}\
 \end{equation}
 \begin{equation}\
 \begin{array}{l}
-$$C_{2} =  \frac{1}{(2\pi \cdot (100\cdot 10^3)) ^2 23.4 \cdot 10^-6} = 108~ $n$ F $$
+$$C_{2} =  \frac{1}{(2\pi \cdot (100\cdot 10^3)) ^2 23.4 \cdot 10^-6} = \SI{108}{\nano\farad} $$
 \end{array}\
 \end{equation}
 \\
 
-Since our calculated values for $C_1$ (12.2~ $n$F) and $C_2$ (108~ $n$F) were not exactly available we had to choose slightly different values.
+Since our calculated values for $C_1$ (\SI{12.2}{\nano\farad}) and $C_2$ (\SI{108}{\nano\farad}) were not exactly available we had to choose slightly different values.
 We could approximate both values within 5\% deviation of the calculated values. \\
 
 When using capacitors in our circuit matrix, Equation \ref{eq:matrix} will change. 
@@ -204,15 +202,14 @@ As shown in Table \ref{table3} the efficiency of our system is very high.
 It however is not this efficient in practice.
 When testing our system at a distance of 6 cm, we calculated that the efficiency was only 71.6\%.
 The difference between the calculations in \ref{table3} and the real value can be explained by looking into the compensation. 
-The capacitors we used on the primary and secundary side were not the exact same values as calculated.
-Finetuning the frequency can not fix the problem on the primary and secundary side at the same time since the required frequencies differ. 
+The capacitors we used on the primary and secondary side were not the exact same values as calculated.
+Fine tuning the frequency can not fix the problem on the primary and secondary side at the same time since the required frequencies differ. 
 Also, the efficiency of the AC-DC converter were left out of scope.
 In this secondary circuit, the diodes used for rectifying take a rather large forward voltage.
 This forward voltage can be reduced if we replace the current SF61 diodes with SB540 diodes.
 \\ \\
-Due to the efficiency difference it takes a little longer to charge the capacitor bank up to 20$V$.
-During the charging test of the final competition, it took our car about 4 minutes to completely charge our car (starting at 5$V$). %%%%% ff fixen als we resultaten hebben na final competition.
-
+Due to the efficiency difference it takes a little longer to charge the capacitor bank up to \SI{20}{\volt}.
+During the charging test of the final competition, it took our car about 5-6 minutes to completely charge our car (starting at \SI{5}{\volt}). %%%%% ff fixen als we resultaten hebben na final competition.
 
 
 \end{document}
