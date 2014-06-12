@@ -30,7 +30,10 @@ namespace EV2020.Director
 		long lastTimestamp = 0;
 
 		object _localizerLock = new object();
-
+		public Vector<double> CarPos
+		{
+			get { return Position; }
+		}		
 		public double CarX
 		{
 			get { return Position[0]; }
@@ -215,8 +218,7 @@ namespace EV2020.Director
 					_iter = 0;
 				}
 			}*/
-		}
-		
+		}		
 		#region BackgroundWorker
 		[STAThread]
 		void bw_generate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

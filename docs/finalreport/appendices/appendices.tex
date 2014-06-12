@@ -38,38 +38,38 @@
 \label{app:gui}
 \begin{figure}[h]
 \centering
-\begin{subfigure}[b]{0.5\linewidth}
+\begin{subfigure}[t]{0.49\linewidth}
 	\includegraphics[width=\linewidth]{resources/UI-Settings-General.png}
 	\caption{GUI Settings window, General tab}
 	\label{fig:UI-Settings-General}
 \end{subfigure}
-\begin{subfigure}[b]{0.5\linewidth}
+\begin{subfigure}[t]{0.49\linewidth}
+	\includegraphics[width=\linewidth]{resources/UI-Settings-Microphones.png}
+	\caption{GUI Settings window, Microphones tab}
+	\label{fig:UI-Settings-Microphones}
+\end{subfigure}
+\begin{subfigure}[t]{0.48\linewidth}
 	\includegraphics[width=\linewidth]{resources/UI-Settings-Localizer.png}
 	\caption{GUI Settings window, Localizer tab}
 	\label{fig:UI-Settings-Localizer}
 \end{subfigure}
-\begin{subfigure}{0.5\linewidth}
-	\includegraphics[width=\linewidth]{resources/UI-Settings-Microphones.png}
-	\caption{GUI Settings window, Microphones tab}
-	\label{fig:UI-Settings-Microphones}
 
-\end{subfigure}
 \caption{GUI Settings window, defined in SettingsWindow.xaml (Listing \ref{lst:Settings-SettingsWindow.xaml})}
 \label{fig:UI-Settings}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-	\includegraphics[width=0.9\linewidth]{resources/UI-Main.png}
-	\caption{GUI Main window, defined in MainWindow.xaml (Listing \ref{lst:Director-MainWindow.xaml})}
-	\label{fig:UI-Main}
+	\includegraphics[width=0.7\linewidth]{resources/UI-About.png}
+	\caption{GUI About window, defined in AboutWindow.xaml (Listing \ref{lst:Director-AboutWindow.xaml})}
+	\label{fig:UI-About}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-	\includegraphics[width=0.5\linewidth]{resources/UI-About.png}
-	\caption{GUI About window, defined in AboutWindow.xaml (Listing \ref{lst:Director-AboutWindow.xaml})}
-	\label{fig:UI-About}
+	\includegraphics[width=\linewidth]{resources/UI-Main.png}
+	\caption{GUI Main window, defined in MainWindow.xaml (Listing \ref{lst:Director-MainWindow.xaml}). No car was connected at the time so the graphs do not show any data and the trail is also not shown. The Car geometry (blue rectangle) also displays the actual sensor beam with the correct length and FOV when the sensor data is valid. The red dot is the target location. The black line is the filed boundary. The green line is the line beyond which a location is ``invalid''. The black dots are the microphones.}
+	\label{fig:UI-Main}
 \end{figure}
 
 \chapter{Model}
@@ -88,7 +88,7 @@
 	\setlength\figureheight{3cm}
     	\setlength\figurewidth{0.4\linewidth}
 	\input{resources/orgref.tikz}
-	\caption{5-Point microphone sample data processed directly with refsignal reference.}
+	\caption{5-Point microphone sample data processed directly with a refsignal reference.}
 	\label{fig:orgref}
 \end{figure}
 
@@ -97,7 +97,7 @@
 	\setlength\figureheight{3cm}
     	\setlength\figurewidth{0.4\linewidth}
 	\input{resources/no-toep.tikz}
-	\caption{5-Point microphone sample data processed with recorded reference signal.}
+	\caption{5-Point microphone sample data processed with a recorded reference signal.}
 	\label{fig:no-toep}
 \end{figure}
 
@@ -106,8 +106,17 @@
 	\setlength\figureheight{3cm}
     	\setlength\figurewidth{0.4\linewidth}
 	\input{resources/toep.tikz}
-	\caption{5-Point microphone sample data processed with recorded reference signal using Toepitz matrix.}
+	\caption{5-Point microphone sample data processed with a recorded reference signal using a Toepitz matrix.}
 	\label{fig:toep}
+\end{figure}
+
+\chapter{Code Map}
+\label{app:code-map}
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\linewidth]{resources/code-map.jpg}
+	\caption{The code map with all the classes that are relevant. Purple means unreferenced classes. Pinks are Hub classes (lots of connections). And the others are normal classes, structs and interfaces.}
+	\label{fig:code-map}
 \end{figure}
 
 \chapter{Source}

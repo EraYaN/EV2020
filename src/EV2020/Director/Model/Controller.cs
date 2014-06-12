@@ -476,8 +476,6 @@ namespace EV2020.Director
 		#region Private command methods
 		private void CheckEmergencyStop()
 		{
-			//Maybe set the current position as target?
-			
 			if ((currentRightDistance < CollisionThreshold || currentLeftDistance < CollisionThreshold) && currentDriving > 0)
 			{
 				_emergencyErrorCount++;
@@ -485,6 +483,8 @@ namespace EV2020.Director
 				{
 					state = ControllerState.EmergencyStop;
 					Data.db.UpdateProperty("EmergencyStop");
+					//Set current position as target, makes the car stop.
+					Data.nav.GoToPosition(Data.nav.CarPos);
 					Brake();
 					Center();
 				}

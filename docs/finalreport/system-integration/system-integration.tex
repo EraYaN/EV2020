@@ -7,7 +7,7 @@
 
 \chapter{System Integration}
 \label{ch:system-integration}
-We use a program written in C\# to control the car.
+We use a program written in C\# and C++ to control the car.
 The full source in included in Appendix listing \ref{app:source}.
 First, we will quickly explain the different components of the program.
 After that we will go into some extra detail on why we choose this approach.
@@ -19,59 +19,30 @@ For any implementation details please consult the source code.
     	\caption{The system in diagram form}
     	\label{fig:system-diagram}
 \end{figure}
-Here follows a rundown of all the components.
-\section{GUI (Visualization)}
-This part handles everything to do with the GUI and the Databindingsa to the underlying parts.
-The associated classes and files are:
+\section{Modules}
+This is a short list of the current components.
 \begin{itemize}
-\item App (Appendix listing \ref{lst:Director-App.xaml.cs} \& \ref{lst:Director-App.xaml})
-\item MainWindow (Appendix listing \ref{lst:Director-MainWindow.xaml.cs} \& \ref{lst:Director-MainWindow.xaml})
-\item Data (Appendix listing \ref{lst:Director-Data.cs})
-\item Arrow (Appendix listing \ref{lst:Director-Arrow.cs})
-\item Visualization (Appendix listing \ref{lst:Director-Visualization.cs})
-\item Databindings (Appendix listing \ref{lst:Director-Databindings.cs})
+\item Visualization
+\item Controller
+\item Navigation
+\item Model
+\item Communication
+\item ASIO
 \end{itemize}
 \section{Controller}
-This part is the "brain", here the serial events are handled and commands sent.
-The associated classes and files are:
-\begin{itemize}
-\item Controller (Appendix listing \ref{lst:Director-Controller.cs})
-\item Data (Appendix listing \ref{lst:Director-Data.cs})
-\end{itemize}
-\section{Navigation}
-This is not yet in use. Now the Target field on the Controller class serves this function.
-The associated classes, interfaces and files are:
-\begin{itemize}
-\item StandardNavigation (Appendix listing \ref{lst:Director-StandardNavigation.cs})
-\item INavigator (Appendix listing \ref{lst:Director-INavigator.cs})
-\end{itemize}
-\section{Observer}
-This part is the gateway to the implemented model.
-The associated classes and files are:
-\begin{itemize}
-\item Observer (Appendix listing \ref{lst:Director-Observer.cs})
-\end{itemize}
-\section{Model}
-This part constsist of a standarized interface and a couple of implemented models.
-Those are drop-in replacements of each other.
-Our currently used model is PDEpicModel.
-The associated classes, interfaces and files are:
-\begin{itemize}
-\item IModel (Appendix listing \ref{lst:Director-IModel.cs})
-\item PDEpicModel (Appendix listing \ref{lst:Director-PDEpicModel.cs})
-\item PDDefaultModel (Appendix listing \ref{lst:Director-PDDefaultModel.cs})
-\item PIDModel (Appendix listing \ref{lst:Director-PIDModel.cs})
-\end{itemize}
-\section{Serial}
-This part handles all serial communication asynchronously and drives the receive events.
-The associated classes, interfaces and files are:
-\begin{itemize}
-\item ISerial (Appendix listing \ref{lst:Communication-ISerial.cs})
-\item SerialDataEvent (Appendix listing \ref{lst:Communication-SerialDataEvent.cs})
-\item SerialInterface (Appendix listing \ref{lst:Communication-SerialInterface.cs})
-\end{itemize}
-\section{Bluetooth Chipset}
-The adapter we use most of the time is an Intel(R) Centrino(R) Wireless Bluetooth(R) 4.0 + High Speed Adapter embedded together with the WiFi module in one of our own laptops.
+The controller is the part that gives the car it's behavior.
+The Controller is parent to the Navigation and thus the Model.
+The navigation class is the class with the role of observer and the Model class in the class with the role of controller (in a state-space sense).
+We use a kind of double state-space model (the state is now a matrix), this gives us two ``driving'' signals one for the x and one for the y direction.
+From these two we can take the actual driving signal (the magnitude of the vector) and the steering signal (the difference with the current bearing).\\
+A problem arises when you want to estimate the bearing for previous measured position and the car is moving very slowly. 
+When the positions are very close to each other, the error might be bigger than the actual distance traveled. This makes the bearing determined completely wrong.
+The first thing we did to tackle this problem was, we made the car go faster and the position measurement rate lower (from 4 Hz to 2 Hz).
+This helped a lot, the car now drives in a nice smooth arc to it's destination, it's a shame the steering signals were flipped in the demo.\\
+After all these small things, which could have been easily fixed with a bit more testing time, the car drives in a quite direct manner to it's destination.
+The controller does have an automatic emergency stop (anti-collision), when an object gets to close it brakes the car immediately.
+We take the previously measured position and set this as the target, the result is that the car nearly stops on the spot.
+This was also used, in a simpler form, in the wall driving test.
 
 \section{System response}
 In figure \ref{fig:system-response} you can see the data of a run towards the wall.
@@ -83,5 +54,30 @@ In figure \ref{fig:system-response} you can see the data of a run towards the wa
     	\caption{The system response of the “drive-to-wall command”.}
     	\label{fig:system-response}
 \end{figure}
+
+\section{Implementation details and Licenses}
+All our code and documentation with be available on GitHub, shortly after the project at \href{https://github.com/EraYaN}{https://github.com/EraYaN}. The repositories' name is \href{https://github.com/EraYaN/EV2020}{EV2020}.\\
+
+We used the following libraries/SDKs.
+\begin{itemize}
+\item ASIOSDK 2.3
+\item BlueWave.Interop.Asio
+\item CircularBuffer
+\item MicroMvvm
+\item MathNet.Numerics master@83f222f02
+\item Intel MKL 11.1 update 3
+\item OxyPlot.Core 2014.1.240.1
+\item OxyPlot.Wpf 2014.1.240.1
+\end{itemize}
+All their dependencies and licenses are listed on the projects' websites.
+\\ \\
+\begin{figure}[h]
+	\includegraphics[width=2cm]{resources/ASIO_LOGO1.jpg}
+\end{figure}
+ASIO Driver Interface Technology by Steinberg Media Technologies GmbH.\\
+\begin{figure}[h]
+	\includegraphics[width=2cm]{resources/intel-logo.jpg}
+\end{figure}
+Intel Math Kernel Library by Intel Corporation.
 
 \end{document}

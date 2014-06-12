@@ -13,6 +13,7 @@ namespace EV2020.Director
 	/// </summary>
 	public interface INavigator
 	{
+		Vector<double> CarPos { get; }
 		double CarX { get; }
 		double CarY { get; }
 		double TargetX { get; }
