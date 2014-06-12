@@ -22,8 +22,7 @@ We had two reasons for this decision.
 We also had to choose the diodes used on the secondary side of the transformer. 
 The diodes will form a full bridge rectifier, which, in combination with a capacitor, will form a AC-DC converter.
 The candidates are the SB540 (datasheet: \cite{SB540}) and the SF61 (datasheet: \cite{SF61}).
-The forward voltage of the two diodes differ, the SB540's is lower. 
-This is favorable since there will be more voltage left on the output terminals.
+The forward voltage of the two diodes differ, the SB540's is lower, this is favorable since there will be more voltage left on the output terminals.
 On the other hand, the SF61 has a much lower reverse current. 
 Lower reverse current makes the diode more ideal, since it should only conduct when the current is in forward direction.
 The SB530 would be the better option when weighting these pros and cons since the reverse current is small enough with both diodes, but the forward voltage makes a rather large difference.
@@ -33,14 +32,14 @@ In the near future, we might replace the diodes with the SB540 to gain a better 
 
 The next step in designing our DC-DC converter was to design the air-coupled transformer. 
 In order to find how many windings we need per coil we used \cite{windings}.
-Through this site we found that we needed 40 windings for our primary coil of roughly \SI{200}{\micro\henri} and 14.44 windings for our secondary coil of roughly \SI{20}{\micro\henri}.
+Through this site we found that we needed 40 windings for our primary coil of roughly \SI{200}{\micro\henry} and 14.44 windings for our secondary coil of roughly \SI{20}{\micro\henry}.
 The mutual inductance of the two coils can be found by measuring both the opposing and aiding configuration of the coils. 
 The results for these measurements are given in Table \ref{tab:inductances}.
 
 \begin{table} [h]
 \begin{center}
 	\begin{tabular}{ l | l | l | l | l }
-	Distance & Aiding inductance (\si{\micro\henri}) & Opposing inductance (\si{\micro\henri}) & Mutual inductance (\si{\micro\henri}) & k \\ \hline
+	Distance & Aiding inductance (\si{\micro\henry}) & Opposing inductance (\si{\micro\henry}) & Mutual inductance (\si{\micro\henry}) & k \\ \hline
   	0 cm & 312.5 & 145.8 & 41.7 & 0.599 \\
 	2 cm & 276.0 & 186.4 & 22.4 & 0.322 \\
 	4 cm & 258.0 & 199.3 & 14.7 & 0.211 \\
