@@ -240,7 +240,7 @@ eig(A)=
 The system is not stable since not both eigenvalues are in the left half of the complex plane.
 Generally speaking the simulation is a pretty good approximation whereby the phase shift should be kept in mind.
 
-\section*{Task 4: Observer Design}
+\section*{Observer Design}
 In order to get accurate information about the velocity of the car, an observer is constructed.
 Both poles have been set to -10, which were determined by adjusting the poles until the observer followed the actual velocity as good as possible.
 The main requirement is that the poles are located in the left complex half plane.
@@ -326,7 +326,7 @@ This is in agreement with the requirements for an observer; the difference $x(t)
 Without the delay, the preceding statement would be exactly implemented, resulting in an ideal observer.
 But since there is a delay, this ideal observer can not exist.
 
-\section*{Task 5: Controller design}
+\section*{Controller design}
 The controller was designed to both drive to the target position and reduce the velocity to zero.
 These two objectives oppose each other when the car is not on the target position and standing still.
 Therefore, a good ratio between the two must be found.
