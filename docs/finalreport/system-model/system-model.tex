@@ -33,14 +33,14 @@ In the near future, we might replace the diodes with the SB540 to gain a better 
 
 The next step in designing our DC-DC converter was to design the air-coupled transformer. 
 In order to find how many windings we need per coil we used \cite{windings}.
-Through this site we found that we needed 40 windings for our primary coil of roughly 200 $\mu$H and 14.44 windings for our secondary coil of roughly 20 $\mu$H.
+Through this site we found that we needed 40 windings for our primary coil of roughly \SI{200}{\micro\henri} and 14.44 windings for our secondary coil of roughly \SI{20}{\micro\henri}.
 The mutual inductance of the two coils can be found by measuring both the opposing and aiding configuration of the coils. 
 The results for these measurements are given in Table \ref{tab:inductances}.
 
 \begin{table} [h]
 \begin{center}
 	\begin{tabular}{ l | l | l | l | l }
-	Distance & Aiding inductance ($\mu$H) & Opposing inductance ($\mu$H) & Mutual inductance ($\mu$H) & k \\ \hline
+	Distance & Aiding inductance (\si{\micro\henri}) & Opposing inductance (\si{\micro\henri}) & Mutual inductance (\si{\micro\henri}) & k \\ \hline
   	0 cm & 312.5 & 145.8 & 41.7 & 0.599 \\
 	2 cm & 276.0 & 186.4 & 22.4 & 0.322 \\
 	4 cm & 258.0 & 199.3 & 14.7 & 0.211 \\
@@ -111,7 +111,7 @@ The results of our calculations can be found in Table \ref{table2}.\\
 \begin{center}
 \begin{tabular}{ l | l | l | l }
     
-    \textit{d} (cm)            & pf              & efficiency  &  $P_{load}$ (W)\\	\hline
+    \textit{d} (\si{\centi\metre})            & pf              & efficiency  &  $P_{load}$ (\si{\watt})\\	\hline
     6                           & 0.0142                       & 0.8266                   &  0.0184  \\
     4                           & 0.0238                   & 0.8914                    &  0.0337\\
     2                           & 0.0544                       & 0.9450                     &  0.0849 \\
@@ -185,7 +185,7 @@ The new values can be found in table \ref{table3}. \\
 \begin{center}
 \begin{tabular}{ l | l | l | l }
     
-    \textit{d} (cm)            & pf              & efficiency  &  $P_{load}$ (W)\\	\hline
+   \textit{d} (\si{\centi\metre})            & pf              & efficiency  &  $P_{load}$ (\si{\watt})\\	\hline
     6                           & 1                     & 0.9310                & 37.0226  \\
     4                           &1                  & 0.9561                     & 21.8635\\
     2                           & 1                   & 0.9752                    &  9.7946 \\
@@ -200,7 +200,7 @@ The new values can be found in table \ref{table3}. \\
 
 As shown in Table \ref{table3} the efficiency of our system is very high. 
 It however is not this efficient in practice.
-When testing our system at a distance of 6 cm, we calculated that the efficiency was only 71.6\%.
+When testing our system at a distance of \SI{6}{\centi\metre}, we calculated that the efficiency was only 71.6\%.
 The difference between the calculations in \ref{table3} and the real value can be explained by looking into the compensation. 
 The capacitors we used on the primary and secondary side were not the exact same values as calculated.
 Fine tuning the frequency can not fix the problem on the primary and secondary side at the same time since the required frequencies differ. 
