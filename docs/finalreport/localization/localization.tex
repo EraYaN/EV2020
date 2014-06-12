@@ -354,7 +354,7 @@ The microphone outside the square could not be localized, this is because the al
 The algorithm fails when calculating the constant time offset, which becomes imaginary.
 This will likely not be a problem since the car will stay inside the square in practice.
 \\ \\
-The error in the localization is less than 5 cm, also because the exact location of the car was not known since the car is rather large.
+The error in the localization is less than \SI{5}{\centi\metre}, also because the exact location of the car was not known since the car is rather large.
 All together it can be concluded that the localization works with sufficient accuracy in practice too.
 
 \begin{figure} [H]
@@ -401,6 +401,6 @@ Because the positions of the microphones are known there are two unknowns, $x_e$
 With sufficient equations, meaning more microphones, the unknown values can be found.
 Using the steps from tutorial 6 in the EPO4 manual we end up with a set of equations of the form $Ay=b$ which can be solved for $y$ which contains the unknown variables.
 This method is implemented with five microphones.
-The algorithm proofed to be less accurate than the first algorithm at around +/- 8 cm.
+The algorithm proofed to be less accurate than the first algorithm with an accuracy of about \SI{8}{\centi\metre}.
 %
 \end{document}
