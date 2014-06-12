@@ -35,7 +35,7 @@ In the near future, we might replace the diodes with the SB540 to gain a better 
 
 The next step in designing our DC-DC converter was to design the air-coupled transformer. 
 In order to find how many windings we need per coil we used \cite{windings}.
-Through this site we found that we needed 40 windings for our primary coil of roughly \unit{200}{\micro}H and 14.44 windings for our secondary coil of roughly \unit{20}{\micro}H.
+Through this site we found that we needed 40 windings for our primary coil of roughly 200 $\mu$H and 14.44 windings for our secondary coil of roughly 20 $\mu$H.
 The mutual inductance of the two coils can be found by measuring both the opposing and aiding configuration of the coils. 
 The results for these measurements are given in Table \ref{tab:inductances}.
 
@@ -126,16 +126,16 @@ The results of our calculations can be found in Table \ref{table2}.\\
 
 
 Lastly we compensated the system in order to prevent unwanted characteristics in our air-coupled transformer. 
-In order to minimize the effect of the leakage inductances we had to find the values of $C_1$ and $C_2$. We used equations \ref{equation1} and \ref{equation2} to find these values.\\
+In order to minimize the effect of the leakage inductances we had to find the values of $C_1$ and $C_2$. We used equations \ref{eq:equation1} and \ref{eq:equation2} to find these values.\\
 \begin{equation}\
-\label{equation1}
+\label{eq:equation1}
 \begin{array}{l}
 $$ 0 = j\omega L_{1} + \frac{1}{j\omega C_{1}}$$
 $$\Leftrightarrow C_{1} =  \frac{1}{\omega^2 L_{1}}$$
 \end{array}\
 \end{equation}
 \begin{equation}\
-\label{equation2}
+\label{eq:equation2}
 \begin{array}{l}
 $$ 0 = j\omega L_{2} + \frac{1}{j\omega C_{2}}$$
 $$\Leftrightarrow C_{2} =  \frac{1}{\omega^2 L_{2}}$$
@@ -145,17 +145,17 @@ $$\Leftrightarrow C_{2} =  \frac{1}{\omega^2 L_{2}}$$
 Using these equations we found the following values for $C_1$ and $C_2$:
 \begin{equation}\
 \begin{array}{l}
-$$C_{1} =  \frac{1}{(2\pi \cdot (100\cdot 10^3)) ^2 207 \cdot 10^-6} = 12.2~\nano F$$
+$$C_{1} =  \frac{1}{(2\pi\cdot(100\cdot10^3)) ^2 207\cdot10^-6}  = 12.2~$n$F $$
 \end{array}\
 \end{equation}
 \begin{equation}\
 \begin{array}{l}
-$$C_{2} =  \frac{1}{(2\pi \cdot (100\cdot 10^3)) ^2 23.4 \cdot 10^-6} = 108~\nano F$$
+$$C_{2} =  \frac{1}{(2\pi \cdot (100\cdot 10^3)) ^2 23.4 \cdot 10^-6} = 108~ $n$ F $$
 \end{array}\
 \end{equation}
 \\
 
-Since our calculated values for $C_1$ (12.2~\nano F) and $C_2$ (108~\nano F) were not exactly available we had to choose slightly different values.
+Since our calculated values for $C_1$ (12.2~ $n$F) and $C_2$ (108~ $n$F) were not exactly available we had to choose slightly different values.
 We could approximate both values within 5\% deviation of the calculated values. \\
 
 When using capacitors in our circuit matrix, Equation \ref{eq:matrix} will change. 
@@ -211,7 +211,7 @@ In this secondary circuit, the diodes used for rectifying take a rather large fo
 This forward voltage can be reduced if we replace the current SF61 diodes with SB540 diodes.
 \\ \\
 Due to the efficiency difference it takes a little longer to charge the capacitor bank up to 20$V$.
-During the mid-term charging test, our circuit needed 5:02 minutes to completely charge the bank.
+During the charging test of the final competition, it took our car about 4 minutes to completely charge our car (starting at 5$V$). %%%%% ff fixen als we resultaten hebben na final competition.
 
 
 
