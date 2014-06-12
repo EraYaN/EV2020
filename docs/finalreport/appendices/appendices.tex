@@ -20,6 +20,58 @@
 	\label{fig:AC-DC}
 \end{figure}
 
+\chapter{Invertor PCB}
+\label{app:invertor-pcb}
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{resources/DC-AC-F_Cu-rc.pdf}
+	\caption{DC-AC PCB Front}
+	\label{fig:DC-AC-PCB-Front}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{resources/DC-AC-B_Cu-rc.pdf}
+	\caption{DC-AC PCB Back}
+	\label{fig:DC-AC-PCB-Back}
+\end{figure}
+
+\chapter{GUI}
+\label{app:gui}
+\begin{figure}[h]
+\centering
+\begin{subfigure}[b]{0.5\linewidth}
+	\includegraphics[width=\linewidth]{resources/UI-Settings-General.png}
+	\caption{GUI Settings window, General tab}
+	\label{fig:UI-Settings-General}
+\end{subfigure}
+\begin{subfigure}[b]{0.5\linewidth}
+	\includegraphics[width=\linewidth]{resources/UI-Settings-Localizer.png}
+	\caption{GUI Settings window, Localizer tab}
+	\label{fig:UI-Settings-Localizer}
+\end{subfigure}
+\begin{subfigure}{0.5\linewidth}
+	\includegraphics[width=\linewidth]{resources/UI-Settings-Microphones.png}
+	\caption{GUI Settings window, Microphones tab}
+	\label{fig:UI-Settings-Microphones}
+
+\end{subfigure}
+\caption{GUI Settings window, defined in SettingsWindow.xaml (Listing \ref{lst:Settings-SettingsWindow.xaml})}
+\label{fig:UI-Settings}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+	\includegraphics[width=0.9\linewidth]{resources/UI-Main.png}
+	\caption{GUI Main window, defined in MainWindow.xaml (Listing \ref{lst:Director-MainWindow.xaml})}
+	\label{fig:UI-Main}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+	\includegraphics[width=0.5\linewidth]{resources/UI-About.png}
+	\caption{GUI About window, defined in AboutWindow.xaml (Listing \ref{lst:Director-AboutWindow.xaml})}
+	\label{fig:UI-About}
+\end{figure}
+
 \chapter{Model}
 \label{app:model}
 \begin{figure}[H]
@@ -31,7 +83,7 @@
 
 \chapter{Source}
 \label{app:source}
-\subimport{../../}{sourcecode}
+\subimport{}{sourcecode.tex}
 
 \end{appendices}
 \end{document}

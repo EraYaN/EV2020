@@ -66,7 +66,7 @@ namespace DesignReporter
 			file.WriteLine("\\input{{{0}}}", GetRelativePath(docs.FullName,preamblePath.FullName));
 			file.WriteLine("\\input{{{0}}}", GetRelativePath(docs.FullName, stylePath.FullName));
 			file.WriteLine("\\addbibresource{{{0}}}", GetRelativePath(docs.FullName, bibliographyPath.FullName));
-			file.WriteLine(@"\start{document}");
+			file.WriteLine(@"\begin{document}");
 			file.WriteLine("\r\n");
 			//Start processing
 			processDirectory(src, 0);
