@@ -1,4 +1,4 @@
-% This file was created by matlab2tikz v0.4.6 running on MATLAB 8.2.
+﻿% This file was created by matlab2tikz v0.4.6 running on MATLAB 8.2.
 % Copyright (c) 2008--2014, Nico Schlömer <nico.schloemer@gmail.com>
 % All rights reserved.
 % Minimal pgfplots version: 1.3
@@ -19,6 +19,7 @@ xlabel={Time (s)},
 ymin=-0.005,
 ymax=0.005,
 ylabel={Response},
+yticklabel style={/pgf/number format/fixed},
 name=plot3
 ]
 \addplot [color=blue,solid,forget plot]
@@ -672,6 +673,7 @@ xlabel={Time (s)},
 ymin=-0.001,
 ymax=0.001,
 ylabel={Response},
+yticklabel style={/pgf/number format/fixed},
 name=plot1,
 at=(plot3.above north west),
 anchor=below south west
@@ -1326,6 +1328,7 @@ xlabel={Time (s)},
 ymin=-0.05,
 ymax=0.05,
 ylabel={Response},
+yticklabel style={/pgf/number format/fixed},
 name=plot2,
 at=(plot1.right of south east),
 anchor=left of south west
@@ -1967,6 +1970,7 @@ xlabel={Time (s)},
 ymin=-0.1,
 ymax=0.1,
 ylabel={Response},
+yticklabel style={/pgf/number format/fixed},
 name=plot4,
 at=(plot2.below south west),
 anchor=above north west
@@ -2599,6 +2603,7 @@ xlabel={Time (s)},
 ymin=-5,
 ymax=5,
 ylabel={Response},
+yticklabel style={/pgf/number format/fixed},
 name=plot6,
 at=(plot4.below south west),
 anchor=above north west
@@ -3245,6 +3250,7 @@ xlabel={Time (s)},
 ymin=-0.2,
 ymax=0.2,
 ylabel={Response},
+yticklabel style={/pgf/number format/fixed},
 name=plot5,
 at=(plot6.left of south west),
 anchor=right of south east
@@ -3896,6 +3902,7 @@ xlabel={Time (s)},
 ymin=-0.002,
 ymax=0.002,
 ylabel={Response},
+yticklabel style={/pgf/number format/fixed},
 name=plot7,
 at=(plot5.below south west),
 anchor=above north west
@@ -4551,6 +4558,7 @@ xlabel={Time (s)},
 ymin=-0.1,
 ymax=0.1,
 ylabel={Response},
+yticklabel style={/pgf/number format/fixed},
 name=plot8,
 at=(plot7.right of south east),
 anchor=left of south west
@@ -5185,6 +5193,7 @@ xlabel={Time (s)},
 ymin=-0.1,
 ymax=0.1,
 ylabel={Response},
+yticklabel style={/pgf/number format/fixed},
 name=plot10,
 at=(plot8.below south west),
 anchor=above north west
@@ -5826,6 +5835,7 @@ xlabel={Time (s)},
 ymin=-0.001,
 ymax=0.001,
 ylabel={Response},
+yticklabel style={/pgf/number format/fixed},
 at=(plot10.left of south west),
 anchor=right of south east
 ]

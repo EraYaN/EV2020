@@ -3,6 +3,7 @@
 \input{../../library/preamble.tex}
 \input{../../library/style.tex}
 \addbibresource{../../library/bibliography.bib}
+\pgfplotsset{yticklabel style={text width=2em,align=right}}
 \begin{document}
 
 \chapter{Localization}
@@ -26,7 +27,7 @@ This criteria, plus the original criteria of the delta-like autocorrelation resu
 \\ \\
 The default autocorrelation is displayed in Figure \ref{fig:default-correlation} and the alternative in Figure \ref{fig:own-correlation}.
 The default autocorrelation shows a slimmer autocorrelation, but it contains high peaks around its main peak.
-These peaks are way more likely to cause errors because they are almost as high as at thesame location as the main peak, causing a relatively lower peak when matched filtering.
+These peaks are way more likely to cause errors because they are almost as high as at the same location as the main peak, causing a relatively lower peak when matched filtering.
 For that reason, we allowed more smaller peaks further away from the main peak to reduce the peak height near the main peak.
 This way, the main peak is more prominent, likely to result in better matched filter results later on.
 
@@ -49,44 +50,52 @@ This way, the main peak is more prominent, likely to result in better matched fi
 \end{figure}
 
 \section{Matched filter}
+\iffalse
 A matched filter is used to filter the received audio data from the microphones to the desired signal.
 The desired signal will be the beacon signal and the noise that is also present in the received audio data must ideally be removed.
 In order to get the noise filtered out, a convolution is used.
 This works under the assumption that the desired signal's autocorrelation function is shaped like a delta impulse as described in the previous section.
 Since the beacon signal is designed to fit this criterion as much as possible, a reasonable matched filter should be able to be designed.
 \\ \\
+\fi
+
+\subsection{General}
 The matched filter result describes the correlation between the recorded signal from the microphone and the desired signal, which is the beacon signal.
 The location in the recorded samples where the beacon signal is most alike the beacon signal will be indicated with a peak.
+\\ \\
+Ideally, when the noise is completely uncorrelated with the beacon signal and the beacon signal has a delta impulse shaped autocorrelation, the filtered signal consist of only one delta impulse peak at the receival time of the beacon signal at the microphone.
+However, this is not entirely the case since there will be correlated noise, a non-ideal beacon signal autocorrelation and beacon signal reflections in the microphone sample data.
 
-\begin{figure}[H]
-	\centering
-	\setlength\figureheight{2cm}
-    	\setlength\figurewidth{0.4\textheight}
-	\begin{sideways}
-		\input{resources/orgref.tikz}
-	\end{sideways}
-	\caption{5-Point microphone sample data processed with orgref reference.}
-	\label{fig:default-correlation}
-\end{figure}
+\subsection{Reference signal}
+The reference signal is used when convolving the sample data.
+Multiple references can be used, which will result in different matched filter results.
+\\ \\
+Firstly, the beacon signal directly from the refsignal function (refsignal.m) provided via BlackBoard, which results in Figure \ref{fig:orgref}.
+This however does not perform very well since the peaks are not clear at larger distances.
+Only the close recording of the third microphone with proportionally few noise produces a reasonable peak as indicated in the left with the red indicator close to the correct location.
+At larger distances, even the unfiltered signal is better than the filtered signal.
+\\ \\
+Secondly, the recording of the beacon signal at about 10 cm can be used.
+The distance of 10 cm is picked because at larger distances the noise is proportionally larger and at lower distances the microphone might clip.
+This measurement takes the channel distortions of the beacon, 10 cm air and microphone into account.
+Therefore, this reference signal will look much more like the captured one in the received microphone sample data, which will result in clearer peaks when convolving.
+The results of the measured beacon signal as reference is displayed in Figure \ref{fig:no-toep}.
+The peaks are detected correctly, as read from the red indicators in the left plots.
 
-\iffalse
-\begin{figure}[H]
-	\centering
-	\setlength\figureheight{4cm}
-    	\setlength\figurewidth{0.4\linewidth}
-	\input{resources/toep.tikz}
-	\caption{5-Point microphone sample data processed with orgref reference.}
-	\label{fig:default-correlation}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\setlength\figureheight{4cm}
-    	\setlength\figurewidth{0.4\linewidth}
-	\input{resources/no-toep.tikz}
-	\caption{5-Point microphone sample data processed with orgref reference.}
-	\label{fig:default-correlation}
-\end{figure}
-\fi
+\subsection{Convolution type}
+When convolving, two types of convolution can be used: linear convolution or circular convolution.
+Previously, only linear convolution was used, but it can be more efficient to use the circular variant.
+This is the case when multiplying with the Toepitz matrix, which equals the circular convolution of the two multiplied matrices.
+Unlike linear convolution, matrix multiplication can be performed efficiently in C\#.
+\\ \\
+Circular convolution is however not exactly the same as linear convolution.
+The edges of the convolved signal are tied together, resulting in distortion at the edges of the result.
+The area of this distortion depends of the size of the signal which is being convolved with.
+When this signal is relatively long, the distorted area is long as well on both sides of the result.
+The result when performing a circular convolution using a Toupitz matrix is displayed in Figure \ref{fig:toep}.
+\\ \\
+As seen in Figure \ref{fig:toep}, the peaks are not as clear as in Figure \ref{fig:no-toep} where linear convolution was used.
+Therefore, the linear convolution is preferred.
+When using the linear convolution, the processing time must be kept in mind as well, but this was taken care of by multi-threading.
 
 \end{document}

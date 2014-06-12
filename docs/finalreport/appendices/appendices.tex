@@ -81,6 +81,35 @@
     	\label{app:model}
 \end{figure}
 
+\chapter{Localization}
+\label{app:localization}
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{3cm}
+    	\setlength\figurewidth{0.4\linewidth}
+	\input{resources/orgref.tikz}
+	\caption{5-Point microphone sample data processed directly with refsignal reference.}
+	\label{fig:orgref}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{3cm}
+    	\setlength\figurewidth{0.4\linewidth}
+	\input{resources/no-toep.tikz}
+	\caption{5-Point microphone sample data processed with recorded reference signal.}
+	\label{fig:no-toep}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\setlength\figureheight{3cm}
+    	\setlength\figurewidth{0.4\linewidth}
+	\input{resources/toep.tikz}
+	\caption{5-Point microphone sample data processed with recorded reference signal using Toepitz matrix.}
+	\label{fig:toep}
+\end{figure}
+
 \chapter{Source}
 \label{app:source}
 \subimport{}{sourcecode.tex}
