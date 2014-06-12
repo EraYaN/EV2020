@@ -1,8 +1,8 @@
 %!TEX program=xelatex+makeindex+bibtex
 \documentclass[12pt]{scrreprt}
-\usepackage{amsmath}
-\newcommand{\tss}{\textsubscript}
-\input{../../library/preamble}
+
+\input{../../library/preamble.tex}
+\input{../../library/style.tex}
 
 
 \begin{document}
@@ -75,14 +75,15 @@ Matthijs E. \textsc{Weskin} BSc\\
  
 %----------------------------------------------------------------------------------------
 % 
+\vspace{3cm} %Tweak
 
 \textbf{Abstract} \\ 
 This is the final report written for the EPO-4 "Electric Transport 2020" project. 
 An R/C car is modified with wireless charging and autonomous control options. 
-We will describe the wireless charging of the car, the matched filter and the localiazation.%%%fix it 
+We will describe the wireless charging of the car, the matched filter and the localization.%%%fix it 
 Our motivations for choosing certain components will become clear and a general overview of the design is given. 
 Contradictory to the standard we use C\# as opposed to Matlab for the implementation. 
-Via contactless charging we managed to charge a \unit[35]{F} capacitance to \unit[20]{V} in 5:02 minutes. 
+Via contact-less charging we managed to charge a \unit[35]{F} capacitance to \unit[20]{V} in 5:02 minutes. 
 Besides that the R/C car can bridge a \unit[3]{m} distance in under 3 seconds and come to a stand still at little more than \unit[10]{cm} of the wall.
 
 \vfill % Fill the rest of the page with whitespace
