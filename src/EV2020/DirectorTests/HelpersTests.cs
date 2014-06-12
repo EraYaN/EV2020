@@ -69,7 +69,7 @@ namespace DirectorTests
 			double actual;			
 			//Q3
 			actual = DenseVector.OfArray(new double[] { -1, -1 }).Angle();
-			expected = Math.PI / 4 + Math.PI;
+			expected = Math.PI / 4 - Math.PI;
 			Assert.AreEqual(expected, actual, 0.001, "Third Quadrant fail");
 		}
 		[TestMethod]

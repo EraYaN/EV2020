@@ -55,10 +55,10 @@ namespace EV2020.Director
 		{
 			//constructor	
 			model = new PDEpicModel();
-			model.Init(0.50,0.50);
-			Position = DenseVector.OfArray(new double[] { .50, .50 });
-			Target = DenseVector.OfArray(new double[] { .50, .50 });
-			bearing = Math.PI / 2;
+			model.Init(0.1,1);
+			Position = DenseVector.OfArray(new double[] { 0.1, 1 });
+			Target = DenseVector.OfArray(new double[] { 0.1, 1 });
+			bearing = 0;
 		}
 		~StandardNavigation()
 		{
@@ -87,19 +87,37 @@ namespace EV2020.Director
 				return c;
 			Vector<double> output = model.Tick(Position * 100, Target * 100);
 			Data.db.UpdateProperty("ModelDebugInfo");
-			double modelbearing = output.Angle();
-			Vector<double> targetd = Position - Target;
+			//double modelbearing = output.Angle();
+			Vector<double> targetd = Target - Position;
 			double targetbearing = targetd.Angle();
-			double bearingd = targetbearing - (bearing + modelbearing) / 2;
+			double bearingd = targetbearing - bearing;
+			//FIXED after demo
 			if (bearingd > 0)
 			{
-				c.Steering = 15;
+				c.Steering = -50;
 			}
 			else if (bearingd < 0)
 			{
-				c.Steering = -15;
+				c.Steering = 50;
 			}
-			c.Driving = output.Magnitude();
+			/*if (bearingd > Math.PI / 2 || bearingd < Math.PI)
+			{
+				bearingd = targetbearing - (bearing-Math.PI);
+				Debug.WriteLine("Going backwards.");
+				c.Driving = -output.Magnitude();
+				if (bearingd > 0)
+				{
+					c.Steering = 50;
+				}
+				else if (bearingd < 0)
+				{
+					c.Steering = -50;
+				}
+			}
+			else
+			{*/
+				c.Driving = output.Magnitude();
+			//}
 			UpdateField();
 			return c;
 		}		
@@ -176,7 +194,10 @@ namespace EV2020.Director
 			Vector<double> lastPosition = Position;
 			Position = (Position * Data.cfg.SmoothFactor + DenseVector.OfArray(new double[] { e.Position.X, e.Position.Y })) / (1 + Data.cfg.SmoothFactor);
 			Vector<double> difference = Position - lastPosition;
-			bearing = difference.Angle();
+			if (difference.Magnitude() > 0.01)
+			{
+				bearing = difference.Angle();
+			}
 			
 			//posistionLog.ScrollToEnd();
 			UpdateField();

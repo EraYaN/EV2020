@@ -138,7 +138,10 @@ namespace EV2020.Director
 				if (val[0] >= 0)
 				{
 					return Math.Atan(val[1] / val[0]);
-				}				
+				}	
+				else if(val[0]<0&&val[1]<0){
+					return Math.Atan(val[1] / val[0])-Math.PI;
+				}
 				else
 				{
 					return Math.Atan(val[1] / val[0]) + Math.PI;
