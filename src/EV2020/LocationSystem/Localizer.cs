@@ -169,7 +169,7 @@ namespace EV2020.LocationSystem
 			asio = new ASIO(driver, _inputChannels, _outputChannels, Convert.ToInt32(ASIO.Fs));
 			Debug.WriteLine("Starting timer.");
 			//TODO back to 250 ms
-			timer = new System.Timers.Timer(sampleLength * 1000 * (matchedFilterEnabled && !matchedFilterToep ? 1 : 1)); // TEST: 8 times longer
+			timer = new System.Timers.Timer(sampleLength * 1000 * (matchedFilterEnabled && !matchedFilterToep ? 2 : 2)); // TEST: 8 times longer
 			timer.Elapsed += timer_Elapsed;
 			timer.Start();
 			asio.IsInputEnabled = true;
