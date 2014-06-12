@@ -93,8 +93,9 @@ namespace EV2020.Director
 			//double modelbearing = output.Angle();
 			Vector<double> targetd = Target - Position;
 			double targetbearing = targetd.Angle();
-			double bearingd = targetbearing - bearing;
-			//FIXED after demo
+			//Deadzone of 2 radians
+			double bearingd = (targetbearing - bearing).Deadzone(-0.2,0.2);
+			//FIXED after demo, it was inverted before (during the demo).
 			if (bearingd > 0)
 			{
 				c.Steering = -50;

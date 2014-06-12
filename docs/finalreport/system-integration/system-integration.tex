@@ -36,8 +36,10 @@ ASIO is the interface with the 8 channel capture card.
 The controller is the part that gives the car it's behavior.
 The Controller is parent to the Navigation and thus the Model.
 The navigation class is the class with the role of observer and the Model class in the class with the role of controller (in a state-space sense).
-We use a kind of double state-space model (the state is now a matrix), this gives us two ``driving'' signals one for the x and one for the y direction.
-From these two we can take the actual driving signal (the magnitude of the vector) and the steering signal (the difference with the current bearing).\\
+We use a kind of double state-space model (the state is now a 2 by 2 matrix), this gives us two ``driving'' signals one for the x and one for the y direction.
+From these two we can take the actual driving signal (the magnitude of the vector) and the steering signal (the difference with the current bearing).
+We use a deadzone of \SI{0.2}{\radian}, so when the absolute value if the bearing difference is smaller then that the car won't steer.
+The steering signal is to the left is the bearing difference is bigger than the deadzone and is to the right when the bearing difference is smaller then the deadzone.\\
 A problem arises when you want to estimate the bearing for previous measured position and the car is moving very slowly. 
 When the positions are very close to each other, the error might be bigger than the actual distance traveled.
 This makes the bearing determined completely wrong.
@@ -61,7 +63,8 @@ In figure \ref{fig:system-response} you can see the data of a run towards the wa
 \end{figure}
 
 \section{Implementation details and Licenses}
-All our code and documentation with be available on GitHub, shortly after the project at \href{https://github.com/EraYaN}{https://github.com/EraYaN}. The repositories' name is \href{https://github.com/EraYaN/EV2020}{EV2020}.\\
+All our code and documentation with be available on GitHub, shortly after the project at \href{https://github.com/EraYaN}{https://github.com/EraYaN}. The repositories' name is \href{https://github.com/EraYaN/EV2020}{EV2020}. All our own code is released under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International, available at \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{CreativeCommons}.
+Third-party code retain their respective licenses.\\
 
 We used the following libraries/SDKs.
 \begin{itemize}
