@@ -101,9 +101,10 @@ When using the linear convolution, the processing time must be kept in mind as w
 
 \section{TDOA Localization}
 For our car two TDOA estimation algorithms are implemented.
-The algorithms were developed simultaneously and supplement each other as sometimes the first algorithm might produce a 'NaN'.
+The algorithms were developed simultaneously, the second would only be used if the first did not work as intended, which was not the case.
 
 \subsection{First algorithm}
+\subsubsection{Basic location estimation}
 Before going into TDOA estimation, it was assumed that the time it took for the sound to travel from the beacon to all microphones was known.
 This made the calculation a lot easier since it can be solved using two microphones only.
 \\ \\
@@ -179,7 +180,7 @@ Since five microphones will be used instead of just two, the mirrored versions c
 By using only two microphones per location estimation instead of all five at once, wrong arrival times can be filtered out easily.
 However, when the arrival times are all poorly defined due to errors, it might not be possible to filter the mirror images out of the solution sets.
 
-\subsection{Height correction}
+\subsubsection{Height correction}
 The height difference between the audio beacon and the microphones causes a larger time delay than expected when only looking at the 2D plane only.
 However, this time delay can be corrected using Pythagoras' theorem:
 
@@ -190,7 +191,7 @@ However, this time delay can be corrected using Pythagoras' theorem:
 With $\Delta h$ the height difference between the beacon and the microphone.
 The resulting $t_{2D}$ can be used in the basic localization to exactly calculate the beacon location, independent of the height difference.
 
-\subsection{TDOA to arrival times}
+\subsubsection{TDOA to arrival times}
 In order to use the TDOA data in the algorithm mentioned above, the time delays between the transmission and reception of the signal per microphone must be calculated from the TDOA data.
 For this, it is known that this transition from TDOA to time delays is accomplished by adding a the same time constant time difference per microphone.
 This constant is defined as the time difference between the absolute time of transmission and the absolute start time of the sample data, e.g. the absolute time of sample number one.
@@ -255,7 +256,7 @@ For that, the base of orthogonal microphones shift to all four possible combinat
 \\ \\
 The final Matlab script can be found in Appendix \ref{app:code}: location.m, which implements everything discussed so far in this chapter.
 
-\subsection{Testing with test data}
+\subsubsection{Testing with test data}
 \label{sec:testing}
 The test script location-errors.m as found in Appendix \ref{app:code} was used to find the error mean, standard deviation and maximum.
 The first test was in 2D mode; all microphones and the beacon were on the same height.
@@ -282,7 +283,7 @@ More than 1 cm accuracy is indeed not needed for the purpose of the project.
 The height correction definitely adds accuracy to the location estimation as expected, hence it will be used later on.
 This is however when the TDOA information is nearly infinitely accurate, which will not be the case.
 
-\subsection{Testing with non-ideal data}
+\subsubsection{Testing with non-ideal data}
 Errors will occur when the estimated speed of sound is not exactly correct since it varies with environment parameters such as temperature, humidity and air pressure.
 Using the test script from the previous subsection \ref{sec:testing} with an altered speed of sound with the input data generation, a certain error will occur.
 This was tested for the range of 1 to 5 percent deviation from the actual speed of sound, the results are shown in Table \ref{tab:c-errors}.
@@ -342,7 +343,7 @@ At \SI{0.15}{\milli\second}, which corresponds to \SI{5.1}{\centi\metre}, about 
 \end{table}
 \fi
 
-\subsection{Testing with real measurement data}
+\subsubsection{Testing with real measurement data}
 The test with five microphones, four in a \SI{2.9}{\metre} x \SI{2.9}{\metre} square on \SI{38}{\centi\metre} height and one microphone placed \SI{2.4}{\metre} from the center of the square on \SI{0.93}{\centi\metre} high.
 The car was placed on seven defined spots on the field, the first five at all microphones, the sixth at the center of the square and the last \SI{1}{\metre} towards a corner of the square.
 The recordings from the microphones were saved to be processed later on using the matched filter.
@@ -354,7 +355,8 @@ The microphone outside the square could not be localized, this is because the al
 The algorithm fails when calculating the constant time offset, which becomes imaginary.
 This will likely not be a problem since the car will stay inside the square in practice.
 \\ \\
-The error in the localization is less than \SI{5}{\centi\metre}, also because the exact location of the car was not known since the car is rather large.
+The error in the localization is less than \SI{5}{\centi\metre}, also because the exact location of the car was not known since the car is rather large and small errors might have occurred in the matched filter.
+Finally, the speed of sound might not have been exactly as expected, which, according to previous results on deviation of the speed of sound, would result in localization errors as well.
 All together it can be concluded that the localization works with sufficient accuracy in practice too.
 
 \begin{figure} [H]
@@ -402,5 +404,16 @@ With sufficient equations, meaning more microphones, the unknown values can be f
 Using the steps from tutorial 6 in the EPO4 manual we end up with a set of equations of the form $Ay=b$ which can be solved for $y$ which contains the unknown variables.
 This method is implemented with five microphones.
 The algorithm proved to be less accurate than the first algorithm with an accuracy of about \SI{8}{\centi\metre}.
-%
+
+\subsection{Algorithm consideration}
+When picking the algorithm which was used for the final competition, two things were taken into account.
+Foremost, the first algorithm corrects to height difference and is thus more accurate than the second algorithm, which does not.
+Secondly, the first algorithm is less sensitive to large errors in TDOA data since it chooses the most conclusive set of microphones to use, instead of all 5.
+When one of microphones produces a large error in TDOA data, the result is changed drastically.
+This does not happen with the first algorithm, it detects that the outcomes for the individual sets of microphones are too far apart and picks the best set of microphones to use.
+One of the microphones on the corner of the field plus the fifth microphone may fail to still result in a correct location.
+\\ \\
+For this reason, the first TDOA location algorithm was picked as primary.
+The second algorithm was kept as insurance for when the first algorithm did not work as expected on the final field since the first algorithm is powerful, yet complex and therefore more unpredictable.
+
 \end{document}
